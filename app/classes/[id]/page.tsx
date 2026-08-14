@@ -18,14 +18,12 @@ interface Student {
     phone_number: string;
 }
 
-// Helper function to translate Assessment Types
 const translateAssType = (type: string, lang: string) => {
     if (lang !== 'ar') return type;
     const map: Record<string, string> = { 'Quiz': 'اختبار قصير', 'Midterm': 'نصفي', 'Final': 'نهائي' };
     return map[type] || type;
 };
 
-// Helper: Safely get today's date in local timezone to avoid UTC shifting
 const getLocalTodayDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -34,7 +32,6 @@ const getLocalTodayDate = () => {
     return `${year}-${month}-${day}`;
 };
 
-// Helper: Convert YYYY-MM-DD strictly to local Date object (prevents UTC timezone shift bugs)
 const getSafeDateObj = (dateStr: string) => {
     if (!dateStr) return new Date();
     const [y, m, d] = dateStr.split('-');
@@ -46,7 +43,6 @@ export default function ClassDetailsPage() {
     const id = params?.id as string;
     const { lang } = useLanguage();
 
-    // Core State
     const [students, setStudents] = useState<Student[]>([]);
     const [classSchedules, setClassSchedules] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -54,19 +50,16 @@ export default function ClassDetailsPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState<'attendance' | 'assessments'>('attendance');
 
-    // Attendance State
     const [globalDate, setGlobalDate] = useState(getLocalTodayDate());
     const [studentDates, setStudentDates] = useState<Record<string, string>>({});
     const [attendance, setAttendance] = useState<Record<string, string>>({});
     const [bonuses, setBonuses] = useState<Record<string, string>>({});
     const [hasSessionToday, setHasSessionToday] = useState(true);
 
-    // Add Student State
     const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
     const [newStudentName, setNewStudentName] = useState('');
     const [newStudentPhone, setNewStudentPhone] = useState('');
 
-    // Assessments State
     const [assessments, setAssessments] = useState<any[]>([]);
     const [isAddAssessmentModalOpen, setIsAddAssessmentModalOpen] = useState(false);
     const [newAssType, setNewAssType] = useState('Quiz');
@@ -74,21 +67,14 @@ export default function ClassDetailsPage() {
     const [newAssMaxGrade, setNewAssMaxGrade] = useState('');
     const [newAssDate, setNewAssDate] = useState(getLocalTodayDate());
     
-    // Grading State
     const [activeAssessment, setActiveAssessment] = useState<any>(null);
     const [assessmentGrades, setAssessmentGrades] = useState<Record<string, string>>({});
 
-    // Force local timezone override on mount (Fixes the Friday/Saturday Server Mismatch Bug)
     useEffect(() => {
         const local = getLocalTodayDate();
         if (globalDate !== local) {
             setGlobalDate(local);
             setNewAssDate(local);
-            setStudentDates(prev => {
-                const newDates = { ...prev };
-                for (let sId in newDates) newDates[sId] = local;
-                return newDates;
-            });
         }
     }, []);
 
@@ -103,30 +89,50 @@ export default function ClassDetailsPage() {
         checkSession(globalDate, classSchedules);
     }, [globalDate, classSchedules]);
 
+    // FETCH EXISTING ATTENDANCE
+    async function fetchAttendanceForDate(dateStr: string, studentList: Student[]) {
+        if (!studentList.length) return;
+        const studentIds = studentList.map(s => s.id);
+        
+        const { data } = await supabase
+            .from('attendance')
+            .select('*')
+            .in('student_id', studentIds)
+            .eq('date', dateStr);
+
+        const newAttendance: Record<string, string> = {};
+        const newBonuses: Record<string, string> = {};
+        const newDates: Record<string, string> = {};
+
+        // Default everyone to present locally
+        studentList.forEach(s => {
+            newAttendance[s.id] = 'Present';
+            newBonuses[s.id] = '';
+            newDates[s.id] = dateStr;
+        });
+
+        // Override with data from database if they have records
+        data?.forEach(record => {
+            newAttendance[record.student_id] = record.status;
+            newBonuses[record.student_id] = record.bonus_marks > 0 ? record.bonus_marks.toString() : '';
+        });
+
+        setAttendance(newAttendance);
+        setBonuses(newBonuses);
+        setStudentDates(newDates);
+    }
+
     async function fetchStudentsAndSchedule() {
         setLoading(true);
-        
         const { data: classData } = await supabase.from('classes').select('class_schedules(day_of_week)').eq('id', id).single();
         const schedules = classData?.class_schedules || [];
         setClassSchedules(schedules);
         checkSession(globalDate, schedules);
 
         const { data, error } = await supabase.from('students').select('*').eq('class_id', id);
-        if (error) {
-            console.error('Error fetching students:', error);
-        } else {
-            setStudents(data || []);
-            const initialAttendance: Record<string, string> = {};
-            const initialDates: Record<string, string> = {};
-            const initialBonuses: Record<string, string> = {};
-            data?.forEach(student => {
-                initialAttendance[student.id] = 'Present';
-                initialDates[student.id] = globalDate;
-                initialBonuses[student.id] = '';
-            });
-            setAttendance(initialAttendance);
-            setStudentDates(initialDates);
-            setBonuses(initialBonuses);
+        if (!error && data) {
+            setStudents(data);
+            await fetchAttendanceForDate(globalDate, data);
         }
         setLoading(false);
     }
@@ -145,9 +151,7 @@ export default function ClassDetailsPage() {
 
     const handleGlobalDateChange = (date: string) => {
         setGlobalDate(date);
-        const newDates: Record<string, string> = {};
-        students.forEach(s => newDates[s.id] = date);
-        setStudentDates(newDates);
+        fetchAttendanceForDate(date, students); // Reload data for the new date
     };
 
     const handleStudentDateChange = (studentId: string, date: string) => {
@@ -168,6 +172,17 @@ export default function ClassDetailsPage() {
         const saudiPhoneRegex = /^9665\d{8}$/;
         if (!saudiPhoneRegex.test(newStudentPhone)) {
             alert(lang === 'ar' ? 'الرجاء إدخال رقم سعودي صحيح يبدأ بـ 9665' : 'Please enter a valid Saudi number starting with 9665');
+            return;
+        }
+
+        // VALIDATION: Duplicate check
+        const { data: existing } = await supabase.from('students')
+            .select('id')
+            .eq('class_id', id)
+            .eq('phone_number', newStudentPhone);
+
+        if (existing && existing.length > 0) {
+            alert(lang === 'ar' ? 'هذا الطالب مسجل بالفعل برقم الهاتف هذا في هذا الفصل.' : 'A student with this phone number is already registered in this class.');
             return;
         }
 
@@ -213,7 +228,6 @@ export default function ClassDetailsPage() {
         window.open(`https://wa.me/${student.phone_number}?text=${encodeURIComponent(msg)}`, '_blank');
     };
 
-    // --- ASSESSMENTS LOGIC ---
     const handleAddAssessment = async (e: React.FormEvent) => {
         e.preventDefault();
         const { error } = await supabase.from('assessments').insert([{ 
@@ -241,7 +255,6 @@ export default function ClassDetailsPage() {
     const saveGrades = async () => {
         setSaving(true);
         try {
-            // Final mathematical check for max grade and negatives
             for (const sId of Object.keys(assessmentGrades)) {
                 if (assessmentGrades[sId] !== '') {
                     const score = parseFloat(assessmentGrades[sId]);
@@ -278,7 +291,6 @@ export default function ClassDetailsPage() {
 
     return (
         <div className="space-y-6 relative">
-            {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                     <Link href="/classes">
@@ -305,7 +317,6 @@ export default function ClassDetailsPage() {
                 </div>
             </div>
 
-            {/* Sub-Navigation Tabs */}
             <div className="flex border-b border-slate-200">
                 <button 
                     onClick={() => { setActiveTab('attendance'); setActiveAssessment(null); }}
@@ -323,7 +334,6 @@ export default function ClassDetailsPage() {
                 </button>
             </div>
 
-            {/* Warning Banner */}
             {!hasSessionToday && activeTab === 'attendance' && (
                 <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-md flex items-center gap-3">
                     <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
@@ -335,7 +345,6 @@ export default function ClassDetailsPage() {
                 </div>
             )}
 
-            {/* TAB CONTENT: ATTENDANCE */}
             {activeTab === 'attendance' && (
                 <Card>
                     <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4">
@@ -400,7 +409,7 @@ export default function ClassDetailsPage() {
                                                     value={bonuses[student.id] || ''}
                                                     onChange={(e) => {
                                                         const val = e.target.value;
-                                                        if (val !== '' && parseFloat(val) < 0) return; // Block negative numbers
+                                                        if (val !== '' && parseFloat(val) < 0) return;
                                                         handleBonusChange(student.id, val);
                                                     }}
                                                     className="h-9 w-16 mx-auto text-center font-bold text-emerald-600 border-emerald-200 focus-visible:ring-emerald-500"
@@ -420,7 +429,6 @@ export default function ClassDetailsPage() {
                 </Card>
             )}
 
-            {/* TAB CONTENT: ASSESSMENTS OVERVIEW */}
             {activeTab === 'assessments' && !activeAssessment && (
                 <div className="space-y-4">
                     <div className="flex justify-between items-center bg-white p-4 rounded-lg border shadow-sm">
@@ -462,7 +470,6 @@ export default function ClassDetailsPage() {
                 </div>
             )}
 
-            {/* TAB CONTENT: ACTIVE GRADING VIEW */}
             {activeTab === 'assessments' && activeAssessment && (
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between border-b pb-4 bg-slate-50 rounded-t-xl">
@@ -505,7 +512,7 @@ export default function ClassDetailsPage() {
                                                     const val = e.target.value;
                                                     if (val !== '') {
                                                         const num = parseFloat(val);
-                                                        if (num < 0 || num > activeAssessment.max_grade) return; // Prevent typing invalid numbers
+                                                        if (num < 0 || num > activeAssessment.max_grade) return;
                                                     }
                                                     handleGradeChange(student.id, val);
                                                 }} 
@@ -519,7 +526,6 @@ export default function ClassDetailsPage() {
                 </Card>
             )}
 
-            {/* --- ADD STUDENT MODAL --- */}
             {isAddStudentModalOpen && (
                 <div className="fixed inset-0 z-50 bg-slate-950/50 flex items-center justify-center p-4">
                     <Card className="w-full max-w-md shadow-xl border-0">
@@ -551,7 +557,6 @@ export default function ClassDetailsPage() {
                 </div>
             )}
 
-            {/* --- ADD ASSESSMENT MODAL --- */}
             {isAddAssessmentModalOpen && (
                 <div className="fixed inset-0 z-50 bg-slate-950/50 flex items-center justify-center p-4">
                     <Card className="w-full max-w-md shadow-xl border-0">

@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Users, Search, Plus, X, Trash2, Edit, AlertTriangle, Send, Phone, GraduationCap, Activity } from "lucide-react";
+import { Users, Search, Plus, X, Trash2, Edit, AlertTriangle, Send, Activity, GraduationCap } from "lucide-react";
 
 interface ClassData {
   id: string;
@@ -61,15 +61,13 @@ export default function StudentsPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    // 1. Fetch Teacher's Classes
+    // Fetch Teacher's Classes securely
     const { data: classData } = await supabase
       .from('classes')
       .select('id, class_name')
       .eq('teacher_id', user.id);
 
-    if (classData) {
-      setClasses(classData);
-    }
+    if (classData) setClasses(classData);
 
     if (!classData || classData.length === 0) {
       setLoading(false);
@@ -78,7 +76,7 @@ export default function StudentsPage() {
 
     const classIds = classData.map(c => c.id);
 
-    // 2. Fetch Students with their Attendance and Grades
+    // Fetch Students associated with those classes
     const { data: studentData, error } = await supabase
       .from('students')
       .select(`
@@ -88,7 +86,7 @@ export default function StudentsPage() {
         class_id,
         classes (class_name),
         attendance (status),
-        grades (score, max_score)
+        assessment_grades (score, assessments(max_grade))
       `)
       .in('class_id', classIds);
 
@@ -98,7 +96,6 @@ export default function StudentsPage() {
       return;
     }
 
-    // 3. Process Metrics per Student
     let totalAttendancePercentage = 0;
     let atRiskCount = 0;
 
@@ -110,18 +107,19 @@ export default function StudentsPage() {
       
       totalAttendancePercentage += attendanceRate;
 
-      // Calculate Average Grade
+      // Calculate Average Grade from assessments
       let avgGrade = null;
-      if (student.grades && student.grades.length > 0) {
-        const totalScore = student.grades.reduce((acc: number, g: any) => acc + (g.score / g.max_score), 0);
-        avgGrade = Math.round((totalScore / student.grades.length) * 100);
+      if (student.assessment_grades && student.assessment_grades.length > 0) {
+        const totalScore = student.assessment_grades.reduce((acc: number, g: any) => {
+           const max = g.assessments?.max_grade || 100;
+           return acc + (g.score / max);
+        }, 0);
+        avgGrade = Math.round((totalScore / student.assessment_grades.length) * 100);
       }
 
-      // At-Risk Criteria: Attendance < 75% OR Avg Grade < 60%
       const isAtRisk = attendanceRate < 75 || (avgGrade !== null && avgGrade < 60);
       if (isAtRisk) atRiskCount++;
 
-      // Handle Supabase joining returning either an array or an object
       const classInfo = Array.isArray(student.classes) ? student.classes[0] : student.classes;
 
       return {
@@ -137,8 +135,6 @@ export default function StudentsPage() {
     });
 
     setStudents(processedStudents);
-
-    // 4. Set Top Metrics
     setMetrics({
       total: processedStudents.length,
       avgAttendance: processedStudents.length > 0 ? Math.round(totalAttendancePercentage / processedStudents.length) : 0,
@@ -154,13 +150,22 @@ export default function StudentsPage() {
 
     const saudiPhoneRegex = /^9665\d{8}$/;
     if (!saudiPhoneRegex.test(newStudentPhone)) {
-      alert(lang === 'ar' ? 'الرجاء إدخال رقم سعودي صحيح.' : 'Please enter a valid Saudi number.');
+      alert(lang === 'ar' ? 'الرجاء إدخال رقم سعودي صحيح يبدأ بـ 9665' : 'Please enter a valid Saudi number starting with 9665');
       return;
     }
-
     if (!newStudentClassId) {
       alert(lang === 'ar' ? 'الرجاء اختيار الفصل.' : 'Please select a class.');
       return;
+    }
+
+    const { data: existing } = await supabase.from('students')
+        .select('id')
+        .eq('class_id', newStudentClassId)
+        .eq('phone_number', newStudentPhone);
+
+    if (existing && existing.length > 0) {
+        alert(lang === 'ar' ? 'هذا الطالب مسجل بالفعل برقم الهاتف هذا في هذا الفصل.' : 'A student with this phone number is already registered in this class.');
+        return;
     }
 
     const { error } = await supabase.from('students').insert([
@@ -192,7 +197,7 @@ export default function StudentsPage() {
 
     const saudiPhoneRegex = /^9665\d{8}$/;
     if (!saudiPhoneRegex.test(editStudentPhone)) {
-      alert(lang === 'ar' ? 'الرجاء إدخال رقم سعودي صحيح.' : 'Please enter a valid Saudi number.');
+      alert(lang === 'ar' ? 'الرجاء إدخال رقم سعودي صحيح يبدأ بـ 9665' : 'Please enter a valid Saudi number starting with 9665');
       return;
     }
 
@@ -231,7 +236,6 @@ export default function StudentsPage() {
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
-  // Filtering
   const filteredStudents = students.filter(student => {
     const matchesSearch = student.full_name.toLowerCase().includes(searchQuery.toLowerCase()) || student.phone_number.includes(searchQuery);
     const matchesClass = classFilter === 'all' || student.class_id === classFilter;
@@ -241,7 +245,6 @@ export default function StudentsPage() {
   return (
     <div className="space-y-6 relative">
       
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-slate-900">
@@ -257,7 +260,6 @@ export default function StudentsPage() {
         </Button>
       </div>
 
-      {/* Top Metric Cards */}
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardContent className="p-6 flex items-center gap-4">
@@ -294,7 +296,6 @@ export default function StudentsPage() {
         </Card>
       </div>
 
-      {/* Search & Filter Controls */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute start-3 top-2.5 h-4 w-4 text-slate-400" />
@@ -308,7 +309,11 @@ export default function StudentsPage() {
         <div className="w-full sm:w-64">
           <Select value={classFilter} onValueChange={(val) => val && setClassFilter(val)}>
             <SelectTrigger>
-              <SelectValue placeholder={lang === 'ar' ? 'تصفية حسب الفصل' : 'Filter by Class'} />
+              <SelectValue>
+                {classFilter === 'all' 
+                  ? (lang === 'ar' ? 'جميع الفصول' : 'All Classes')
+                  : classes.find(c => c.id === classFilter)?.class_name || (lang === 'ar' ? 'تصفية حسب الفصل' : 'Filter by Class')}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{lang === 'ar' ? 'جميع الفصول' : 'All Classes'}</SelectItem>
@@ -320,7 +325,6 @@ export default function StudentsPage() {
         </div>
       </div>
 
-      {/* Master Student Table */}
       <Card className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
@@ -348,8 +352,6 @@ export default function StudentsPage() {
               ) : (
                 filteredStudents.map((student) => (
                   <tr key={student.id} className="hover:bg-slate-50 transition-colors">
-                    
-                    {/* Name & Class Badge */}
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div className="h-8 w-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
@@ -370,8 +372,6 @@ export default function StudentsPage() {
                         </div>
                       </div>
                     </td>
-
-                    {/* Contact & WhatsApp */}
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <span className="text-slate-600 font-mono text-xs">{student.phone_number}</span>
@@ -385,8 +385,6 @@ export default function StudentsPage() {
                         </Button>
                       </div>
                     </td>
-
-                    {/* Academic Snapshot */}
                     <td className="px-4 py-3">
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2 text-xs">
@@ -403,8 +401,6 @@ export default function StudentsPage() {
                         </div>
                       </div>
                     </td>
-
-                    {/* Actions */}
                     <td className="px-4 py-3 text-center">
                       <div className="flex items-center justify-center gap-1">
                         <Button variant="ghost" size="icon" onClick={() => openEditModal(student)} className="h-8 w-8 text-slate-400 hover:text-blue-600">
@@ -423,7 +419,7 @@ export default function StudentsPage() {
         </div>
       </Card>
 
-      {/* --- ADD STUDENT MODAL (GLOBAL) --- */}
+      {/* --- ADD STUDENT MODAL --- */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 bg-slate-950/50 flex items-center justify-center p-4">
           <Card className="w-full max-w-md shadow-xl border-0">
@@ -440,7 +436,13 @@ export default function StudentsPage() {
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'الفصل' : 'Assign to Class'}</label>
                   <Select value={newStudentClassId} onValueChange={(val) => val && setNewStudentClassId(val)} required>
-                    <SelectTrigger><SelectValue placeholder={lang === 'ar' ? 'اختر الفصل...' : 'Select a class...'} /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue>
+                        {newStudentClassId 
+                          ? classes.find(c => c.id === newStudentClassId)?.class_name 
+                          : (lang === 'ar' ? 'اختر الفصل...' : 'Select a class...')}
+                      </SelectValue>
+                    </SelectTrigger>
                     <SelectContent>
                       {classes.map(cls => (
                         <SelectItem key={cls.id} value={cls.id}>{cls.class_name}</SelectItem>
@@ -495,7 +497,11 @@ export default function StudentsPage() {
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'تغيير الفصل' : 'Change Class'}</label>
                   <Select value={editStudentClassId} onValueChange={(val) => val && setEditStudentClassId(val)} required>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue>
+                        {classes.find(c => c.id === editStudentClassId)?.class_name}
+                      </SelectValue>
+                    </SelectTrigger>
                     <SelectContent>
                       {classes.map(cls => (
                         <SelectItem key={cls.id} value={cls.id}>{cls.class_name}</SelectItem>

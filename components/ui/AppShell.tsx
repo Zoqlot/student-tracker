@@ -1,12 +1,20 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Sidebar from '@/components/ui/Sidebar';
 import { Providers } from '@/components/ui/Providers';
+import { Menu } from 'lucide-react';
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isLoginPage = pathname === '/login';
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Automatically close the mobile sidebar whenever the user navigates to a new page
+  useEffect(() => {
+    setIsSidebarOpen(false);
+  }, [pathname]);
 
   return (
     <Providers>
@@ -16,12 +24,32 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           {children}
         </main>
       ) : (
-        // Dashboard layout with Sidebar for authenticated pages
-        <div className="flex w-full min-h-screen">
-          <Sidebar />
-          <main className="flex-1 p-8 overflow-y-auto">
-            {children}
+        // Dashboard layout with Responsive Sidebar
+        <div className="flex flex-col md:flex-row w-full min-h-screen bg-slate-100 overflow-hidden">
+          
+          {/* Mobile Top Navigation Bar */}
+          <div className="md:hidden bg-slate-950 text-white p-4 flex items-center justify-between shadow-md z-30 shrink-0">
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={() => setIsSidebarOpen(true)} 
+                className="p-1.5 hover:bg-slate-800 rounded-md transition-colors"
+              >
+                <Menu className="h-6 w-6" />
+              </button>
+              <span className="font-bold text-lg text-slate-200">Teacher Portal</span>
+            </div>
+          </div>
+
+          {/* Sidebar Component */}
+          <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+
+          {/* Main Content Area */}
+          <main className="flex-1 p-4 md:p-8 overflow-y-auto w-full h-[calc(100vh-64px)] md:h-screen">
+            <div className="max-w-7xl mx-auto">
+              {children}
+            </div>
           </main>
+          
         </div>
       )}
     </Providers>
