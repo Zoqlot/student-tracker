@@ -28,11 +28,33 @@ export default function Dashboard() {
   async function fetchDashboardData() {
     setLoading(true);
     
-    // 1. Fetch All Classes for quick access grid
-    const { data: classesData } = await supabase.from('classes').select('*');
+    // Get the current logged-in user
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+    
+    // 1. Fetch All Classes for quick access grid (LOCKED TO TEACHER ID)
+    const { data: classesData } = await supabase
+      .from('classes')
+      .select('*')
+      .eq('teacher_id', user.id);
+      
     if (classesData) setAllClasses(classesData);
 
-    // 2. Fetch Today's Dynamic Timetable (Joined with Classes)
+    // If the teacher has no classes, no need to fetch schedules
+    if (!classesData || classesData.length === 0) {
+      setTodaySchedule([]);
+      setLoading(false);
+      return;
+    }
+
+    // Extract the teacher's class IDs to filter the schedule query safely
+    const classIds = classesData.map(c => c.id);
+
+    // 2. Fetch Today's Dynamic Timetable (LOCKED TO TEACHER'S CLASS IDs)
     const { data: scheduleData } = await supabase
       .from('class_schedules')
       .select(`
@@ -46,6 +68,7 @@ export default function Dashboard() {
           subject
         )
       `)
+      .in('class_id', classIds)
       .eq('day_of_week', currentDay)
       .order('start_time', { ascending: true });
 
@@ -55,6 +78,7 @@ export default function Dashboard() {
 
   // Helper to format 24h SQL time to readable 12h AM/PM
   const formatTime = (timeString: string) => {
+    if (!timeString) return '';
     const [hour, minute] = timeString.split(':');
     const d = new Date();
     d.setHours(parseInt(hour, 10));
@@ -123,6 +147,11 @@ export default function Dashboard() {
       <div className="pt-4">
         <h3 className="text-lg font-semibold text-slate-800 mb-3">{t('allClasses')}</h3>
         <div className="grid gap-4 md:grid-cols-3">
+          {allClasses.length === 0 && !loading && (
+             <div className="col-span-3 text-sm text-slate-500 py-4">
+               {lang === 'ar' ? 'لم تقم بإنشاء أي فصول بعد.' : 'You have not created any classes yet.'}
+             </div>
+          )}
           {allClasses.map((cls) => (
             <Link key={cls.id} href={`/classes/${cls.id}`}>
               <Card className="hover:bg-slate-50 cursor-pointer transition-colors border-dashed">
