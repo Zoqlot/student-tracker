@@ -14,7 +14,6 @@ export default function Dashboard() {
   const [allClasses, setAllClasses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Format today's date and get weekday string (e.g., "Thursday")
   const today = new Date();
   const currentDay = today.toLocaleDateString('en-US', { weekday: 'long' });
   const displayDate = today.toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US', { 
@@ -22,52 +21,42 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
+    // --- INVITATION INTERCEPTOR ---
+    // If a new teacher clicks the invite email, Supabase sends them here with '#type=invite' in the URL.
+    // We catch it and force them to set up their password.
+    if (typeof window !== 'undefined' && window.location.hash.includes('type=invite')) {
+      window.location.href = '/update-password';
+      return;
+    }
+
     fetchDashboardData();
   }, []);
 
   async function fetchDashboardData() {
     setLoading(true);
     
-    // Get the current logged-in user
     const { data: { user } } = await supabase.auth.getUser();
-    
     if (!user) {
       setLoading(false);
       return;
     }
     
-    // 1. Fetch All Classes for quick access grid (LOCKED TO TEACHER ID)
-    const { data: classesData } = await supabase
-      .from('classes')
-      .select('*')
-      .eq('teacher_id', user.id);
-      
+    // 1. Fetch All Classes
+    const { data: classesData } = await supabase.from('classes').select('*').eq('teacher_id', user.id);
     if (classesData) setAllClasses(classesData);
 
-    // If the teacher has no classes, no need to fetch schedules
     if (!classesData || classesData.length === 0) {
       setTodaySchedule([]);
       setLoading(false);
       return;
     }
 
-    // Extract the teacher's class IDs to filter the schedule query safely
     const classIds = classesData.map(c => c.id);
 
-    // 2. Fetch Today's Dynamic Timetable (LOCKED TO TEACHER'S CLASS IDs)
+    // 2. Fetch Today's Timetable
     const { data: scheduleData } = await supabase
       .from('class_schedules')
-      .select(`
-        id,
-        start_time,
-        end_time,
-        room,
-        classes (
-          id,
-          class_name,
-          subject
-        )
-      `)
+      .select(`id, start_time, end_time, room, classes (id, class_name, subject)`)
       .in('class_id', classIds)
       .eq('day_of_week', currentDay)
       .order('start_time', { ascending: true });
@@ -76,7 +65,6 @@ export default function Dashboard() {
     setLoading(false);
   }
 
-  // Helper to format 24h SQL time to readable 12h AM/PM
   const formatTime = (timeString: string) => {
     if (!timeString) return '';
     const [hour, minute] = timeString.split(':');
