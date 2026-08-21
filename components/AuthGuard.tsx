@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
+import { isTeacherRoute, isStudentRoute, isAdminRoute, isLoginRoute, isUpdatePasswordRoute } from '@/lib/routes';
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -10,11 +11,13 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const [authorized, setAuthorized] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const isLogin = isLoginRoute(pathname);
+  const isUpdatePassword = isUpdatePasswordRoute(pathname);
+  const isPublicRoute = isLogin || isUpdatePassword;
+
   useEffect(() => {
     let isMounted = true;
 
-    // 1. SUPABASE EMAIL LINK INTERCEPTOR
-    // Catches default Supabase recovery/invite links and routes them correctly
     if (typeof window !== 'undefined') {
       const hash = window.location.hash;
       if (hash.includes('type=recovery') || hash.includes('type=invite')) {
@@ -22,8 +25,6 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
         return;
       }
     }
-
-    const isPublicRoute = pathname === '/login' || pathname.startsWith('/update-password');
 
     async function checkAuth() {
       const { data: { user } } = await supabase.auth.getUser();
@@ -36,24 +37,36 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
           setAuthorized(true);
         }
       } else {
-        // 2. STRICT DATABASE ROLE CHECK
-        const { data: teacher } = await supabase
-          .from('teachers')
-          .select('id')
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('role')
           .eq('id', user.id)
           .single();
 
-        const isTeacher = !!teacher;
-
-        // Block Teachers from Student Portal
-        if (isTeacher && pathname.startsWith('/student-portal')) {
-          router.replace('/');
+        if (error || !profile) {
+          await supabase.auth.signOut();
+          if (isMounted) {
+            setAuthorized(false);
+            router.replace('/login?error=profile_missing');
+          }
           return;
         }
 
-        // Block Students from Teacher Portal
-        if (!isTeacher && !pathname.startsWith('/student-portal') && !isPublicRoute) {
+        const role = profile.role;
+
+        // ALLOW PASSWORD RECOVERY
+        if (isUpdatePassword) {
+          if (isMounted) setAuthorized(true);
+        } 
+        // STRICT JAILING
+        else if (role === 'teacher' && !isTeacherRoute(pathname)) {
+          router.replace('/');
+          return;
+        } else if (role === 'student' && !isStudentRoute(pathname)) {
           router.replace('/student-portal');
+          return;
+        } else if (role === 'admin' && !isAdminRoute(pathname)) {
+          router.replace('/admin');
           return;
         }
 
@@ -78,7 +91,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       isMounted = false;
       subscription.unsubscribe();
     };
-  }, [pathname, router]);
+  }, [pathname, router, isPublicRoute, isUpdatePassword]);
 
   if (loading) {
     return (
@@ -88,7 +101,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!authorized && !pathname.startsWith('/update-password') && pathname !== '/login') return null;
+  if (!authorized && !isPublicRoute) return null;
 
   return <>{children}</>;
 }

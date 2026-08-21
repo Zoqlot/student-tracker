@@ -32,15 +32,17 @@ export default function StudentPortalPage() {
       return;
     }
 
-    // Lookup student record by auth_id or email
-    const { data: sData } = await supabase
+    // STRICT IDENTITY MATCH: Only use the database auth_id
+    const { data: sData, error: sErr } = await supabase
       .from('students')
       .select('*')
-      .or(`auth_id.eq.${user.id},school_student_id.eq.${user.email?.replace('student_', '').replace('@school.local', '')}`)
+      .eq('auth_id', user.id)
       .single();
 
-    if (!sData) {
-      setLoading(false);
+    // FAIL CLOSED: Deny access if they have a student profile but no actual student record
+    if (sErr || !sData) {
+      await supabase.auth.signOut();
+      window.location.href = '/login?error=student_record_missing';
       return;
     }
 

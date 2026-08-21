@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { useLanguage } from '@/context/LanguageContext';
@@ -13,7 +13,8 @@ export default function LoginPage() {
   const { lang } = useLanguage();
   const router = useRouter();
 
-  const [role, setRole] = useState<'teacher' | 'student'>('teacher');
+  // Role state is strictly for UI placeholders. NO admin tab exists here.
+  const [uiTab, setUiTab] = useState<'teacher' | 'student'>('teacher');
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -28,45 +29,49 @@ export default function LoginPage() {
 
     let emailToAuth = identifier.trim();
 
-    // If Student Tab is active and they input an ID (no @ symbol)
-    if (role === 'student' && !emailToAuth.includes('@')) {
-      const { data: studentRecord, error: lookupErr } = await supabase
-        .from('students')
-        .select('school_student_id')
-        .eq('school_student_id', emailToAuth)
-        .single();
-
-      if (lookupErr || !studentRecord) {
-        setErrorMsg(lang === 'ar' ? 'الرقم الأكاديمي غير مسجل.' : 'School ID not found.');
-        setLoading(false);
-        return;
-      }
-      emailToAuth = `student_${studentRecord.school_student_id}@school.local`;
+    // INFORMATION DISCLOSURE FIX:
+    // If the input lacks an '@', assume it's a student ID and construct the email.
+    // Do NOT query the database to verify if it exists before auth. Let Supabase handle failures.
+    if (!emailToAuth.includes('@')) {
+      emailToAuth = `student_${emailToAuth}@school.local`;
     }
 
-    // Attempt Login
     const { data, error } = await supabase.auth.signInWithPassword({
       email: emailToAuth,
       password,
     });
 
     if (error || !data.user) {
-      setErrorMsg(lang === 'ar' ? 'فشل الدخول: تحقق من صحة البيانات وكلمة المرور' : error.message);
+      setErrorMsg(lang === 'ar' ? 'فشل الدخول: تحقق من صحة البيانات وكلمة المرور' : 'Login failed: Invalid credentials.');
       setLoading(false);
       return;
     }
 
-    // STRICT ROUTING: Ignore the UI Tab. Query DB to find true role.
-    const { data: teacherRecord } = await supabase
-        .from('teachers')
-        .select('id')
-        .eq('id', data.user.id)
-        .single();
+    // AUTHENTICATED: Now check authorization strictly from profiles
+    const { data: profile, error: profileErr } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', data.user.id)
+      .single();
 
-    if (teacherRecord) {
-        window.location.href = '/';
+    if (profileErr || !profile) {
+      await supabase.auth.signOut();
+      setErrorMsg(lang === 'ar' ? 'الملف الشخصي غير موجود. يرجى مراجعة الإدارة.' : 'Profile missing. Contact admin.');
+      setLoading(false);
+      return;
+    }
+
+    // STRICT ROUTING
+    if (profile.role === 'admin') {
+      window.location.href = '/admin';
+    } else if (profile.role === 'teacher') {
+      window.location.href = '/';
+    } else if (profile.role === 'student') {
+      window.location.href = '/student-portal';
     } else {
-        window.location.href = '/student-portal';
+      await supabase.auth.signOut();
+      setErrorMsg(lang === 'ar' ? 'حسابك غير مصرح له بالدخول' : 'Unauthorized account type.');
+      setLoading(false);
     }
   };
 
@@ -83,7 +88,6 @@ export default function LoginPage() {
 
     const { error } = await supabase.auth.resetPasswordForEmail(identifier, {
       redirectTo: window.location.origin, 
-      // AuthGuard will catch the #type=recovery from the default URL and route it safely
     });
 
     if (error) {
@@ -113,20 +117,20 @@ export default function LoginPage() {
             <div className="grid grid-cols-2 gap-2 p-1 bg-slate-200 rounded-lg">
               <button
                 type="button"
-                onClick={() => { setRole('teacher'); setErrorMsg(''); }}
+                onClick={() => { setUiTab('teacher'); setErrorMsg(''); }}
                 className={`flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all ${
-                  role === 'teacher' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                  uiTab === 'teacher' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <BookOpen className="h-4 w-4" />
-                <span>{lang === 'ar' ? 'معلم' : 'Teacher'}</span>
+                <span>{lang === 'ar' ? 'معلم / إدارة' : 'Staff / Admin'}</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => { setRole('student'); setErrorMsg(''); }}
+                onClick={() => { setUiTab('student'); setErrorMsg(''); }}
                 className={`flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all ${
-                  role === 'student' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                  uiTab === 'student' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <GraduationCap className="h-4 w-4" />
@@ -180,13 +184,13 @@ export default function LoginPage() {
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-1 text-start">
                 <label className="text-xs font-semibold text-slate-700">
-                  {role === 'teacher'
+                  {uiTab === 'teacher'
                     ? (lang === 'ar' ? 'البريد الإلكتروني' : 'Email Address')
-                    : (lang === 'ar' ? 'الرقم الأكاديمي أو البريد' : 'School ID or Email')}
+                    : (lang === 'ar' ? 'الرقم الأكاديمي' : 'School ID')}
                 </label>
                 <Input
                   required
-                  placeholder={role === 'teacher' ? 'teacher@school.com' : '4410293'}
+                  placeholder={uiTab === 'teacher' ? 'admin@school.com' : '4410293'}
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                 />
@@ -197,7 +201,7 @@ export default function LoginPage() {
                   <label className="text-xs font-semibold text-slate-700">
                     {lang === 'ar' ? 'كلمة المرور' : 'Password'}
                   </label>
-                  {role === 'teacher' && (
+                  {uiTab === 'teacher' && (
                     <button 
                       type="button"
                       onClick={() => { setIsResetMode(true); setErrorMsg(''); setSuccessMsg(''); }}
