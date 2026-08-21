@@ -3,14 +3,15 @@ import { createClient } from '@supabase/supabase-js';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
-// 1. Initialize the Admin Client (DANGEROUS: Server-side only)
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
 export async function POST(request: Request) {
   try {
+    // 1. Initialize the Admin Client INSIDE the request handler
+    // This prevents Next.js from crashing during build-time evaluation
+    const supabaseAdmin = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
     const { users } = await request.json();
     
     if (!users || !Array.isArray(users)) {
@@ -28,8 +29,7 @@ export async function POST(request: Request) {
     const isBootstrap = adminCount === 0;
 
     if (!isBootstrap) {
-      // If an admin exists, verify the requester is a logged-in admin
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -55,12 +55,10 @@ export async function POST(request: Request) {
 
     for (const u of users) {
       try {
-        // Resolve email (Students use dummy emails if none provided)
         const email = u.role === 'student' && !u.email 
           ? `student_${u.school_student_id}@school.local` 
           : u.email;
 
-        // A. Create Auth User natively
         const { data: authData, error: authErr } = await supabaseAdmin.auth.admin.createUser({
           email: email,
           password: u.password,
@@ -71,7 +69,6 @@ export async function POST(request: Request) {
         if (authErr) throw authErr;
         const newUserId = authData.user.id;
 
-        // B. Create Profile
         const { error: profileErr } = await supabaseAdmin.from('profiles').insert({
           id: newUserId,
           role: u.role,
@@ -79,7 +76,6 @@ export async function POST(request: Request) {
         });
         if (profileErr) throw profileErr;
 
-        // C. Create Role-Specific Record
         if (u.role === 'admin' || u.role === 'teacher') {
           const { error: staffErr } = await supabaseAdmin.from('teachers').insert({
             id: newUserId,

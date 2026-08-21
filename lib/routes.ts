@@ -1,5 +1,3 @@
-// lib/routes.ts
-
 export const isTeacherRoute = (pathname: string) => {
   return pathname === '/' || 
          pathname.startsWith('/classes') || 
