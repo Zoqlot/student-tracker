@@ -79,6 +79,7 @@ export default function ClassDetailsPage() {
     
     const [activeAssessment, setActiveAssessment] = useState<any>(null);
     const [assessmentGrades, setAssessmentGrades] = useState<Record<string, string>>({});
+    const [importSummary, setImportSummary] = useState<{ matched: number, errors: { row: number, name: string, issue: string }[] } | null>(null);
 
     useEffect(() => {
         const local = getLocalTodayDate();
@@ -266,7 +267,7 @@ export default function ClassDetailsPage() {
         setAssessmentGrades(prev => ({ ...prev, [studentId]: val }));
     };
 
-    // --- EXCEL IMPORT HANDLER ---
+    // --- CLEAN EXCEL IMPORT HANDLER ---
     const handleExcelUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file || !activeAssessment) return;
@@ -281,41 +282,63 @@ export default function ClassDetailsPage() {
                 const data: any[] = XLSX.utils.sheet_to_json(ws);
 
                 if (!data || data.length === 0) {
-                    alert(lang === 'ar' ? 'الملف فارغ أو غير صالح.' : 'File is empty or invalid.');
+                    setImportSummary({ matched: 0, errors: [{ row: 0, name: 'الملف', issue: lang === 'ar' ? 'الملف فارغ' : 'File is empty' }] });
                     return;
                 }
 
                 const updatedGrades = { ...assessmentGrades };
                 let matchedCount = 0;
+                let errors: { row: number, name: string, issue: string }[] = [];
 
-                data.forEach((row: any) => {
+                data.forEach((row: any, index: number) => {
                     const rowKeys = Object.keys(row);
-                    const idKey = rowKeys.find(k => /id|رقم|كود|school_id|student_id|الرقم/i.test(k));
-                    const gradeKey = rowKeys.find(k => /grade|mark|score|درجة|الدرجة|النتيجة/i.test(k));
+                    const idKey = rowKeys.find(k => k.trim() === 'الرقم' || /id/i.test(k));
+                    const nameKey = rowKeys.find(k => k.trim() === 'الاسم' || /name/i.test(k));
+                    const gradeKey = rowKeys.find(k => k.trim() === 'Total Score' || /score|grade|درجة|النتيجة/i.test(k));
 
-                    const rowIdVal = idKey ? String(row[idKey]).trim() : null;
+                    let rowIdVal = idKey ? String(row[idKey]).trim() : null;
+                    const rowNameVal = nameKey ? String(row[nameKey]).trim() : 'Unknown';
                     const rowGradeVal = gradeKey ? parseFloat(row[gradeKey]) : null;
 
-                    if (rowIdVal && rowGradeVal !== null && !isNaN(rowGradeVal)) {
+                    // Treat "-2" or empty as missing ID
+                    if (rowIdVal === '-2' || rowIdVal === '-' || rowIdVal === '') {
+                        rowIdVal = null;
+                    }
+
+                    if (rowGradeVal !== null && !isNaN(rowGradeVal)) {
+                        // 1. Try to find student by School ID first, then fallback to Full Name
                         const targetStudent = students.find(s => 
-                            (s.school_student_id && s.school_student_id.trim() === rowIdVal) ||
-                            s.full_name.trim() === rowIdVal
+                            (rowIdVal && s.school_student_id && s.school_student_id.trim() === rowIdVal) ||
+                            (rowNameVal && s.full_name.trim() === rowNameVal) ||
+                            (rowNameVal && s.full_name.trim().includes(rowNameVal)) ||
+                            (rowNameVal && rowNameVal.includes(s.full_name.trim()))
                         );
 
                         if (targetStudent) {
-                            const validGrade = Math.min(Math.max(0, rowGradeVal), activeAssessment.max_grade);
-                            updatedGrades[targetStudent.id] = String(validGrade);
-                            matchedCount++;
+                            if (rowGradeVal >= 0 && rowGradeVal <= activeAssessment.max_grade) {
+                                updatedGrades[targetStudent.id] = String(rowGradeVal);
+                                matchedCount++;
+                            } else {
+                                errors.push({ 
+                                    row: index + 2, 
+                                    name: rowNameVal, 
+                                    issue: lang === 'ar' ? `درجة غير صالحة (${rowGradeVal})` : `Invalid grade (${rowGradeVal})` 
+                                });
+                            }
+                        } else {
+                            errors.push({ 
+                                row: index + 2, 
+                                name: rowNameVal, 
+                                issue: lang === 'ar' ? 'الطالب غير مسجل في هذا الفصل' : 'Student not found in this class' 
+                            });
                         }
                     }
                 });
 
                 setAssessmentGrades(updatedGrades);
-                alert(lang === 'ar' 
-                    ? `تم استيراد ${matchedCount} درجة ومطابقتها بنجاح!` 
-                    : `Successfully matched and imported ${matchedCount} student grades!`);
+                setImportSummary({ matched: matchedCount, errors });
             } catch (err: any) {
-                alert(lang === 'ar' ? `حدث خطأ أثناء قراءة الملف: ${err.message}` : `Error parsing file: ${err.message}`);
+                setImportSummary({ matched: 0, errors: [{ row: 0, name: 'System', issue: err.message }] });
             }
         };
         reader.readAsBinaryString(file);
@@ -587,6 +610,39 @@ export default function ClassDetailsPage() {
                         </div>
                     </CardHeader>
                     <CardContent className="pt-4">
+
+                        {/* Clean Error UI for Excel Import */}
+                        {importSummary && (
+                            <div className="mb-6 p-4 rounded-lg border bg-white shadow-sm">
+                                <h3 className="font-bold text-slate-800 text-sm mb-1">
+                                    {lang === 'ar' ? 'ملخص استيراد الدرجات' : 'Import Summary'}
+                                </h3>
+                                <p className="text-sm font-medium text-emerald-600 mb-2">
+                                    {lang === 'ar' ? `تمت مطابقة وإضافة درجات ${importSummary.matched} طالب بنجاح.` : `Successfully matched ${importSummary.matched} students.`}
+                                </p>
+                                
+                                {importSummary.errors.length > 0 && (
+                                    <div className="mt-3">
+                                        <p className="text-xs font-bold text-red-600 mb-2">
+                                            {lang === 'ar' ? `لم يتم العثور أو يوجد خطأ في (${importSummary.errors.length}) صفوف يمكنك تركهم أو تعديلهم يدوياً:` : `Errors found (${importSummary.errors.length}):`}
+                                        </p>
+                                        <ul className="text-xs space-y-1 text-slate-600 max-h-40 overflow-y-auto p-2 bg-slate-50 border rounded-md">
+                                            {importSummary.errors.map((e, i) => (
+                                                <li key={i} className="flex items-start gap-2 border-b border-slate-100 pb-1 last:border-0">
+                                                    <span className="font-mono bg-slate-200 px-1 rounded shrink-0">Row {e.row}</span> 
+                                                    <span className="font-semibold text-slate-800">{e.name}</span> 
+                                                    <span className="text-red-500">- {e.issue}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                                <Button size="sm" variant="outline" className="mt-4" onClick={() => setImportSummary(null)}>
+                                    {lang === 'ar' ? 'إخفاء الملخص' : 'Dismiss Summary'}
+                                </Button>
+                            </div>
+                        )}
+
                         <Table>
                             <TableHeader>
                                 <TableRow>

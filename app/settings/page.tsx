@@ -24,8 +24,8 @@ export default function SettingsPage() {
     
     // Notification & Localization State
     const defaultTemplate = lang === 'ar' 
-        ? "مرحباً يا ولي أمر {name}،\nتحديث حضور يوم {date}:\n📌 الحالة: {status}\n⭐ بونص: {bonus}" 
-        : "Hello parent of {name},\nAttendance update for {date}:\n📌 Status: {status}\n⭐ Bonus: {bonus}";
+        ? "مرحباً يا ولي أمر {name}،\nتحديث حضور يوم {date}:\n📌 الحالة: {status}\n⭐ مشاركة: {participation}" 
+        : "Hello parent of {name},\nAttendance update for {date}:\n📌 Status: {status}\n⭐ Participation: {participation}";
         
     const [whatsappTemplate, setWhatsappTemplate] = useState('');
     const [timezone, setTimezone] = useState('Asia/Riyadh');
@@ -77,7 +77,7 @@ export default function SettingsPage() {
                 
             if (dbError) throw dbError;
 
-            // Optional: Update Email in Supabase Auth (Requires user to verify both emails usually)
+            // Optional: Update Email in Supabase Auth
             const { data: { user } } = await supabase.auth.getUser();
             if (user?.email !== email) {
                 const { error: authError } = await supabase.auth.updateUser({ email: email });
@@ -100,7 +100,7 @@ export default function SettingsPage() {
         if (!confirm) return;
 
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin + '/settings',
+            redirectTo: window.location.origin,
         });
         
         if (error) alert(error.message);
@@ -111,7 +111,6 @@ export default function SettingsPage() {
         const confirm = window.confirm(lang === 'ar' ? 'هل أنت متأكد من تسجيل الخروج من جميع الأجهزة الأخرى؟' : 'Are you sure you want to sign out of all other devices?');
         if (!confirm) return;
 
-        // Supabase function to sign out of all scopes except current
         const { error } = await supabase.auth.signOut({ scope: 'others' });
         
         if (error) alert(error.message);
@@ -141,6 +140,7 @@ export default function SettingsPage() {
                 <Card className="w-full md:w-64 shrink-0 h-fit">
                     <CardContent className="p-2 flex flex-col gap-1">
                         <button 
+                            type="button"
                             onClick={() => setActiveTab('profile')}
                             className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${activeTab === 'profile' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
                         >
@@ -148,6 +148,7 @@ export default function SettingsPage() {
                             {lang === 'ar' ? 'الملف الشخصي' : 'Profile'}
                         </button>
                         <button 
+                            type="button"
                             onClick={() => setActiveTab('notifications')}
                             className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${activeTab === 'notifications' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
                         >
@@ -155,6 +156,7 @@ export default function SettingsPage() {
                             {lang === 'ar' ? 'الإشعارات (واتساب)' : 'Notifications'}
                         </button>
                         <button 
+                            type="button"
                             onClick={() => setActiveTab('localization')}
                             className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${activeTab === 'localization' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
                         >
@@ -162,6 +164,7 @@ export default function SettingsPage() {
                             {lang === 'ar' ? 'اللغة والمنطقة' : 'Localization'}
                         </button>
                         <button 
+                            type="button"
                             onClick={() => setActiveTab('security')}
                             className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${activeTab === 'security' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
                         >
@@ -220,7 +223,7 @@ export default function SettingsPage() {
                                                 <span className="bg-blue-100 px-1.5 py-0.5 rounded">{`{name}`}</span>
                                                 <span className="bg-blue-100 px-1.5 py-0.5 rounded">{`{date}`}</span>
                                                 <span className="bg-blue-100 px-1.5 py-0.5 rounded">{`{status}`}</span>
-                                                <span className="bg-blue-100 px-1.5 py-0.5 rounded">{`{bonus}`}</span>
+                                                <span className="bg-blue-100 px-1.5 py-0.5 rounded">{`{participation}`}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -243,7 +246,7 @@ export default function SettingsPage() {
                                                 type="button"
                                                 variant={lang === 'ar' ? 'default' : 'outline'} 
                                                 onClick={() => { if(lang !== 'ar') toggleLanguage(); }}
-                                                className={lang === 'ar' ? 'bg-blue-600' : ''}
+                                                className={lang === 'ar' ? 'bg-blue-600 text-white' : ''}
                                             >
                                                 العربية
                                             </Button>
@@ -251,7 +254,7 @@ export default function SettingsPage() {
                                                 type="button"
                                                 variant={lang === 'en' ? 'default' : 'outline'} 
                                                 onClick={() => { if(lang !== 'en') toggleLanguage(); }}
-                                                className={lang === 'en' ? 'bg-blue-600' : ''}
+                                                className={lang === 'en' ? 'bg-blue-600 text-white' : ''}
                                             >
                                                 English
                                             </Button>
@@ -319,7 +322,7 @@ export default function SettingsPage() {
                             </Card>
                         )}
 
-                        {/* Global Save Button (Only show for tabs that require form saving) */}
+                        {/* Global Save Button */}
                         {['profile', 'notifications', 'localization'].includes(activeTab) && (
                             <div className="mt-6 flex justify-end">
                                 <Button type="submit" disabled={saving} className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 px-8">

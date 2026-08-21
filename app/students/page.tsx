@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Users, Search, Plus, X, Trash2, Edit, AlertTriangle, Send, Activity, GraduationCap } from "lucide-react";
+import { Users, Search, Plus, X, Trash2, Edit, AlertTriangle, Activity, GraduationCap, Award, MessageCircle } from "lucide-react";
 
 interface ClassData {
   id: string;
@@ -17,12 +17,14 @@ interface ClassData {
 
 interface StudentData {
   id: string;
+  school_student_id?: string;
   full_name: string;
   phone_number: string;
   class_id: string;
   classes: { class_name: string };
   attendanceRate: number;
   avgGrade: number | null;
+  totalParticipation: number;
   isAtRisk: boolean;
 }
 
@@ -39,6 +41,7 @@ export default function StudentsPage() {
   // Add Modal State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newStudentName, setNewStudentName] = useState('');
+  const [newStudentSchoolId, setNewStudentSchoolId] = useState('');
   const [newStudentPhone, setNewStudentPhone] = useState('');
   const [newStudentClassId, setNewStudentClassId] = useState('');
 
@@ -46,6 +49,7 @@ export default function StudentsPage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingStudentId, setEditingStudentId] = useState('');
   const [editStudentName, setEditStudentName] = useState('');
+  const [editStudentSchoolId, setEditStudentSchoolId] = useState('');
   const [editStudentPhone, setEditStudentPhone] = useState('');
   const [editStudentClassId, setEditStudentClassId] = useState('');
 
@@ -81,11 +85,12 @@ export default function StudentsPage() {
       .from('students')
       .select(`
         id, 
+        school_student_id,
         full_name, 
         phone_number, 
         class_id,
         classes (class_name),
-        attendance (status),
+        attendance (status, bonus_marks),
         assessment_grades (score, assessments(max_grade))
       `)
       .in('class_id', classIds);
@@ -107,14 +112,19 @@ export default function StudentsPage() {
       
       totalAttendancePercentage += attendanceRate;
 
-      // Calculate Average Grade from assessments
+      // Calculate Participation Marks
+      const totalParticipation = student.attendance?.reduce((sum: number, record: any) => sum + (Number(record.bonus_marks) || 0), 0) || 0;
+
+      // Calculate Average Grade from assessments + participation
       let avgGrade = null;
       if (student.assessment_grades && student.assessment_grades.length > 0) {
         const totalScore = student.assessment_grades.reduce((acc: number, g: any) => {
            const max = g.assessments?.max_grade || 100;
            return acc + (g.score / max);
         }, 0);
-        avgGrade = Math.round((totalScore / student.assessment_grades.length) * 100);
+        avgGrade = Math.round((totalScore / student.assessment_grades.length) * 100) + totalParticipation;
+      } else if (totalParticipation > 0) {
+        avgGrade = totalParticipation;
       }
 
       const isAtRisk = attendanceRate < 75 || (avgGrade !== null && avgGrade < 60);
@@ -124,12 +134,14 @@ export default function StudentsPage() {
 
       return {
         id: student.id,
+        school_student_id: student.school_student_id,
         full_name: student.full_name,
         phone_number: student.phone_number,
         class_id: student.class_id,
         classes: { class_name: classInfo?.class_name || 'Unknown' },
         attendanceRate,
         avgGrade,
+        totalParticipation,
         isAtRisk
       };
     });
@@ -169,13 +181,19 @@ export default function StudentsPage() {
     }
 
     const { error } = await supabase.from('students').insert([
-      { class_id: newStudentClassId, full_name: newStudentName, phone_number: newStudentPhone }
+      { 
+        class_id: newStudentClassId, 
+        full_name: newStudentName, 
+        school_student_id: newStudentSchoolId || null,
+        phone_number: newStudentPhone 
+      }
     ]);
 
     if (error) {
       alert(lang === 'ar' ? `خطأ: ${error.message}` : `Error: ${error.message}`);
     } else {
       setNewStudentName('');
+      setNewStudentSchoolId('');
       setNewStudentPhone('');
       setNewStudentClassId('');
       setIsAddModalOpen(false);
@@ -187,6 +205,7 @@ export default function StudentsPage() {
   const openEditModal = (student: StudentData) => {
     setEditingStudentId(student.id);
     setEditStudentName(student.full_name);
+    setEditStudentSchoolId(student.school_student_id || '');
     setEditStudentPhone(student.phone_number);
     setEditStudentClassId(student.class_id);
     setIsEditModalOpen(true);
@@ -203,7 +222,12 @@ export default function StudentsPage() {
 
     const { error } = await supabase
       .from('students')
-      .update({ full_name: editStudentName, phone_number: editStudentPhone, class_id: editStudentClassId })
+      .update({ 
+        full_name: editStudentName, 
+        school_student_id: editStudentSchoolId || null,
+        phone_number: editStudentPhone, 
+        class_id: editStudentClassId 
+      })
       .eq('id', editingStudentId);
 
     if (error) {
@@ -231,13 +255,15 @@ export default function StudentsPage() {
     }
   };
 
-  const sendWhatsApp = (phone: string, name: string) => {
-    const msg = lang === 'ar' ? `مرحباً بك يا ولي أمر الطالب/ة ${name}،` : `Hello parent of ${name},`;
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+  // Direct WhatsApp link with NO preset text
+  const sendDirectWhatsApp = (phone: string) => {
+    window.open(`https://wa.me/${phone}`, '_blank');
   };
 
   const filteredStudents = students.filter(student => {
-    const matchesSearch = student.full_name.toLowerCase().includes(searchQuery.toLowerCase()) || student.phone_number.includes(searchQuery);
+    const matchesSearch = student.full_name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          student.phone_number.includes(searchQuery) ||
+                          (student.school_student_id && student.school_student_id.includes(searchQuery));
     const matchesClass = classFilter === 'all' || student.class_id === classFilter;
     return matchesSearch && matchesClass;
   });
@@ -300,7 +326,7 @@ export default function StudentsPage() {
         <div className="relative flex-1 max-w-md">
           <Search className="absolute start-3 top-2.5 h-4 w-4 text-slate-400" />
           <Input
-            placeholder={lang === 'ar' ? 'بحث بالاسم أو رقم الهاتف...' : 'Search by name or phone...'}
+            placeholder={lang === 'ar' ? 'بحث بالاسم، الرقم الأكاديمي أو الهاتف...' : 'Search by name, ID or phone...'}
             className="ps-9"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -331,21 +357,22 @@ export default function StudentsPage() {
             <thead className="bg-slate-50 border-b text-slate-600 font-medium">
               <tr>
                 <th className="px-4 py-3">{lang === 'ar' ? 'الطالب والفصل' : 'Student & Section'}</th>
+                <th className="px-4 py-3">{lang === 'ar' ? 'الرقم الأكاديمي' : 'School ID'}</th>
                 <th className="px-4 py-3">{lang === 'ar' ? 'جهة الاتصال' : 'Contact'}</th>
-                <th className="px-4 py-3">{lang === 'ar' ? 'ملخص أكاديمي' : 'Academic Snapshot'}</th>
+                <th className="px-4 py-3">{lang === 'ar' ? 'ملخص الأداء' : 'Performance Snapshot'}</th>
                 <th className="px-4 py-3 text-center">{lang === 'ar' ? 'إجراءات' : 'Actions'}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={4} className="text-center py-8 text-slate-500">
+                  <td colSpan={5} className="text-center py-8 text-slate-500">
                     {lang === 'ar' ? 'جاري التحميل...' : 'Loading...'}
                   </td>
                 </tr>
               ) : filteredStudents.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="text-center py-8 text-slate-500">
+                  <td colSpan={5} className="text-center py-8 text-slate-500">
                     {lang === 'ar' ? 'لا يوجد طلاب يطابقون بحثك.' : 'No students found.'}
                   </td>
                 </tr>
@@ -372,16 +399,20 @@ export default function StudentsPage() {
                         </div>
                       </div>
                     </td>
+                    <td className="px-4 py-3 text-slate-600 font-mono text-xs">
+                      {student.school_student_id || '-'}
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <span className="text-slate-600 font-mono text-xs">{student.phone_number}</span>
                         <Button 
                           size="icon" 
                           variant="ghost" 
-                          className="h-7 w-7 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
-                          onClick={() => sendWhatsApp(student.phone_number, student.full_name)}
+                          className="h-8 w-8 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-full"
+                          title={lang === 'ar' ? 'مراسلة عبر واتساب' : 'Message on WhatsApp'}
+                          onClick={() => sendDirectWhatsApp(student.phone_number)}
                         >
-                          <Send className="h-3.5 w-3.5" />
+                          <MessageCircle className="h-4 w-4" />
                         </Button>
                       </div>
                     </td>
@@ -394,9 +425,15 @@ export default function StudentsPage() {
                           </span>
                         </div>
                         <div className="flex items-center gap-2 text-xs">
+                          <Award className={`h-3.5 w-3.5 ${student.totalParticipation > 0 ? 'text-amber-500' : 'text-slate-400'}`} />
+                          <span className={student.totalParticipation > 0 ? 'text-amber-600 font-bold' : 'text-slate-500'}>
+                            {lang === 'ar' ? 'المشاركة:' : 'Participation:'} +{student.totalParticipation}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs">
                           <GraduationCap className={`h-3.5 w-3.5 ${(student.avgGrade !== null && student.avgGrade < 60) ? 'text-red-500' : 'text-slate-400'}`} />
                           <span className={(student.avgGrade !== null && student.avgGrade < 60) ? 'text-red-600 font-medium' : 'text-slate-600'}>
-                            {lang === 'ar' ? 'المعدل:' : 'Grade:'} {student.avgGrade !== null ? `${student.avgGrade}%` : 'N/A'}
+                            {lang === 'ar' ? 'المعدل الكلي:' : 'Total Grade:'} {student.avgGrade !== null ? `${student.avgGrade}%` : 'N/A'}
                           </span>
                         </div>
                       </div>
@@ -453,6 +490,10 @@ export default function StudentsPage() {
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'اسم الطالب' : 'Student Name'}</label>
                   <Input required placeholder={lang === 'ar' ? 'سارة محمد' : 'Sara Mohammed'} value={newStudentName} onChange={(e) => setNewStudentName(e.target.value)} />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'الرقم الأكاديمي' : 'School ID'}</label>
+                  <Input placeholder="4410293" value={newStudentSchoolId} onChange={(e) => setNewStudentSchoolId(e.target.value)} />
                 </div>
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'رقم الهاتف (واتساب)' : 'Phone Number (WhatsApp)'}</label>
@@ -512,6 +553,10 @@ export default function StudentsPage() {
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'اسم الطالب' : 'Student Name'}</label>
                   <Input required value={editStudentName} onChange={(e) => setEditStudentName(e.target.value)} />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'الرقم الأكاديمي' : 'School ID'}</label>
+                  <Input value={editStudentSchoolId} onChange={(e) => setEditStudentSchoolId(e.target.value)} />
                 </div>
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'رقم الهاتف (واتساب)' : 'Phone Number (WhatsApp)'}</label>

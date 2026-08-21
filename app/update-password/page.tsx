@@ -13,11 +13,13 @@ export default function UpdatePasswordPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg('');
+    setSuccessMsg('');
 
     if (password.length < 6) {
       setErrorMsg(lang === 'ar' ? 'يجب أن تتكون كلمة المرور من 6 أحرف على الأقل.' : 'Password must be at least 6 characters.');
@@ -30,8 +32,10 @@ export default function UpdatePasswordPage() {
     if (error) {
       setErrorMsg(error.message);
     } else {
-      alert(lang === 'ar' ? 'تم تأكيد كلمة المرور بنجاح! جاري التوجيه...' : 'Password secured successfully! Redirecting...');
-      window.location.href = '/'; 
+      setSuccessMsg(lang === 'ar' ? 'تم تأكيد كلمة المرور بنجاح! جاري التوجيه...' : 'Password secured successfully! Redirecting...');
+      setTimeout(() => {
+        window.location.href = '/'; 
+      }, 1500);
     }
     setLoading(false);
   };
@@ -54,6 +58,11 @@ export default function UpdatePasswordPage() {
           {errorMsg && (
             <div className="p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-md text-center mb-4 font-medium">
               {errorMsg}
+            </div>
+          )}
+          {successMsg && (
+            <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-600 text-xs rounded-md text-center mb-4 font-medium">
+              {successMsg}
             </div>
           )}
           <form onSubmit={handleUpdatePassword} className="space-y-4">

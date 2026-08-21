@@ -105,7 +105,8 @@ D:\STUDENT TRACKER\student-tracker\package-lock.json:
         "react-dom": "19.2.8",
         "shadcn": "^4.17.0",
         "tailwind-merge": "^3.6.0",
-        "tw-animate-css": "^1.4.0"
+        "tw-animate-css": "^1.4.0",
+        "xlsx": "^0.18.5"
       },
       "devDependencies": {
         "@tailwindcss/postcss": "^4",
@@ -3306,6 +3307,15 @@ D:\STUDENT TRACKER\student-tracker\package-lock.json:
         "acorn": "^6.0.0 || ^7.0.0 || ^8.0.0"
       }
     },
+    "node_modules/adler-32": {
+      "version": "1.3.1",
+      "resolved": "https://registry.npmjs.org/adler-32/-/adler-32-1.3.1.tgz",
+      "integrity": "sha512-ynZ4w/nUUv5rrsR8UUGoe1VC9hZj6V5hU9Qw1HlMDJGEJw5S7TfTErWTjMys6M7vr0YWcPqs3qAr4ss0nDfP+A==",
+      "license": "Apache-2.0",
+      "engines": {
+        "node": ">=0.8"
+      }
+    },
     "node_modules/ajv": {
       "version": "6.15.0",
       "resolved": "https://registry.npmjs.org/ajv/-/ajv-6.15.0.tgz",
@@ -3859,6 +3869,19 @@ D:\STUDENT TRACKER\student-tracker\package-lock.json:
       ],
       "license": "CC-BY-4.0"
     },
+    "node_modules/cfb": {
+      "version": "1.2.2",
+      "resolved": "https://registry.npmjs.org/cfb/-/cfb-1.2.2.tgz",
+      "integrity": "sha512-KfdUZsSOw19/ObEWasvBP/Ac4reZvAGauZhs6S/gqNhXhI7cKwvlH7ulj+dOEYnca4bm4SGo8C1bTAQvnTjgQA==",
+      "license": "Apache-2.0",
+      "dependencies": {
+        "adler-32": "~1.3.0",
+        "crc-32": "~1.2.0"
+      },
+      "engines": {
+        "node": ">=0.8"
+      }
+    },
     "node_modules/chalk": {
       "version": "4.1.2",
       "resolved": "https://registry.npmjs.org/chalk/-/chalk-4.1.2.tgz",
@@ -3935,6 +3958,15 @@ D:\STUDENT TRACKER\student-tracker\package-lock.json:
       "resolved": "https://registry.npmjs.org/code-block-writer/-/code-block-writer-13.0.3.tgz",
       "integrity": "sha512-Oofo0pq3IKnsFtuHqSF7TqBfr71aeyZDVJ0HpmqB7FBM2qEigL0iPONSCZSO9pE9dZTAxANe5XHG9Uy0YMv8cg==",
       "license": "MIT"
+    },
+    "node_modules/codepage": {
+      "version": "1.15.0",
+      "resolved": "https://registry.npmjs.org/codepage/-/codepage-1.15.0.tgz",
+      "integrity": "sha512-3g6NUTPd/YtuuGrhMnOMRjFc+LJw/bnMp3+0r/Wcz3IXUuCosKRJvMphm5+Q+bvTVGcJJuRvVLuYba+WojaFaA==",
+      "license": "Apache-2.0",
+      "engines": {
+        "node": ">=0.8"
+      }
     },
     "node_modules/color-convert": {
       "version": "2.0.1",
@@ -4140,6 +4172,18 @@ D:\STUDENT TRACKER\student-tracker\package-lock.json:
         "typescript": {
           "optional": true
         }
+      }
+    },
+    "node_modules/crc-32": {
+      "version": "1.2.2",
+      "resolved": "https://registry.npmjs.org/crc-32/-/crc-32-1.2.2.tgz",
+      "integrity": "sha512-ROmzCKrTnOwybPcJApAA6WBWij23HVfGVNKqqrZpuyZOHqK2CwHSvpGuyt/UNNvaIjEd8X5IFGp4Mh+Ie1IHJQ==",
+      "license": "Apache-2.0",
+      "bin": {
+        "crc32": "bin/crc32.njs"
+      },
+      "engines": {
+        "node": ">=0.8"
       }
     },
     "node_modules/cross-spawn": {
@@ -5487,6 +5531,15 @@ D:\STUDENT TRACKER\student-tracker\package-lock.json:
       "license": "MIT",
       "engines": {
         "node": ">= 0.6"
+      }
+    },
+    "node_modules/frac": {
+      "version": "1.1.2",
+      "resolved": "https://registry.npmjs.org/frac/-/frac-1.1.2.tgz",
+      "integrity": "sha512-w/XBfkibaTl3YDqASwfDUqkna4Z2p9cFSr1aHDt0WoMTECnRfBOv2WArlZILlqgWlmdIlALXGpM2AOhEk5W3IA==",
+      "license": "Apache-2.0",
+      "engines": {
+        "node": ">=0.8"
       }
     },
     "node_modules/fresh": {
@@ -8951,6 +9004,18 @@ D:\STUDENT TRACKER\student-tracker\package-lock.json:
         "node": ">=0.10.0"
       }
     },
+    "node_modules/ssf": {
+      "version": "0.11.2",
+      "resolved": "https://registry.npmjs.org/ssf/-/ssf-0.11.2.tgz",
+      "integrity": "sha512-+idbmIXoYET47hH+d7dfm2epdOMUDjqcB4648sTZ+t2JwoyBFL/insLfB/racrDmsKB3diwsDA696pZMieAC5g==",
+      "license": "Apache-2.0",
+      "dependencies": {
+        "frac": "~1.1.2"
+      },
+      "engines": {
+        "node": ">=0.8"
+      }
+    },
     "node_modules/stable-hash": {
       "version": "0.0.5",
       "resolved": "https://registry.npmjs.org/stable-hash/-/stable-hash-0.0.5.tgz",
@@ -9917,6 +9982,24 @@ D:\STUDENT TRACKER\student-tracker\package-lock.json:
         "url": "https://github.com/sponsors/ljharb"
       }
     },
+    "node_modules/wmf": {
+      "version": "1.0.2",
+      "resolved": "https://registry.npmjs.org/wmf/-/wmf-1.0.2.tgz",
+      "integrity": "sha512-/p9K7bEh0Dj6WbXg4JG0xvLQmIadrner1bi45VMJTfnbVHsc7yIajZyoSoK60/dtVBs12Fm6WkUI5/3WAVsNMw==",
+      "license": "Apache-2.0",
+      "engines": {
+        "node": ">=0.8"
+      }
+    },
+    "node_modules/word": {
+      "version": "0.3.0",
+      "resolved": "https://registry.npmjs.org/word/-/word-0.3.0.tgz",
+      "integrity": "sha512-OELeY0Q61OXpdUfTp+oweA/vtLVg5VDOXh+3he3PNzLGG/y0oylSOC1xRVj0+l4vQ3tj/bB1HVHv1ocXkQceFA==",
+      "license": "Apache-2.0",
+      "engines": {
+        "node": ">=0.8"
+      }
+    },
     "node_modules/word-wrap": {
       "version": "1.2.5",
       "resolved": "https://registry.npmjs.org/word-wrap/-/word-wrap-1.2.5.tgz",
@@ -9947,6 +10030,27 @@ D:\STUDENT TRACKER\student-tracker\package-lock.json:
       },
       "funding": {
         "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/xlsx": {
+      "version": "0.18.5",
+      "resolved": "https://registry.npmjs.org/xlsx/-/xlsx-0.18.5.tgz",
+      "integrity": "sha512-dmg3LCjBPHZnQp5/F/+nnTa+miPJxUXB6vtk42YjBBKayDNagxGEeIdWApkYPOf3Z3pm3k62Knjzp7lMeTEtFQ==",
+      "license": "Apache-2.0",
+      "dependencies": {
+        "adler-32": "~1.3.0",
+        "cfb": "~1.2.1",
+        "codepage": "~1.15.0",
+        "crc-32": "~1.2.1",
+        "ssf": "~0.11.2",
+        "wmf": "~1.0.1",
+        "word": "~0.3.0"
+      },
+      "bin": {
+        "xlsx": "bin/xlsx.njs"
+      },
+      "engines": {
+        "node": ">=0.8"
       }
     },
     "node_modules/yallist": {
@@ -10053,7 +10157,8 @@ D:\STUDENT TRACKER\student-tracker\package.json:
     "react-dom": "19.2.8",
     "shadcn": "^4.17.0",
     "tailwind-merge": "^3.6.0",
-    "tw-animate-css": "^1.4.0"
+    "tw-animate-css": "^1.4.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -10391,14 +10496,13 @@ export default async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  // 1. If NOT logged in and trying to access dashboard/protected pages -> Redirect to /login
-  if (!user && !request.nextUrl.pathname.startsWith('/login')) {
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
+  const isPublicRoute = 
+    request.nextUrl.pathname.startsWith('/login') || 
+    request.nextUrl.pathname.startsWith('/update-password');
 
-  // 2. If logged in and trying to access /login -> Redirect to main dashboard
-  if (user && request.nextUrl.pathname.startsWith('/login')) {
-    return NextResponse.redirect(new URL('/', request.url));
+  // 1. Unauthenticated users trying to access protected routes -> /login
+  if (!user && !isPublicRoute) {
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
   return response;
@@ -11297,7 +11401,7 @@ export default function ManageClassesPage() {
 D:\STUDENT TRACKER\student-tracker\app\classes\[id]\page.tsx:
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { useLanguage } from '@/context/LanguageContext';
@@ -11306,18 +11410,26 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, ArrowRight, CheckCircle, Clock, XCircle, Search, Save, UserPlus, X, AlertTriangle, Calendar, FileText, CheckSquare, Plus, MessageCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle, Clock, XCircle, Search, Save, UserPlus, X, AlertTriangle, Calendar, FileText, CheckSquare, Plus, MessageCircle, FileSpreadsheet, Upload } from 'lucide-react';
 import Link from 'next/link';
+import * as XLSX from 'xlsx';
 
 interface Student {
     id: string;
+    school_student_id?: string;
     full_name: string;
     phone_number: string;
 }
 
 const translateAssType = (type: string, lang: string) => {
     if (lang !== 'ar') return type;
-    const map: Record<string, string> = { 'Quiz': 'اختبار قصير', 'Midterm': 'نصفي', 'Final': 'نهائي' };
+    const map: Record<string, string> = { 
+        'Quiz': 'اختبار قصير', 
+        'Midterm': 'اختبار نصفي', 
+        'Final': 'اختبار نهائي',
+        'Qudurat': 'تجريبي قدرات',
+        'Tahsili': 'تجريبي تحصيلي'
+    };
     return map[type] || type;
 };
 
@@ -11339,6 +11451,7 @@ export default function ClassDetailsPage() {
     const params = useParams();
     const id = params?.id as string;
     const { lang } = useLanguage();
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [students, setStudents] = useState<Student[]>([]);
     const [classSchedules, setClassSchedules] = useState<any[]>([]);
@@ -11355,6 +11468,7 @@ export default function ClassDetailsPage() {
 
     const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
     const [newStudentName, setNewStudentName] = useState('');
+    const [newStudentSchoolId, setNewStudentSchoolId] = useState('');
     const [newStudentPhone, setNewStudentPhone] = useState('');
 
     const [assessments, setAssessments] = useState<any[]>([]);
@@ -11386,7 +11500,6 @@ export default function ClassDetailsPage() {
         checkSession(globalDate, classSchedules);
     }, [globalDate, classSchedules]);
 
-    // FETCH EXISTING ATTENDANCE
     async function fetchAttendanceForDate(dateStr: string, studentList: Student[]) {
         if (!studentList.length) return;
         const studentIds = studentList.map(s => s.id);
@@ -11401,14 +11514,12 @@ export default function ClassDetailsPage() {
         const newBonuses: Record<string, string> = {};
         const newDates: Record<string, string> = {};
 
-        // Default everyone to present locally
         studentList.forEach(s => {
             newAttendance[s.id] = 'Present';
             newBonuses[s.id] = '';
             newDates[s.id] = dateStr;
         });
 
-        // Override with data from database if they have records
         data?.forEach(record => {
             newAttendance[record.student_id] = record.status;
             newBonuses[record.student_id] = record.bonus_marks > 0 ? record.bonus_marks.toString() : '';
@@ -11448,7 +11559,7 @@ export default function ClassDetailsPage() {
 
     const handleGlobalDateChange = (date: string) => {
         setGlobalDate(date);
-        fetchAttendanceForDate(date, students); // Reload data for the new date
+        fetchAttendanceForDate(date, students);
     };
 
     const handleStudentDateChange = (studentId: string, date: string) => {
@@ -11463,7 +11574,6 @@ export default function ClassDetailsPage() {
         setBonuses(prev => ({ ...prev, [studentId]: value }));
     };
 
-    // --- ADD STUDENT ---
     const handleAddStudent = async (e: React.FormEvent) => {
         e.preventDefault();
         const saudiPhoneRegex = /^9665\d{8}$/;
@@ -11472,7 +11582,6 @@ export default function ClassDetailsPage() {
             return;
         }
 
-        // VALIDATION: Duplicate check
         const { data: existing } = await supabase.from('students')
             .select('id')
             .eq('class_id', id)
@@ -11483,14 +11592,23 @@ export default function ClassDetailsPage() {
             return;
         }
 
-        const { error } = await supabase.from('students').insert([{ class_id: id, full_name: newStudentName, phone_number: newStudentPhone }]);
+        const { error } = await supabase.from('students').insert([{ 
+            class_id: id, 
+            full_name: newStudentName, 
+            school_student_id: newStudentSchoolId || null,
+            phone_number: newStudentPhone 
+        }]);
+
         if (error) alert(lang === 'ar' ? `خطأ: ${error.message}` : `Error: ${error.message}`);
         else {
-            setNewStudentName(''); setNewStudentPhone(''); setIsAddStudentModalOpen(false); fetchStudentsAndSchedule();
+            setNewStudentName(''); 
+            setNewStudentSchoolId('');
+            setNewStudentPhone(''); 
+            setIsAddStudentModalOpen(false); 
+            fetchStudentsAndSchedule();
         }
     };
 
-    // --- SAVE ATTENDANCE & BONUS ---
     const saveAttendance = async () => {
         setSaving(true);
         try {
@@ -11516,11 +11634,11 @@ export default function ClassDetailsPage() {
     const sendWhatsAppAttendance = (student: Student) => {
         const status = attendance[student.id] || 'Present';
         const date = studentDates[student.id] || globalDate;
-        const bonus = bonuses[student.id] && bonuses[student.id] !== '0' ? `\n⭐ بونص: +${bonuses[student.id]}` : '';
+        const bonus = bonuses[student.id] && bonuses[student.id] !== '0' ? `\n⭐ درجات مشاركة: +${bonuses[student.id]}` : '';
         
         const msg = lang === 'ar' 
             ? `مرحباً بك يا ولي أمر الطالب/ة ${student.full_name}،\nتحديث الحضور لتاريخ ${date}:\n📌 الحالة: ${status}${bonus}`
-            : `Hello parent of ${student.full_name},\nAttendance update for ${date}:\n📌 Status: ${status}${bonus ? `\n⭐ Bonus: +${bonuses[student.id]}` : ''}`;
+            : `Hello parent of ${student.full_name},\nAttendance update for ${date}:\n📌 Status: ${status}${bonus ? `\n⭐ Participation: +${bonuses[student.id]}` : ''}`;
             
         window.open(`https://wa.me/${student.phone_number}?text=${encodeURIComponent(msg)}`, '_blank');
     };
@@ -11547,6 +11665,62 @@ export default function ClassDetailsPage() {
 
     const handleGradeChange = (studentId: string, val: string) => {
         setAssessmentGrades(prev => ({ ...prev, [studentId]: val }));
+    };
+
+    // --- EXCEL IMPORT HANDLER ---
+    const handleExcelUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file || !activeAssessment) return;
+
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+            try {
+                const bstr = evt.target?.result;
+                const wb = XLSX.read(bstr, { type: 'binary' });
+                const wsname = wb.SheetNames[0];
+                const ws = wb.Sheets[wsname];
+                const data: any[] = XLSX.utils.sheet_to_json(ws);
+
+                if (!data || data.length === 0) {
+                    alert(lang === 'ar' ? 'الملف فارغ أو غير صالح.' : 'File is empty or invalid.');
+                    return;
+                }
+
+                const updatedGrades = { ...assessmentGrades };
+                let matchedCount = 0;
+
+                data.forEach((row: any) => {
+                    const rowKeys = Object.keys(row);
+                    const idKey = rowKeys.find(k => /id|رقم|كود|school_id|student_id|الرقم/i.test(k));
+                    const gradeKey = rowKeys.find(k => /grade|mark|score|درجة|الدرجة|النتيجة/i.test(k));
+
+                    const rowIdVal = idKey ? String(row[idKey]).trim() : null;
+                    const rowGradeVal = gradeKey ? parseFloat(row[gradeKey]) : null;
+
+                    if (rowIdVal && rowGradeVal !== null && !isNaN(rowGradeVal)) {
+                        const targetStudent = students.find(s => 
+                            (s.school_student_id && s.school_student_id.trim() === rowIdVal) ||
+                            s.full_name.trim() === rowIdVal
+                        );
+
+                        if (targetStudent) {
+                            const validGrade = Math.min(Math.max(0, rowGradeVal), activeAssessment.max_grade);
+                            updatedGrades[targetStudent.id] = String(validGrade);
+                            matchedCount++;
+                        }
+                    }
+                });
+
+                setAssessmentGrades(updatedGrades);
+                alert(lang === 'ar' 
+                    ? `تم استيراد ${matchedCount} درجة ومطابقتها بنجاح!` 
+                    : `Successfully matched and imported ${matchedCount} student grades!`);
+            } catch (err: any) {
+                alert(lang === 'ar' ? `حدث خطأ أثناء قراءة الملف: ${err.message}` : `Error parsing file: ${err.message}`);
+            }
+        };
+        reader.readAsBinaryString(file);
+        e.target.value = '';
     };
 
     const saveGrades = async () => {
@@ -11584,7 +11758,10 @@ export default function ClassDetailsPage() {
         }
     };
 
-    const filteredStudents = students.filter(s => s.full_name.toLowerCase().includes(searchQuery.toLowerCase()));
+    const filteredStudents = students.filter(s => 
+        s.full_name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        (s.school_student_id && s.school_student_id.includes(searchQuery))
+    );
 
     return (
         <div className="space-y-6 relative">
@@ -11605,7 +11782,7 @@ export default function ClassDetailsPage() {
                 <div className="flex flex-wrap items-center gap-3">
                     <div className="relative w-full md:w-56">
                         <Search className="absolute start-3 top-2.5 h-4 w-4 text-slate-400" />
-                        <Input placeholder={lang === 'ar' ? 'بحث عن طالب...' : 'Search student...'} className="ps-9" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                        <Input placeholder={lang === 'ar' ? 'بحث بالاسم أو الرقم...' : 'Search student...'} className="ps-9" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                     </div>
                     <Button onClick={() => setIsAddStudentModalOpen(true)} variant="outline" className="flex items-center gap-2 border-slate-300">
                         <UserPlus className="h-4 w-4 text-slate-600" />
@@ -11620,7 +11797,7 @@ export default function ClassDetailsPage() {
                     className={`px-4 py-2 text-sm font-medium border-b-2 flex items-center gap-2 transition-colors ${activeTab === 'attendance' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
                 >
                     <CheckSquare className="h-4 w-4" />
-                    {lang === 'ar' ? 'الحضور والغياب' : 'Daily Attendance'}
+                    {lang === 'ar' ? 'الحضور والمشاركة' : 'Daily Attendance'}
                 </button>
                 <button 
                     onClick={() => setActiveTab('assessments')}
@@ -11642,11 +11819,12 @@ export default function ClassDetailsPage() {
                 </div>
             )}
 
+            {/* TAB CONTENT: ATTENDANCE & PARTICIPATION */}
             {activeTab === 'attendance' && (
                 <Card>
                     <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4">
                         <CardTitle className="text-lg font-bold flex items-center gap-2">
-                            {lang === 'ar' ? 'سجل الحضور والبونص' : 'Attendance & Bonus'}
+                            {lang === 'ar' ? 'سجل الحضور والمشاركة' : 'Attendance & Participation'}
                         </CardTitle>
                         <div className="flex items-center gap-3 w-full sm:w-auto">
                             <div className="flex items-center gap-2 bg-slate-50 border px-3 py-1.5 rounded-md flex-1 sm:flex-none">
@@ -11669,17 +11847,19 @@ export default function ClassDetailsPage() {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="w-[200px]">{lang === 'ar' ? 'اسم الطالب' : 'Student Name'}</TableHead>
+                                        <TableHead className="w-[180px]">{lang === 'ar' ? 'اسم الطالب' : 'Student Name'}</TableHead>
+                                        <TableHead className="w-[120px]">{lang === 'ar' ? 'الرقم الأكاديمي' : 'School ID'}</TableHead>
                                         <TableHead className="w-[160px]">{lang === 'ar' ? 'تاريخ الحضور' : 'Date Override'}</TableHead>
-                                        <TableHead className="w-[160px]">{lang === 'ar' ? 'الحالة' : 'Status'}</TableHead>
-                                        <TableHead className="w-[100px] text-center">{lang === 'ar' ? 'بونص' : 'Bonus'}</TableHead>
-                                        <TableHead className="text-center w-[100px]">{lang === 'ar' ? 'واتساب' : 'WhatsApp'}</TableHead>
+                                        <TableHead className="w-[150px]">{lang === 'ar' ? 'الحالة' : 'Status'}</TableHead>
+                                        <TableHead className="w-[110px] text-center">{lang === 'ar' ? 'المشاركة' : 'Participation'}</TableHead>
+                                        <TableHead className="text-center w-[90px]">{lang === 'ar' ? 'واتساب' : 'WhatsApp'}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {filteredStudents.map((student) => (
                                         <TableRow key={student.id}>
                                             <TableCell className="font-medium text-slate-900">{student.full_name}</TableCell>
+                                            <TableCell className="text-slate-500 font-mono text-xs">{student.school_student_id || '-'}</TableCell>
                                             <TableCell>
                                                 <Input 
                                                     type="date" 
@@ -11726,12 +11906,13 @@ export default function ClassDetailsPage() {
                 </Card>
             )}
 
+            {/* TAB CONTENT: ASSESSMENTS LIST */}
             {activeTab === 'assessments' && !activeAssessment && (
                 <div className="space-y-4">
                     <div className="flex justify-between items-center bg-white p-4 rounded-lg border shadow-sm">
                         <div>
                             <h2 className="text-lg font-bold text-slate-800">{lang === 'ar' ? 'التقييمات والاختبارات' : 'Assessments & Quizzes'}</h2>
-                            <p className="text-sm text-slate-500">{lang === 'ar' ? 'قم بإضافة تقييم جديد لتعيين الدرجات' : 'Create an assessment to assign grades'}</p>
+                            <p className="text-sm text-slate-500">{lang === 'ar' ? 'قم بإضافة تقييم جديد لتعيين الدرجات أو استيرادها' : 'Create an assessment to assign or import grades'}</p>
                         </div>
                         <Button onClick={() => setIsAddAssessmentModalOpen(true)} className="bg-slate-900 text-white hover:bg-slate-800">
                             <Plus className="h-4 w-4 mr-2" />
@@ -11767,9 +11948,10 @@ export default function ClassDetailsPage() {
                 </div>
             )}
 
+            {/* TAB CONTENT: GRADING & EXCEL IMPORT */}
             {activeTab === 'assessments' && activeAssessment && (
                 <Card>
-                    <CardHeader className="flex flex-row items-center justify-between border-b pb-4 bg-slate-50 rounded-t-xl">
+                    <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4 bg-slate-50 rounded-t-xl">
                         <div>
                             <Button variant="ghost" size="sm" onClick={() => setActiveAssessment(null)} className="mb-2 text-slate-500 hover:text-slate-900 -ml-2">
                                 {lang === 'ar' ? <ArrowRight className="h-4 w-4 mr-1" /> : <ArrowLeft className="h-4 w-4 mr-1" />}
@@ -11780,16 +11962,37 @@ export default function ClassDetailsPage() {
                                 <span className="text-xs bg-white border px-2 py-0.5 rounded text-slate-500 font-normal">Out of {activeAssessment.max_grade}</span>
                             </CardTitle>
                         </div>
-                        <Button onClick={saveGrades} disabled={saving} className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2">
-                            <Save className="h-4 w-4" />
-                            <span>{saving ? (lang === 'ar' ? 'جاري...' : 'Saving...') : (lang === 'ar' ? 'حفظ الدرجات' : 'Save Marks')}</span>
-                        </Button>
+                        <div className="flex items-center gap-2">
+                            {/* Hidden file input for Excel */}
+                            <input 
+                                type="file" 
+                                ref={fileInputRef} 
+                                onChange={handleExcelUpload} 
+                                accept=".xlsx, .xls, .csv" 
+                                className="hidden" 
+                            />
+                            <Button 
+                                type="button" 
+                                variant="outline" 
+                                onClick={() => fileInputRef.current?.click()}
+                                className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 flex items-center gap-2"
+                            >
+                                <FileSpreadsheet className="h-4 w-4" />
+                                <span>{lang === 'ar' ? 'Excel' : 'Import Excel'}</span>
+                            </Button>
+
+                            <Button onClick={saveGrades} disabled={saving} className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2">
+                                <Save className="h-4 w-4" />
+                                <span>{saving ? (lang === 'ar' ? 'جاري...' : 'Saving...') : (lang === 'ar' ? 'حفظ الدرجات' : 'Save Marks')}</span>
+                            </Button>
+                        </div>
                     </CardHeader>
                     <CardContent className="pt-4">
                         <Table>
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>{lang === 'ar' ? 'اسم الطالب' : 'Student Name'}</TableHead>
+                                    <TableHead className="w-[140px]">{lang === 'ar' ? 'الرقم الأكاديمي' : 'School ID'}</TableHead>
                                     <TableHead className="w-[150px]">{lang === 'ar' ? 'الدرجة' : 'Score'}</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -11797,6 +12000,7 @@ export default function ClassDetailsPage() {
                                 {filteredStudents.map(student => (
                                     <TableRow key={student.id}>
                                         <TableCell className="font-medium text-slate-900">{student.full_name}</TableCell>
+                                        <TableCell className="text-slate-500 font-mono text-xs">{student.school_student_id || '-'}</TableCell>
                                         <TableCell>
                                             <Input 
                                                 type="number" 
@@ -11823,6 +12027,7 @@ export default function ClassDetailsPage() {
                 </Card>
             )}
 
+            {/* --- ADD STUDENT MODAL --- */}
             {isAddStudentModalOpen && (
                 <div className="fixed inset-0 z-50 bg-slate-950/50 flex items-center justify-center p-4">
                     <Card className="w-full max-w-md shadow-xl border-0">
@@ -11835,6 +12040,10 @@ export default function ClassDetailsPage() {
                                 <div className="space-y-1">
                                     <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'اسم الطالب' : 'Student Name'}</label>
                                     <Input required value={newStudentName} onChange={(e) => setNewStudentName(e.target.value)} />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'الرقم الأكاديمي / رقم الطالب' : 'School Student ID'}</label>
+                                    <Input placeholder="e.g. 4410293" value={newStudentSchoolId} onChange={(e) => setNewStudentSchoolId(e.target.value)} />
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'رقم الهاتف (واتساب)' : 'WhatsApp Number'}</label>
@@ -11854,6 +12063,7 @@ export default function ClassDetailsPage() {
                 </div>
             )}
 
+            {/* --- ADD ASSESSMENT MODAL --- */}
             {isAddAssessmentModalOpen && (
                 <div className="fixed inset-0 z-50 bg-slate-950/50 flex items-center justify-center p-4">
                     <Card className="w-full max-w-md shadow-xl border-0">
@@ -11874,6 +12084,8 @@ export default function ClassDetailsPage() {
                                                 <SelectItem value="Quiz">{translateAssType('Quiz', lang)}</SelectItem>
                                                 <SelectItem value="Midterm">{translateAssType('Midterm', lang)}</SelectItem>
                                                 <SelectItem value="Final">{translateAssType('Final', lang)}</SelectItem>
+                                                <SelectItem value="Qudurat">{translateAssType('Qudurat', lang)}</SelectItem>
+                                                <SelectItem value="Tahsili">{translateAssType('Tahsili', lang)}</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -11884,7 +12096,7 @@ export default function ClassDetailsPage() {
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'عنوان التقييم' : 'Title'}</label>
-                                    <Input required placeholder={lang === 'ar' ? 'مثال: اختبار الوحدة الأولى' : 'e.g. Unit 1 Quiz'} value={newAssTitle} onChange={(e) => setNewAssTitle(e.target.value)} />
+                                    <Input required placeholder={lang === 'ar' ? 'مثال: تجريبي قدرات 1' : 'e.g. Qudurat Practice 1'} value={newAssTitle} onChange={(e) => setNewAssTitle(e.target.value)} />
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'تاريخ التقييم' : 'Date'}</label>
@@ -11913,13 +12125,14 @@ import { useLanguage } from '@/context/LanguageContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { LogIn, Send, ArrowLeft } from 'lucide-react';
+import { LogIn, BookOpen, GraduationCap, Send, ArrowLeft } from 'lucide-react';
 
 export default function LoginPage() {
   const { lang } = useLanguage();
   const router = useRouter();
 
-  const [email, setEmail] = useState('');
+  const [role, setRole] = useState<'teacher' | 'student'>('teacher');
+  const [identifier, setIdentifier] = useState(''); // Email for teachers, Email or School ID for students
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -11927,24 +12140,12 @@ export default function LoginPage() {
   const [isResetMode, setIsResetMode] = useState(false);
 
   useEffect(() => {
-    // --- INVITATION & RECOVERY CATCHER ---
-    // If they land here from an email link, the URL will have a hash fragment.
     if (typeof window !== 'undefined') {
       const hash = window.location.hash;
       if (hash.includes('type=invite') || hash.includes('type=recovery')) {
         router.push('/update-password');
-        return;
       }
     }
-
-    // Fallback listener for Supabase auth events
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') {
-        router.push('/update-password');
-      }
-    });
-
-    return () => subscription.unsubscribe();
   }, [router]);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -11952,25 +12153,48 @@ export default function LoginPage() {
     setLoading(true);
     setErrorMsg('');
 
-    const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+    let emailToAuth = identifier.trim();
+
+    // If student enters a School ID instead of email, look up their email
+    if (role === 'student' && !emailToAuth.includes('@')) {
+      const { data: studentRecord, error: lookupErr } = await supabase
+        .from('students')
+        .select('phone_number, school_student_id')
+        .eq('school_student_id', emailToAuth)
+        .single();
+
+      if (lookupErr || !studentRecord) {
+        setErrorMsg(lang === 'ar' ? 'الرقم الأكاديمي غير مسجل.' : 'School ID not found.');
+        setLoading(false);
+        return;
+      }
+      // Standard convention: student ID mapped to internal email format if created via admin
+      emailToAuth = `student_${studentRecord.school_student_id}@school.local`;
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: emailToAuth,
+      password,
     });
 
     if (error) {
-        setErrorMsg(lang === 'ar' ? 'فشل التسجيل: البريد أو كلمة المرور غير صحيحة' : error.message);
-        setLoading(false);
-        return;
+      setErrorMsg(lang === 'ar' ? 'فشل الدخول: تحقق من صحة البيانات وكلمة المرور' : error.message);
+      setLoading(false);
+      return;
     }
 
-    // Force a full navigation so middleware reads updated auth cookies
-    window.location.href = '/';
+    // Role-based routing
+    if (role === 'teacher') {
+      window.location.href = '/';
+    } else {
+      window.location.href = '/student-portal';
+    }
   };
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) {
-      setErrorMsg(lang === 'ar' ? 'الرجاء إدخال البريد الإلكتروني أولاً' : 'Please enter your email first.');
+    if (!identifier || !identifier.includes('@')) {
+      setErrorMsg(lang === 'ar' ? 'الرجاء إدخال بريد إلكتروني صحيح' : 'Please enter a valid email address.');
       return;
     }
     
@@ -11978,7 +12202,7 @@ export default function LoginPage() {
     setErrorMsg('');
     setSuccessMsg('');
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    const { error } = await supabase.auth.resetPasswordForEmail(identifier, {
       redirectTo: `${window.location.origin}/update-password`,
     });
 
@@ -11995,16 +12219,42 @@ export default function LoginPage() {
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-slate-900">
-            {lang === 'ar' ? 'بوابة المعلمين' : 'Teacher Portal'}
+            {lang === 'ar' ? 'بوابة النظام التعليمي' : 'Portal Login'}
           </CardTitle>
           <CardDescription>
             {isResetMode 
-              ? (lang === 'ar' ? 'أدخل بريدك الإلكتروني لاستعادة كلمة المرور' : 'Enter your email to receive a secure reset link')
-              : (lang === 'ar' ? 'سجل دخولك لإدارة فصولك' : 'Sign in to manage your classes and students')}
+              ? (lang === 'ar' ? 'استعادة كلمة المرور' : 'Reset your password')
+              : (lang === 'ar' ? 'اختر نوع الحساب وسجل دخولك' : 'Choose your account type to proceed')}
           </CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-6">
+          {!isResetMode && (
+            <div className="grid grid-cols-2 gap-2 p-1 bg-slate-200 rounded-lg">
+              <button
+                type="button"
+                onClick={() => { setRole('teacher'); setErrorMsg(''); }}
+                className={`flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all ${
+                  role === 'teacher' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <BookOpen className="h-4 w-4" />
+                <span>{lang === 'ar' ? 'معلم' : 'Teacher'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => { setRole('student'); setErrorMsg(''); }}
+                className={`flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all ${
+                  role === 'student' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <GraduationCap className="h-4 w-4" />
+                <span>{lang === 'ar' ? 'طالب' : 'Student'}</span>
+              </button>
+            </div>
+          )}
+
           {errorMsg && (
             <div className="p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-md text-center font-medium">
               {errorMsg}
@@ -12025,30 +12275,22 @@ export default function LoginPage() {
                 <Input
                   type="email"
                   required
-                  placeholder="teacher@school.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="user@school.com"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
                 />
               </div>
 
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 mt-2"
-              >
+              <Button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2">
                 <Send className="h-4 w-4" />
-                <span>
-                  {loading
-                    ? (lang === 'ar' ? 'جاري الإرسال...' : 'Sending Link...')
-                    : (lang === 'ar' ? 'إرسال رابط الاستعادة' : 'Send Reset Link')}
-                </span>
+                <span>{loading ? (lang === 'ar' ? 'جاري الإرسال...' : 'Sending...') : (lang === 'ar' ? 'إرسال رابط الاستعادة' : 'Send Reset Link')}</span>
               </Button>
 
               <Button
                 type="button"
                 variant="ghost"
                 onClick={() => { setIsResetMode(false); setErrorMsg(''); setSuccessMsg(''); }}
-                className="w-full text-slate-500 hover:text-slate-700 flex items-center justify-center gap-2 mt-2"
+                className="w-full text-slate-500 hover:text-slate-700 flex items-center justify-center gap-2"
               >
                 <ArrowLeft className="h-4 w-4" />
                 <span>{lang === 'ar' ? 'العودة لتسجيل الدخول' : 'Back to Login'}</span>
@@ -12058,14 +12300,15 @@ export default function LoginPage() {
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-1 text-start">
                 <label className="text-xs font-semibold text-slate-700">
-                  {lang === 'ar' ? 'البريد الإلكتروني' : 'Email Address'}
+                  {role === 'teacher'
+                    ? (lang === 'ar' ? 'البريد الإلكتروني' : 'Email Address')
+                    : (lang === 'ar' ? 'الرقم الأكاديمي أو البريد' : 'School ID or Email')}
                 </label>
                 <Input
-                  type="email"
                   required
-                  placeholder="teacher@school.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={role === 'teacher' ? 'teacher@school.com' : '4410293'}
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
                 />
               </div>
 
@@ -12074,13 +12317,15 @@ export default function LoginPage() {
                   <label className="text-xs font-semibold text-slate-700">
                     {lang === 'ar' ? 'كلمة المرور' : 'Password'}
                   </label>
-                  <button 
-                    type="button"
-                    onClick={() => { setIsResetMode(true); setErrorMsg(''); setSuccessMsg(''); }}
-                    className="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
-                  >
-                    {lang === 'ar' ? 'نسيت كلمة المرور؟' : 'Forgot password?'}
-                  </button>
+                  {role === 'teacher' && (
+                    <button 
+                      type="button"
+                      onClick={() => { setIsResetMode(true); setErrorMsg(''); setSuccessMsg(''); }}
+                      className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                      {lang === 'ar' ? 'نسيت كلمة المرور؟' : 'Forgot password?'}
+                    </button>
+                  )}
                 </div>
                 <Input
                   type="password"
@@ -12091,17 +12336,9 @@ export default function LoginPage() {
                 />
               </div>
 
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 mt-2"
-              >
+              <Button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 mt-2">
                 <LogIn className="h-4 w-4" />
-                <span>
-                  {loading
-                    ? (lang === 'ar' ? 'جاري الدخول...' : 'Logging in...')
-                    : (lang === 'ar' ? 'تسجيل الدخول' : 'Sign In')}
-                </span>
+                <span>{loading ? (lang === 'ar' ? 'جاري الدخول...' : 'Logging in...') : (lang === 'ar' ? 'تسجيل الدخول' : 'Sign In')}</span>
               </Button>
             </form>
           )}
@@ -12447,6 +12684,227 @@ export default function SettingsPage() {
             </div>
         </div>
     );
+}
+
+D:\STUDENT TRACKER\student-tracker\app\student-portal\page.tsx:
+'use client';
+
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabaseClient';
+import { useLanguage } from '@/context/LanguageContext';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { GraduationCap, Activity, Award, LogOut, BookOpen, CheckCircle, Clock, XCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+
+export default function StudentPortalPage() {
+  const { lang, toggleLanguage } = useLanguage();
+  const router = useRouter();
+
+  const [student, setStudent] = useState<any>(null);
+  const [enrollments, setEnrollments] = useState<any[]>([]);
+  const [attendanceRecords, setAttendanceRecords] = useState<any[]>([]);
+  const [grades, setGrades] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchStudentData();
+  }, []);
+
+  async function fetchStudentData() {
+    setLoading(true);
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+
+    // Lookup student record by auth_id or email
+    const { data: sData } = await supabase
+      .from('students')
+      .select('*')
+      .or(`auth_id.eq.${user.id},school_student_id.eq.${user.email?.replace('student_', '').replace('@school.local', '')}`)
+      .single();
+
+    if (!sData) {
+      setLoading(false);
+      return;
+    }
+
+    setStudent(sData);
+
+    // Fetch Enrolled Classes
+    const { data: enrolledClasses } = await supabase
+      .from('class_enrollments')
+      .select('class_id, classes(id, class_name, subject, teachers(full_name))')
+      .eq('student_id', sData.id);
+
+    setEnrollments(enrolledClasses || []);
+
+    // Fetch Attendance
+    const { data: attData } = await supabase
+      .from('attendance')
+      .select('*')
+      .eq('student_id', sData.id)
+      .order('date', { ascending: false });
+
+    setAttendanceRecords(attData || []);
+
+    // Fetch Assessment Grades
+    const { data: gradeData } = await supabase
+      .from('assessment_grades')
+      .select('score, assessments(title, type, max_grade, assessment_date, classes(subject))')
+      .eq('student_id', sData.id)
+      .order('created_at', { ascending: false });
+
+    setGrades(gradeData || []);
+    setLoading(false);
+  }
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/login';
+  };
+
+  const totalDays = attendanceRecords.length;
+  const presentDays = attendanceRecords.filter(a => a.status !== 'Absent').length;
+  const attendanceRate = totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 100;
+  const totalParticipation = attendanceRecords.reduce((sum, r) => sum + (Number(r.bonus_marks) || 0), 0);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-500">
+        {lang === 'ar' ? 'جاري تحميل بوابة الطالب...' : 'Loading Student Portal...'}
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50 p-4 md:p-8">
+      <div className="max-w-6xl mx-auto space-y-6">
+        
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-xl border shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="h-12 w-12 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xl">
+              {student?.full_name?.charAt(0) || 'S'}
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-slate-900">{student?.full_name}</h1>
+              <p className="text-sm text-slate-500 font-mono">
+                {lang === 'ar' ? 'الرقم الأكاديمي:' : 'School ID:'} {student?.school_student_id || '-'}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={toggleLanguage}>
+              {lang === 'en' ? 'العربية' : 'English'}
+            </Button>
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-red-600 hover:bg-red-50">
+              <LogOut className="h-4 w-4 mr-1" />
+              {lang === 'ar' ? 'خروج' : 'Sign Out'}
+            </Button>
+          </div>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid gap-4 md:grid-cols-3">
+          <Card>
+            <CardContent className="p-6 flex items-center gap-4">
+              <div className="p-3 bg-blue-50 text-blue-600 rounded-lg">
+                <BookOpen className="h-6 w-6" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-500">{lang === 'ar' ? 'المقررات المسجلة' : 'Enrolled Classes'}</p>
+                <h3 className="text-2xl font-bold text-slate-900">{enrollments.length}</h3>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-6 flex items-center gap-4">
+              <div className="p-3 bg-emerald-50 text-emerald-600 rounded-lg">
+                <Activity className="h-6 w-6" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-500">{lang === 'ar' ? 'نسبة الحضور' : 'Attendance Rate'}</p>
+                <h3 className="text-2xl font-bold text-slate-900">{attendanceRate}%</h3>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-6 flex items-center gap-4">
+              <div className="p-3 bg-amber-50 text-amber-600 rounded-lg">
+                <Award className="h-6 w-6" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-500">{lang === 'ar' ? 'درجات المشاركة' : 'Participation Marks'}</p>
+                <h3 className="text-2xl font-bold text-amber-600">+{totalParticipation}</h3>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Enrolled Courses */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg font-bold">{lang === 'ar' ? 'المقررات الدراسية' : 'Enrolled Classes'}</CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-3 md:grid-cols-2">
+            {enrollments.map((e, idx) => (
+              <div key={idx} className="p-4 rounded-lg border bg-slate-50 flex items-center justify-between">
+                <div>
+                  <h4 className="font-bold text-slate-900">{e.classes?.class_name}</h4>
+                  <p className="text-xs text-slate-500">{e.classes?.subject} • {e.classes?.teachers?.full_name}</p>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Assessment Grades */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg font-bold">{lang === 'ar' ? 'سجل الدرجات والتقييمات' : 'Grades & Assessments'}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{lang === 'ar' ? 'التقييم' : 'Assessment'}</TableHead>
+                  <TableHead>{lang === 'ar' ? 'المادة' : 'Subject'}</TableHead>
+                  <TableHead>{lang === 'ar' ? 'التاريخ' : 'Date'}</TableHead>
+                  <TableHead className="text-center">{lang === 'ar' ? 'الدرجة' : 'Score'}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {grades.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center py-6 text-slate-400">
+                      {lang === 'ar' ? 'لا توجد درجات مسجلة بعد' : 'No grades recorded yet'}
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  grades.map((g, idx) => (
+                    <TableRow key={idx}>
+                      <TableCell className="font-medium">{g.assessments?.title}</TableCell>
+                      <TableCell className="text-slate-600">{g.assessments?.classes?.subject}</TableCell>
+                      <TableCell className="text-slate-400 font-mono text-xs">{g.assessments?.assessment_date}</TableCell>
+                      <TableCell className="text-center font-bold text-blue-600">
+                        {g.score} / {g.assessments?.max_grade}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+      </div>
+    </div>
+  );
 }
 
 D:\STUDENT TRACKER\student-tracker\app\students\page.tsx:
@@ -13085,6 +13543,63 @@ export default function UpdatePasswordPage() {
   );
 }
 
+D:\STUDENT TRACKER\student-tracker\components\AuthGuard.tsx:
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { supabase } from '@/lib/supabaseClient';
+
+export default function AuthGuard({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [authorized, setAuthorized] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const isPublicRoute = 
+    pathname === '/login' || 
+    pathname.startsWith('/update-password');
+
+  useEffect(() => {
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user && !isPublicRoute) {
+        setAuthorized(false);
+        router.replace('/login');
+      } else {
+        setAuthorized(true);
+      }
+      setLoading(false);
+    }
+
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session && !isPublicRoute) {
+        setAuthorized(false);
+        router.replace('/login');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [pathname, router, isPublicRoute]);
+
+  if (loading && !isPublicRoute) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-100 text-slate-500 font-medium">
+        جاري التحقق من الصلاحيات...
+      </div>
+    );
+  }
+
+  if (!authorized && !isPublicRoute) {
+    return null;
+  }
+
+  return <>{children}</>;
+}
+
 D:\STUDENT TRACKER\student-tracker\components\ui\AppShell.tsx:
 'use client';
 
@@ -13092,54 +13607,55 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Sidebar from '@/components/ui/Sidebar';
 import { Providers } from '@/components/ui/Providers';
+import AuthGuard from '@/components/AuthGuard';
 import { Menu } from 'lucide-react';
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isLoginPage = pathname === '/login';
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Automatically close the mobile sidebar whenever the user navigates to a new page
+  const isStandalonePage = 
+    pathname === '/login' || 
+    pathname.startsWith('/student-portal') || 
+    pathname.startsWith('/update-password');
+
   useEffect(() => {
     setIsSidebarOpen(false);
   }, [pathname]);
 
   return (
     <Providers>
-      {isLoginPage ? (
-        // Clean layout for Login page (No Sidebar)
-        <main className="min-h-screen w-full bg-slate-100">
-          {children}
-        </main>
-      ) : (
-        // Dashboard layout with Responsive Sidebar
-        <div className="flex flex-col md:flex-row w-full min-h-screen bg-slate-100 overflow-hidden">
-          
-          {/* Mobile Top Navigation Bar */}
-          <div className="md:hidden bg-slate-950 text-white p-4 flex items-center justify-between shadow-md z-30 shrink-0">
-            <div className="flex items-center gap-3">
-              <button 
-                onClick={() => setIsSidebarOpen(true)} 
-                className="p-1.5 hover:bg-slate-800 rounded-md transition-colors"
-              >
-                <Menu className="h-6 w-6" />
-              </button>
-              <span className="font-bold text-lg text-slate-200">Teacher Portal</span>
-            </div>
-          </div>
-
-          {/* Sidebar Component */}
-          <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
-
-          {/* Main Content Area */}
-          <main className="flex-1 p-4 md:p-8 overflow-y-auto w-full h-[calc(100vh-64px)] md:h-screen">
-            <div className="max-w-7xl mx-auto">
-              {children}
-            </div>
+      <AuthGuard>
+        {isStandalonePage ? (
+          <main className="min-h-screen w-full bg-slate-50">
+            {children}
           </main>
-          
-        </div>
-      )}
+        ) : (
+          <div className="flex flex-col md:flex-row w-full min-h-screen bg-slate-100 overflow-hidden">
+            
+            <div className="md:hidden bg-slate-950 text-white p-4 flex items-center justify-between shadow-md z-30 shrink-0">
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={() => setIsSidebarOpen(true)} 
+                  className="p-1.5 hover:bg-slate-800 rounded-md transition-colors"
+                >
+                  <Menu className="h-6 w-6" />
+                </button>
+                <span className="font-bold text-lg text-slate-200">Teacher Portal</span>
+              </div>
+            </div>
+
+            <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+
+            <main className="flex-1 p-4 md:p-8 overflow-y-auto w-full h-[calc(100vh-64px)] md:h-screen">
+              <div className="max-w-7xl mx-auto">
+                {children}
+              </div>
+            </main>
+            
+          </div>
+        )}
+      </AuthGuard>
     </Providers>
   );
 }

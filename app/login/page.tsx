@@ -14,21 +14,12 @@ export default function LoginPage() {
   const router = useRouter();
 
   const [role, setRole] = useState<'teacher' | 'student'>('teacher');
-  const [identifier, setIdentifier] = useState(''); // Email for teachers, Email or School ID for students
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [isResetMode, setIsResetMode] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const hash = window.location.hash;
-      if (hash.includes('type=invite') || hash.includes('type=recovery')) {
-        router.push('/update-password');
-      }
-    }
-  }, [router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,11 +28,11 @@ export default function LoginPage() {
 
     let emailToAuth = identifier.trim();
 
-    // If student enters a School ID instead of email, look up their email
+    // If Student Tab is active and they input an ID (no @ symbol)
     if (role === 'student' && !emailToAuth.includes('@')) {
       const { data: studentRecord, error: lookupErr } = await supabase
         .from('students')
-        .select('phone_number, school_student_id')
+        .select('school_student_id')
         .eq('school_student_id', emailToAuth)
         .single();
 
@@ -50,26 +41,32 @@ export default function LoginPage() {
         setLoading(false);
         return;
       }
-      // Standard convention: student ID mapped to internal email format if created via admin
       emailToAuth = `student_${studentRecord.school_student_id}@school.local`;
     }
 
+    // Attempt Login
     const { data, error } = await supabase.auth.signInWithPassword({
       email: emailToAuth,
       password,
     });
 
-    if (error) {
+    if (error || !data.user) {
       setErrorMsg(lang === 'ar' ? 'فشل الدخول: تحقق من صحة البيانات وكلمة المرور' : error.message);
       setLoading(false);
       return;
     }
 
-    // Role-based routing
-    if (role === 'teacher') {
-      window.location.href = '/';
+    // STRICT ROUTING: Ignore the UI Tab. Query DB to find true role.
+    const { data: teacherRecord } = await supabase
+        .from('teachers')
+        .select('id')
+        .eq('id', data.user.id)
+        .single();
+
+    if (teacherRecord) {
+        window.location.href = '/';
     } else {
-      window.location.href = '/student-portal';
+        window.location.href = '/student-portal';
     }
   };
 
@@ -85,7 +82,8 @@ export default function LoginPage() {
     setSuccessMsg('');
 
     const { error } = await supabase.auth.resetPasswordForEmail(identifier, {
-      redirectTo: `${window.location.origin}/update-password`,
+      redirectTo: window.location.origin, 
+      // AuthGuard will catch the #type=recovery from the default URL and route it safely
     });
 
     if (error) {
