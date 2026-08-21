@@ -8,23 +8,27 @@ import { Menu } from 'lucide-react';
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isLoginPage = pathname === '/login';
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Automatically close the mobile sidebar whenever the user navigates to a new page
+  // Hide the teacher sidebar on login, student portal, and password recovery pages
+  const isStandalonePage = 
+    pathname === '/login' || 
+    pathname.startsWith('/student-portal') || 
+    pathname.startsWith('/update-password');
+
   useEffect(() => {
     setIsSidebarOpen(false);
   }, [pathname]);
 
   return (
     <Providers>
-      {isLoginPage ? (
-        // Clean layout for Login page (No Sidebar)
-        <main className="min-h-screen w-full bg-slate-100">
+      {isStandalonePage ? (
+        // Full width standalone layout (No Teacher Sidebar)
+        <main className="min-h-screen w-full bg-slate-50">
           {children}
         </main>
       ) : (
-        // Dashboard layout with Responsive Sidebar
+        // Teacher Dashboard layout with Sidebar
         <div className="flex flex-col md:flex-row w-full min-h-screen bg-slate-100 overflow-hidden">
           
           {/* Mobile Top Navigation Bar */}
@@ -40,7 +44,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          {/* Sidebar Component */}
+          {/* Teacher Sidebar */}
           <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 
           {/* Main Content Area */}

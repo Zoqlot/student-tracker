@@ -1,3 +1,89 @@
+﻿D:\STUDENT TRACKER\student-tracker\AGENTS.md:
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
+
+
+D:\STUDENT TRACKER\student-tracker\CLAUDE.md:
+@AGENTS.md
+
+
+D:\STUDENT TRACKER\student-tracker\components.json:
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "base-nova",
+  "rsc": true,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "app/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "rtl": false,
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  },
+  "menuColor": "default",
+  "menuAccent": "subtle",
+  "registries": {}
+}
+
+
+D:\STUDENT TRACKER\student-tracker\eslint.config.mjs:
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
+]);
+
+export default eslintConfig;
+
+
+D:\STUDENT TRACKER\student-tracker\next-env.d.ts:
+/// <reference types="next" />
+/// <reference types="next/image-types/global" />
+import "./.next/dev/types/routes.d.ts";
+import "./.next/dev/types/root-params.d.ts";
+
+// NOTE: This file should not be edited
+// see https://nextjs.org/docs/app/api-reference/config/typescript for more information.
+
+
+D:\STUDENT TRACKER\student-tracker\next.config.ts:
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
+};
+
+export default nextConfig;
+
+
+D:\STUDENT TRACKER\student-tracker\package-lock.json:
 {
   "name": "student-tracker",
   "version": "0.1.0",
@@ -19,8 +105,7 @@
         "react-dom": "19.2.8",
         "shadcn": "^4.17.0",
         "tailwind-merge": "^3.6.0",
-        "tw-animate-css": "^1.4.0",
-        "xlsx": "^0.18.5"
+        "tw-animate-css": "^1.4.0"
       },
       "devDependencies": {
         "@tailwindcss/postcss": "^4",
@@ -3221,15 +3306,6 @@
         "acorn": "^6.0.0 || ^7.0.0 || ^8.0.0"
       }
     },
-    "node_modules/adler-32": {
-      "version": "1.3.1",
-      "resolved": "https://registry.npmjs.org/adler-32/-/adler-32-1.3.1.tgz",
-      "integrity": "sha512-ynZ4w/nUUv5rrsR8UUGoe1VC9hZj6V5hU9Qw1HlMDJGEJw5S7TfTErWTjMys6M7vr0YWcPqs3qAr4ss0nDfP+A==",
-      "license": "Apache-2.0",
-      "engines": {
-        "node": ">=0.8"
-      }
-    },
     "node_modules/ajv": {
       "version": "6.15.0",
       "resolved": "https://registry.npmjs.org/ajv/-/ajv-6.15.0.tgz",
@@ -3783,19 +3859,6 @@
       ],
       "license": "CC-BY-4.0"
     },
-    "node_modules/cfb": {
-      "version": "1.2.2",
-      "resolved": "https://registry.npmjs.org/cfb/-/cfb-1.2.2.tgz",
-      "integrity": "sha512-KfdUZsSOw19/ObEWasvBP/Ac4reZvAGauZhs6S/gqNhXhI7cKwvlH7ulj+dOEYnca4bm4SGo8C1bTAQvnTjgQA==",
-      "license": "Apache-2.0",
-      "dependencies": {
-        "adler-32": "~1.3.0",
-        "crc-32": "~1.2.0"
-      },
-      "engines": {
-        "node": ">=0.8"
-      }
-    },
     "node_modules/chalk": {
       "version": "4.1.2",
       "resolved": "https://registry.npmjs.org/chalk/-/chalk-4.1.2.tgz",
@@ -3872,15 +3935,6 @@
       "resolved": "https://registry.npmjs.org/code-block-writer/-/code-block-writer-13.0.3.tgz",
       "integrity": "sha512-Oofo0pq3IKnsFtuHqSF7TqBfr71aeyZDVJ0HpmqB7FBM2qEigL0iPONSCZSO9pE9dZTAxANe5XHG9Uy0YMv8cg==",
       "license": "MIT"
-    },
-    "node_modules/codepage": {
-      "version": "1.15.0",
-      "resolved": "https://registry.npmjs.org/codepage/-/codepage-1.15.0.tgz",
-      "integrity": "sha512-3g6NUTPd/YtuuGrhMnOMRjFc+LJw/bnMp3+0r/Wcz3IXUuCosKRJvMphm5+Q+bvTVGcJJuRvVLuYba+WojaFaA==",
-      "license": "Apache-2.0",
-      "engines": {
-        "node": ">=0.8"
-      }
     },
     "node_modules/color-convert": {
       "version": "2.0.1",
@@ -4086,18 +4140,6 @@
         "typescript": {
           "optional": true
         }
-      }
-    },
-    "node_modules/crc-32": {
-      "version": "1.2.2",
-      "resolved": "https://registry.npmjs.org/crc-32/-/crc-32-1.2.2.tgz",
-      "integrity": "sha512-ROmzCKrTnOwybPcJApAA6WBWij23HVfGVNKqqrZpuyZOHqK2CwHSvpGuyt/UNNvaIjEd8X5IFGp4Mh+Ie1IHJQ==",
-      "license": "Apache-2.0",
-      "bin": {
-        "crc32": "bin/crc32.njs"
-      },
-      "engines": {
-        "node": ">=0.8"
       }
     },
     "node_modules/cross-spawn": {
@@ -5445,15 +5487,6 @@
       "license": "MIT",
       "engines": {
         "node": ">= 0.6"
-      }
-    },
-    "node_modules/frac": {
-      "version": "1.1.2",
-      "resolved": "https://registry.npmjs.org/frac/-/frac-1.1.2.tgz",
-      "integrity": "sha512-w/XBfkibaTl3YDqASwfDUqkna4Z2p9cFSr1aHDt0WoMTECnRfBOv2WArlZILlqgWlmdIlALXGpM2AOhEk5W3IA==",
-      "license": "Apache-2.0",
-      "engines": {
-        "node": ">=0.8"
       }
     },
     "node_modules/fresh": {
@@ -8918,18 +8951,6 @@
         "node": ">=0.10.0"
       }
     },
-    "node_modules/ssf": {
-      "version": "0.11.2",
-      "resolved": "https://registry.npmjs.org/ssf/-/ssf-0.11.2.tgz",
-      "integrity": "sha512-+idbmIXoYET47hH+d7dfm2epdOMUDjqcB4648sTZ+t2JwoyBFL/insLfB/racrDmsKB3diwsDA696pZMieAC5g==",
-      "license": "Apache-2.0",
-      "dependencies": {
-        "frac": "~1.1.2"
-      },
-      "engines": {
-        "node": ">=0.8"
-      }
-    },
     "node_modules/stable-hash": {
       "version": "0.0.5",
       "resolved": "https://registry.npmjs.org/stable-hash/-/stable-hash-0.0.5.tgz",
@@ -9896,24 +9917,6 @@
         "url": "https://github.com/sponsors/ljharb"
       }
     },
-    "node_modules/wmf": {
-      "version": "1.0.2",
-      "resolved": "https://registry.npmjs.org/wmf/-/wmf-1.0.2.tgz",
-      "integrity": "sha512-/p9K7bEh0Dj6WbXg4JG0xvLQmIadrner1bi45VMJTfnbVHsc7yIajZyoSoK60/dtVBs12Fm6WkUI5/3WAVsNMw==",
-      "license": "Apache-2.0",
-      "engines": {
-        "node": ">=0.8"
-      }
-    },
-    "node_modules/word": {
-      "version": "0.3.0",
-      "resolved": "https://registry.npmjs.org/word/-/word-0.3.0.tgz",
-      "integrity": "sha512-OELeY0Q61OXpdUfTp+oweA/vtLVg5VDOXh+3he3PNzLGG/y0oylSOC1xRVj0+l4vQ3tj/bB1HVHv1ocXkQceFA==",
-      "license": "Apache-2.0",
-      "engines": {
-        "node": ">=0.8"
-      }
-    },
     "node_modules/word-wrap": {
       "version": "1.2.5",
       "resolved": "https://registry.npmjs.org/word-wrap/-/word-wrap-1.2.5.tgz",
@@ -9944,27 +9947,6 @@
       },
       "funding": {
         "url": "https://github.com/sponsors/sindresorhus"
-      }
-    },
-    "node_modules/xlsx": {
-      "version": "0.18.5",
-      "resolved": "https://registry.npmjs.org/xlsx/-/xlsx-0.18.5.tgz",
-      "integrity": "sha512-dmg3LCjBPHZnQp5/F/+nnTa+miPJxUXB6vtk42YjBBKayDNagxGEeIdWApkYPOf3Z3pm3k62Knjzp7lMeTEtFQ==",
-      "license": "Apache-2.0",
-      "dependencies": {
-        "adler-32": "~1.3.0",
-        "cfb": "~1.2.1",
-        "codepage": "~1.15.0",
-        "crc-32": "~1.2.1",
-        "ssf": "~0.11.2",
-        "wmf": "~1.0.1",
-        "word": "~0.3.0"
-      },
-      "bin": {
-        "xlsx": "bin/xlsx.njs"
-      },
-      "engines": {
-        "node": ">=0.8"
       }
     },
     "node_modules/yallist": {
@@ -10046,3 +10028,3839 @@
     }
   }
 }
+
+
+D:\STUDENT TRACKER\student-tracker\package.json:
+{
+  "name": "student-tracker",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.7.0",
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.112.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.31.0",
+    "next": "16.3.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "shadcn": "^4.17.0",
+    "tailwind-merge": "^3.6.0",
+    "tw-animate-css": "^1.4.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
+
+
+D:\STUDENT TRACKER\student-tracker\page.tsx:
+'use client';
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { supabase } from '@/lib/supabaseClient';
+import { useLanguage } from '@/context/LanguageContext';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { BookOpen, Users, Settings, Plus, X, Trash2 } from "lucide-react";
+
+export default function ManageClassesPage() {
+  const { lang } = useLanguage();
+  const [classes, setClasses] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  // Add Modal States
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newClassName, setNewClassName] = useState('');
+  const [newSubject, setNewSubject] = useState('');
+  const [newDay, setNewDay] = useState('Sunday');
+  const [newStartTime, setNewStartTime] = useState('08:00');
+  const [newEndTime, setNewEndTime] = useState('09:30');
+  const [newRoom, setNewRoom] = useState('');
+
+  // Edit/Settings Modal States
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingClass, setEditingClass] = useState<any>(null);
+
+  useEffect(() => {
+    fetchClasses();
+  }, []);
+
+  async function fetchClasses() {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('classes')
+      .select('*, students(count), class_schedules(*)')
+      .order('created_at', { ascending: false });
+
+    if (!error && data) {
+      setClasses(data);
+    }
+    setLoading(false);
+  }
+
+  // --- ADD CLASS ---
+  async function handleAddClass(e: React.FormEvent) {
+    e.preventDefault();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    // 1. Insert the Class
+    const { data: classData, error: classError } = await supabase.from('classes').insert([
+      { teacher_id: user.id, class_name: newClassName, subject: newSubject }
+    ]).select().single();
+
+    if (classError) {
+      alert(lang === 'ar' ? `خطأ: ${classError.message}` : `Error: ${classError.message}`);
+      return;
+    }
+
+    // 2. Insert the Schedule using the new class ID
+    if (classData) {
+      const { error: scheduleError } = await supabase.from('class_schedules').insert([
+        { 
+          class_id: classData.id, 
+          day_of_week: newDay, 
+          start_time: newStartTime, 
+          end_time: newEndTime, 
+          room: newRoom 
+        }
+      ]);
+
+      if (scheduleError) {
+        console.error("Schedule Error:", scheduleError);
+      }
+    }
+
+    // Reset and close
+    setNewClassName('');
+    setNewSubject('');
+    setNewRoom('');
+    setIsAddModalOpen(false);
+    fetchClasses();
+  }
+
+  // --- DELETE CLASS ---
+  async function handleDeleteClass(classId: string) {
+    const confirmDelete = window.confirm(
+      lang === 'ar' ? 'هل أنت متأكد من حذف هذا الفصل بالكامل؟ (سيتم حذف الطلاب والدرجات أيضاً)' : 'Are you sure you want to delete this class? (All students and grades will be lost)'
+    );
+    
+    if (!confirmDelete) return;
+
+    const { error } = await supabase.from('classes').delete().eq('id', classId);
+    if (error) {
+      alert(lang === 'ar' ? `خطأ: ${error.message}` : `Error: ${error.message}`);
+    } else {
+      setIsEditModalOpen(false);
+      fetchClasses();
+    }
+  }
+
+  const openSettings = (cls: any) => {
+    setEditingClass(cls);
+    setIsEditModalOpen(true);
+  };
+
+  return (
+    <div className="space-y-6 relative">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+            {lang === 'ar' ? 'إدارة الفصول' : 'Manage Classes'}
+          </h1>
+          <p className="text-slate-500 mt-1">
+            {lang === 'ar' ? 'قم بإضافة، تعديل، وإدارة فصولك الدراسية.' : 'View, edit, and manage your teaching sections.'}
+          </p>
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="text-center py-12 text-slate-500">
+          {lang === 'ar' ? 'جاري تحميل الفصول...' : 'Loading classes...'}
+        </div>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {classes.map((cls) => (
+            <Card key={cls.id} className="hover:border-blue-400 transition-colors">
+              <CardHeader className="pb-3 border-b border-slate-100">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-xl font-bold">{cls.class_name}</CardTitle>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 text-slate-400 hover:text-slate-900"
+                    onClick={() => openSettings(cls)}
+                  >
+                    <Settings className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="text-sm text-slate-500 flex items-center gap-2">
+                  <BookOpen className="h-3.5 w-3.5" />
+                  {cls.subject}
+                </div>
+              </CardHeader>
+              <CardContent className="pt-4 flex items-center justify-between">
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-2 text-sm font-medium text-slate-600 mb-1">
+                    <Users className="h-4 w-4 text-blue-500" />
+                    <span>{cls.students[0]?.count || 0} {lang === 'ar' ? 'طالب' : 'Students'}</span>
+                  </div>
+                  {cls.class_schedules?.[0] && (
+                    <span className="text-xs text-slate-400">
+                      {cls.class_schedules[0].day_of_week} | {cls.class_schedules[0].room}
+                    </span>
+                  )}
+                </div>
+                <Link href={`/classes/${cls.id}`}>
+                  <Button variant="outline" size="sm">
+                    {lang === 'ar' ? 'دخول للفصل' : 'Enter Class'}
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Add Class Button Trigger */}
+      <div className="pt-6">
+        <Button onClick={() => setIsAddModalOpen(true)} className="bg-slate-900 hover:bg-slate-800 text-white flex items-center gap-2">
+          <Plus className="h-4 w-4" />
+          {lang === 'ar' ? 'إضافة فصل جديد' : 'Add New Class'}
+        </Button>
+      </div>
+
+      {/* --- ADD CLASS MODAL --- */}
+      {isAddModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/50 flex items-center justify-center p-4">
+          <Card className="w-full max-w-lg shadow-xl border-0 max-h-[90vh] overflow-y-auto">
+            <CardHeader className="flex flex-row items-center justify-between border-b pb-4 sticky top-0 bg-white z-10">
+              <div>
+                <CardTitle>{lang === 'ar' ? 'فصل جديد' : 'New Class'}</CardTitle>
+                <p className="text-sm text-slate-500 mt-1">
+                  {lang === 'ar' ? 'أدخل تفاصيل الفصل والجدول.' : 'Enter class details and schedule.'}
+                </p>
+              </div>
+              <Button variant="ghost" size="icon" onClick={() => setIsAddModalOpen(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <form onSubmit={handleAddClass} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'اسم الفصل' : 'Class Name'}</label>
+                    <Input required placeholder="Grade 3A" value={newClassName} onChange={(e) => setNewClassName(e.target.value)} />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'المادة' : 'Subject'}</label>
+                    <Input required placeholder="Mathematics" value={newSubject} onChange={(e) => setNewSubject(e.target.value)} />
+                  </div>
+                </div>
+
+                <div className="border-t pt-4 mt-4">
+                  <h3 className="text-sm font-bold text-slate-800 mb-3">{lang === 'ar' ? 'الجدول الأسبوعي' : 'Weekly Schedule'}</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'اليوم' : 'Day'}</label>
+                      <Select value={newDay} onValueChange={(val) => val && setNewDay(val)}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].map(day => (
+                            <SelectItem key={day} value={day}>{day}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'الغرفة' : 'Room'}</label>
+                      <Input placeholder="Room 101" value={newRoom} onChange={(e) => setNewRoom(e.target.value)} />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'وقت البدء' : 'Start Time'}</label>
+                      <Input type="time" required value={newStartTime} onChange={(e) => setNewStartTime(e.target.value)} />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'وقت الانتهاء' : 'End Time'}</label>
+                      <Input type="time" required value={newEndTime} onChange={(e) => setNewEndTime(e.target.value)} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4 flex gap-2 justify-end">
+                  <Button type="button" variant="outline" onClick={() => setIsAddModalOpen(false)}>
+                    {lang === 'ar' ? 'إلغاء' : 'Cancel'}
+                  </Button>
+                  <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">
+                    {lang === 'ar' ? 'حفظ الفصل' : 'Save Class'}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* --- CLASS SETTINGS MODAL --- */}
+      {isEditModalOpen && editingClass && (
+        <div className="fixed inset-0 z-50 bg-slate-950/50 flex items-center justify-center p-4">
+          <Card className="w-full max-w-md shadow-xl border-0">
+            <CardHeader className="flex flex-row items-center justify-between border-b pb-4">
+              <div>
+                <CardTitle>{lang === 'ar' ? 'إعدادات الفصل' : 'Class Settings'}</CardTitle>
+                <p className="text-sm text-slate-500 mt-1">{editingClass.class_name}</p>
+              </div>
+              <Button variant="ghost" size="icon" onClick={() => setIsEditModalOpen(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </CardHeader>
+            <CardContent className="pt-6 flex flex-col gap-4">
+              <Button 
+                variant="destructive" 
+                className="w-full flex items-center gap-2"
+                onClick={() => handleDeleteClass(editingClass.id)}
+              >
+                <Trash2 className="h-4 w-4" />
+                {lang === 'ar' ? 'حذف الفصل نهائياً' : 'Delete Class Permanently'}
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
+}
+
+D:\STUDENT TRACKER\student-tracker\postcss.config.mjs:
+const config = {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+
+export default config;
+
+
+D:\STUDENT TRACKER\student-tracker\proxy.ts:
+import { NextResponse, type NextRequest } from 'next/server';
+import { createServerClient } from '@supabase/ssr';
+
+export default async function middleware(request: NextRequest) {
+  let response = NextResponse.next({
+    request: { headers: request.headers },
+  });
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value)
+          );
+          response = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options)
+          );
+        },
+      },
+    }
+  );
+
+  const { data: { user } } = await supabase.auth.getUser();
+
+  // 1. If NOT logged in and trying to access dashboard/protected pages -> Redirect to /login
+  if (!user && !request.nextUrl.pathname.startsWith('/login')) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+
+  // 2. If logged in and trying to access /login -> Redirect to main dashboard
+  if (user && request.nextUrl.pathname.startsWith('/login')) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
+  return response;
+}
+
+export const config = {
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
+};
+
+D:\STUDENT TRACKER\student-tracker\README.md:
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+D:\STUDENT TRACKER\student-tracker\tsconfig.json:
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}
+
+
+D:\STUDENT TRACKER\student-tracker\app\globals.css:
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+D:\STUDENT TRACKER\student-tracker\app\layout.tsx:
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import AppShell from "@/components/ui/AppShell";
+
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "Student Tracking Portal",
+  description: "Modern student tracking and management portal",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" dir="ltr">
+      <body className={`${inter.className} min-h-screen bg-slate-50`}>
+        <AppShell>{children}</AppShell>
+      </body>
+    </html>
+  );
+}
+
+D:\STUDENT TRACKER\student-tracker\app\page.tsx:
+'use client';
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { supabase } from '@/lib/supabaseClient';
+import { useLanguage } from '@/context/LanguageContext';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Clock, Calendar, ArrowRight, ArrowLeft, BookOpen } from "lucide-react";
+
+export default function Dashboard() {
+  const { lang, t } = useLanguage();
+  const [todaySchedule, setTodaySchedule] = useState<any[]>([]);
+  const [allClasses, setAllClasses] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const today = new Date();
+  const currentDay = today.toLocaleDateString('en-US', { weekday: 'long' });
+  const displayDate = today.toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US', { 
+    weekday: 'long', month: 'long', day: 'numeric' 
+  });
+
+  useEffect(() => {
+    // --- INVITATION INTERCEPTOR ---
+    // If a new teacher clicks the invite email, Supabase sends them here with '#type=invite' in the URL.
+    // We catch it and force them to set up their password.
+    if (typeof window !== 'undefined' && window.location.hash.includes('type=invite')) {
+      window.location.href = '/update-password';
+      return;
+    }
+
+    fetchDashboardData();
+  }, []);
+
+  async function fetchDashboardData() {
+    setLoading(true);
+    
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+    
+    // 1. Fetch All Classes
+    const { data: classesData } = await supabase.from('classes').select('*').eq('teacher_id', user.id);
+    if (classesData) setAllClasses(classesData);
+
+    if (!classesData || classesData.length === 0) {
+      setTodaySchedule([]);
+      setLoading(false);
+      return;
+    }
+
+    const classIds = classesData.map(c => c.id);
+
+    // 2. Fetch Today's Timetable
+    const { data: scheduleData } = await supabase
+      .from('class_schedules')
+      .select(`id, start_time, end_time, room, classes (id, class_name, subject)`)
+      .in('class_id', classIds)
+      .eq('day_of_week', currentDay)
+      .order('start_time', { ascending: true });
+
+    if (scheduleData) setTodaySchedule(scheduleData);
+    setLoading(false);
+  }
+
+  const formatTime = (timeString: string) => {
+    if (!timeString) return '';
+    const [hour, minute] = timeString.split(':');
+    const d = new Date();
+    d.setHours(parseInt(hour, 10));
+    d.setMinutes(parseInt(minute, 10));
+    return d.toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">{t('timetableTitle')}</h1>
+          <p className="text-slate-500 mt-1">{t('timetableSubtitle')}</p>
+        </div>
+        <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border shadow-sm text-sm font-medium text-slate-600 self-start md:self-auto">
+          <Calendar className="h-4 w-4 text-blue-500" />
+          <span>{displayDate}</span>
+        </div>
+      </div>
+
+      <div className="grid gap-4">
+        {loading ? (
+          <div className="py-8 text-center text-slate-500">{lang === 'ar' ? 'جاري تحميل الجدول...' : 'Loading timetable...'}</div>
+        ) : todaySchedule.length === 0 ? (
+          <Card className="bg-slate-50 border-dashed">
+            <CardContent className="py-12 text-center text-slate-500">
+              {lang === 'ar' ? 'لا توجد حصص مجدولة لهذا اليوم.' : 'No classes scheduled for today.'}
+            </CardContent>
+          </Card>
+        ) : (
+          todaySchedule.map((session) => (
+            <Card key={session.id} className="hover:border-blue-400 transition-all shadow-sm">
+              <CardContent className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-blue-50 text-blue-600 rounded-lg">
+                    <Clock className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-3">
+                      <h2 className="text-xl font-bold text-slate-900">{session.classes.class_name}</h2>
+                      <span className="text-xs px-2.5 py-0.5 rounded-full font-medium bg-slate-100 text-slate-700 border">
+                        {session.classes.subject}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 mt-1">
+                      <span>⏰ {formatTime(session.start_time)} - {formatTime(session.end_time)}</span>
+                      <span>📍 {session.room || 'N/A'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Link href={`/classes/${session.classes.id}`}>
+                    <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2">
+                      <span>{t('manageClass')}</span>
+                      {lang === 'ar' ? <ArrowLeft className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
+      </div>
+
+      <div className="pt-4">
+        <h3 className="text-lg font-semibold text-slate-800 mb-3">{t('allClasses')}</h3>
+        <div className="grid gap-4 md:grid-cols-3">
+          {allClasses.length === 0 && !loading && (
+             <div className="col-span-3 text-sm text-slate-500 py-4">
+               {lang === 'ar' ? 'لم تقم بإنشاء أي فصول بعد.' : 'You have not created any classes yet.'}
+             </div>
+          )}
+          {allClasses.map((cls) => (
+            <Link key={cls.id} href={`/classes/${cls.id}`}>
+              <Card className="hover:bg-slate-50 cursor-pointer transition-colors border-dashed">
+                <CardHeader className="p-4 flex flex-row items-center justify-between">
+                  <CardTitle className="text-md font-bold text-slate-800">{cls.class_name}</CardTitle>
+                  <BookOpen className="h-4 w-4 text-slate-400" />
+                </CardHeader>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+D:\STUDENT TRACKER\student-tracker\app\classes\page.tsx:
+'use client';
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { supabase } from '@/lib/supabaseClient';
+import { useLanguage } from '@/context/LanguageContext';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { BookOpen, Users, Settings, Plus, X, Trash2 } from "lucide-react";
+
+const translateDay = (dayEn: string, lang: string) => {
+  if (lang !== 'ar') return dayEn;
+  const daysMap: Record<string, string> = {
+    'Sunday': 'الأحد', 'Monday': 'الإثنين', 'Tuesday': 'الثلاثاء',
+    'Wednesday': 'الأربعاء', 'Thursday': 'الخميس', 'Friday': 'الجمعة', 'Saturday': 'السبت'
+  };
+  return daysMap[dayEn] || dayEn;
+};
+
+const timeToMinutes = (timeStr: string) => {
+  if (!timeStr) return 0;
+  const [hours, minutes] = timeStr.split(':').map(Number);
+  return (hours * 60) + (minutes || 0);
+};
+
+const isTimeOverlapping = (start1: string, end1: string, start2: string, end2: string) => {
+  const s1 = timeToMinutes(start1);
+  const e1 = timeToMinutes(end1);
+  const s2 = timeToMinutes(start2);
+  const e2 = timeToMinutes(end2);
+  return s1 < e2 && s2 < e1;
+};
+
+export default function ManageClassesPage() {
+  const { lang } = useLanguage();
+  const [classes, setClasses] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newClassName, setNewClassName] = useState('');
+  const [newSubject, setNewSubject] = useState('');
+  
+  const defaultSchedule = { day_of_week: 'Sunday', start_time: '08:00', end_time: '09:30', room: '' };
+  const [schedules, setSchedules] = useState<any[]>([defaultSchedule]);
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingClass, setEditingClass] = useState<any>(null);
+  const [editClassName, setEditClassName] = useState('');
+  const [editSubject, setEditSubject] = useState('');
+  const [editSchedules, setEditSchedules] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchClasses();
+  }, []);
+
+  async function fetchClasses() {
+    setLoading(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    // CRITICAL SECURITY FIX: .eq('teacher_id', user.id)
+    const { data, error } = await supabase
+      .from('classes')
+      .select('*, students(count), class_schedules(*)')
+      .eq('teacher_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (!error && data) {
+      setClasses(data);
+    }
+    setLoading(false);
+  }
+
+  const handleScheduleChange = (index: number, field: string, value: string) => {
+    const updated = [...schedules];
+    updated[index][field] = value;
+    setSchedules(updated);
+  };
+  const addScheduleBlock = () => setSchedules([...schedules, { ...defaultSchedule }]);
+  const removeScheduleBlock = (index: number) => setSchedules(schedules.filter((_, i) => i !== index));
+
+  const handleEditScheduleChange = (index: number, field: string, value: string) => {
+    const updated = [...editSchedules];
+    updated[index][field] = value;
+    setEditSchedules(updated);
+  };
+  const addEditScheduleBlock = () => setEditSchedules([...editSchedules, { ...defaultSchedule }]);
+  const removeEditScheduleBlock = (index: number) => setEditSchedules(editSchedules.filter((_, i) => i !== index));
+
+  const openSettings = (cls: any) => {
+    setEditingClass(cls);
+    setEditClassName(cls.class_name);
+    setEditSubject(cls.subject);
+    if (cls.class_schedules && cls.class_schedules.length > 0) {
+      setEditSchedules(cls.class_schedules.map((s: any) => ({
+        day_of_week: s.day_of_week,
+        start_time: s.start_time.slice(0, 5),
+        end_time: s.end_time.slice(0, 5),
+        room: s.room || ''
+      })));
+    } else {
+      setEditSchedules([{ ...defaultSchedule }]);
+    }
+    setIsEditModalOpen(true);
+  };
+
+  async function handleAddClass(e: React.FormEvent) {
+    e.preventDefault();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    // VALIDATION: Force class name to have at least one letter
+    if (!/[a-zA-Z\u0600-\u06FF]/.test(newClassName)) {
+      alert(lang === 'ar' ? 'يجب أن يحتوي اسم الفصل على حروف، وليس أرقام فقط.' : 'Class name must contain at least one letter.');
+      return;
+    }
+
+    for (let i = 0; i < schedules.length; i++) {
+      if (timeToMinutes(schedules[i].start_time) >= timeToMinutes(schedules[i].end_time)) {
+        alert(lang === 'ar' ? `وقت البدء يجب أن يكون قبل وقت الانتهاء.` : `Start time must be before end time.`);
+        return;
+      }
+    }
+
+    for (let i = 0; i < schedules.length; i++) {
+      for (let j = i + 1; j < schedules.length; j++) {
+        if (schedules[i].day_of_week === schedules[j].day_of_week) {
+          if (isTimeOverlapping(schedules[i].start_time, schedules[i].end_time, schedules[j].start_time, schedules[j].end_time)) {
+            alert(lang === 'ar' ? `يوجد تعارض داخلي في الأوقات.` : `Internal schedule conflict detected.`);
+            return;
+          }
+        }
+      }
+    }
+
+    const { data: myClasses } = await supabase.from('classes').select('id, class_name').eq('teacher_id', user.id);
+    if (myClasses && myClasses.length > 0) {
+      const myClassIds = myClasses.map(c => c.id);
+      const { data: existingSchedules } = await supabase.from('class_schedules').select('class_id, day_of_week, start_time, end_time').in('class_id', myClassIds);
+      
+      if (existingSchedules) {
+        for (const newSched of schedules) {
+          const conflict = existingSchedules.find((existing: any) => {
+            if (existing.day_of_week !== newSched.day_of_week) return false;
+            return isTimeOverlapping(newSched.start_time, newSched.end_time, existing.start_time, existing.end_time);
+          });
+          if (conflict) {
+            const conflictingClass = myClasses.find(c => c.id === conflict.class_id)?.class_name;
+            alert(lang === 'ar' ? `تعارض: لديك فصل آخر (${conflictingClass}) في نفس الوقت.` : `Conflict: You have (${conflictingClass}) scheduled at this time.`);
+            return;
+          }
+        }
+      }
+    }
+
+    const { data: classData, error: classError } = await supabase.from('classes').insert([
+      { teacher_id: user.id, class_name: newClassName, subject: newSubject }
+    ]).select().single();
+
+    if (classError) return alert(`Error: ${classError.message}`);
+
+    if (classData && schedules.length > 0) {
+      const scheduleRecords = schedules.map(s => ({
+        class_id: classData.id, day_of_week: s.day_of_week, start_time: s.start_time, end_time: s.end_time, room: s.room
+      }));
+      await supabase.from('class_schedules').insert(scheduleRecords);
+    }
+
+    setNewClassName('');
+    setNewSubject('');
+    setSchedules([defaultSchedule]);
+    setIsAddModalOpen(false);
+    fetchClasses();
+  }
+
+  async function handleEditClass(e: React.FormEvent) {
+    e.preventDefault();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user || !editingClass) return;
+
+    // VALIDATION: Force class name to have at least one letter
+    if (!/[a-zA-Z\u0600-\u06FF]/.test(editClassName)) {
+      alert(lang === 'ar' ? 'يجب أن يحتوي اسم الفصل على حروف، وليس أرقام فقط.' : 'Class name must contain at least one letter.');
+      return;
+    }
+
+    for (let i = 0; i < editSchedules.length; i++) {
+      if (timeToMinutes(editSchedules[i].start_time) >= timeToMinutes(editSchedules[i].end_time)) {
+        alert(lang === 'ar' ? `وقت البدء يجب أن يكون قبل وقت الانتهاء.` : `Start time must be before end time.`);
+        return;
+      }
+    }
+
+    for (let i = 0; i < editSchedules.length; i++) {
+      for (let j = i + 1; j < editSchedules.length; j++) {
+        if (editSchedules[i].day_of_week === editSchedules[j].day_of_week) {
+          if (isTimeOverlapping(editSchedules[i].start_time, editSchedules[i].end_time, editSchedules[j].start_time, editSchedules[j].end_time)) {
+            alert(lang === 'ar' ? `يوجد تعارض داخلي في الأوقات.` : `Internal schedule conflict detected.`);
+            return;
+          }
+        }
+      }
+    }
+
+    const { data: myClasses } = await supabase.from('classes').select('id, class_name').eq('teacher_id', user.id);
+    if (myClasses && myClasses.length > 0) {
+      const myClassIds = myClasses.map(c => c.id);
+      const { data: existingSchedules } = await supabase.from('class_schedules').select('class_id, day_of_week, start_time, end_time').in('class_id', myClassIds);
+      
+      if (existingSchedules) {
+        const otherSchedules = existingSchedules.filter(s => s.class_id !== editingClass.id);
+        for (const newSched of editSchedules) {
+          const conflict = otherSchedules.find((existing: any) => {
+            if (existing.day_of_week !== newSched.day_of_week) return false;
+            return isTimeOverlapping(newSched.start_time, newSched.end_time, existing.start_time, existing.end_time);
+          });
+          if (conflict) {
+            const conflictingClass = myClasses.find(c => c.id === conflict.class_id)?.class_name;
+            alert(lang === 'ar' ? `تعارض: لديك فصل آخر (${conflictingClass}) في نفس الوقت.` : `Conflict: You have (${conflictingClass}) scheduled at this time.`);
+            return;
+          }
+        }
+      }
+    }
+
+    const { error: classError } = await supabase.from('classes').update({
+      class_name: editClassName,
+      subject: editSubject
+    }).eq('id', editingClass.id);
+
+    if (classError) return alert(`Error: ${classError.message}`);
+
+    await supabase.from('class_schedules').delete().eq('class_id', editingClass.id);
+
+    if (editSchedules.length > 0) {
+      const scheduleRecords = editSchedules.map(s => ({
+        class_id: editingClass.id, day_of_week: s.day_of_week, start_time: s.start_time, end_time: s.end_time, room: s.room
+      }));
+      await supabase.from('class_schedules').insert(scheduleRecords);
+    }
+
+    setIsEditModalOpen(false);
+    fetchClasses();
+  }
+
+  async function handleDeleteClass(classId: string) {
+    const confirmDelete = window.confirm(
+      lang === 'ar' ? 'هل أنت متأكد من حذف هذا الفصل بالكامل؟ (سيتم حذف الطلاب والدرجات أيضاً)' : 'Are you sure you want to delete this class? (All students and grades will be lost)'
+    );
+    if (!confirmDelete) return;
+
+    const { error } = await supabase.from('classes').delete().eq('id', classId);
+    if (error) {
+      alert(lang === 'ar' ? `خطأ: ${error.message}` : `Error: ${error.message}`);
+    } else {
+      setIsEditModalOpen(false);
+      fetchClasses();
+    }
+  }
+
+  return (
+    <div className="space-y-6 relative">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+            {lang === 'ar' ? 'إدارة الفصول' : 'Manage Classes'}
+          </h1>
+          <p className="text-slate-500 mt-1">
+            {lang === 'ar' ? 'قم بإضافة، تعديل، وإدارة فصولك الدراسية.' : 'View, edit, and manage your teaching sections.'}
+          </p>
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="text-center py-12 text-slate-500">
+          {lang === 'ar' ? 'جاري تحميل الفصول...' : 'Loading classes...'}
+        </div>
+      ) : classes.length === 0 ? (
+        <div className="text-center py-12 text-slate-500 border border-dashed rounded-lg bg-white">
+          {lang === 'ar' ? 'لا توجد فصول بعد. انقر لإضافة فصل جديد.' : 'No classes found. Click to add a new class.'}
+        </div>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {classes.map((cls) => (
+            <Card key={cls.id} className="hover:border-blue-400 transition-colors">
+              <CardHeader className="pb-3 border-b border-slate-100">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-xl font-bold">{cls.class_name}</CardTitle>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 text-slate-400 hover:text-slate-900"
+                    onClick={() => openSettings(cls)}
+                  >
+                    <Settings className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="text-sm text-slate-500 flex items-center gap-2">
+                  <BookOpen className="h-3.5 w-3.5" />
+                  {cls.subject}
+                </div>
+              </CardHeader>
+              <CardContent className="pt-4 flex items-center justify-between">
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-2 text-sm font-medium text-slate-600 mb-1">
+                    <Users className="h-4 w-4 text-blue-500" />
+                    <span>{cls.students[0]?.count || 0} {lang === 'ar' ? 'طالب' : 'Students'}</span>
+                  </div>
+                  {cls.class_schedules && cls.class_schedules.length > 0 && (
+                    <span className="text-xs text-slate-400">
+                      {cls.class_schedules.length} {lang === 'ar' ? 'محاضرات أسبوعياً' : 'Periods/Week'}
+                      {' • '} {translateDay(cls.class_schedules[0].day_of_week, lang)}
+                    </span>
+                  )}
+                </div>
+                <Link href={`/classes/${cls.id}`}>
+                  <Button variant="outline" size="sm">
+                    {lang === 'ar' ? 'دخول للفصل' : 'Enter Class'}
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      <div className="pt-6">
+        <Button onClick={() => setIsAddModalOpen(true)} className="bg-slate-900 hover:bg-slate-800 text-white flex items-center gap-2">
+          <Plus className="h-4 w-4" />
+          {lang === 'ar' ? 'إضافة فصل جديد' : 'Add New Class'}
+        </Button>
+      </div>
+
+      {isAddModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/50 flex items-center justify-center p-4">
+          <Card className="w-full max-w-xl shadow-xl border-0 max-h-[90vh] flex flex-col">
+            <CardHeader className="flex flex-row items-center justify-between border-b pb-4 shrink-0">
+              <div>
+                <CardTitle>{lang === 'ar' ? 'فصل جديد' : 'New Class'}</CardTitle>
+              </div>
+              <Button variant="ghost" size="icon" onClick={() => setIsAddModalOpen(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </CardHeader>
+            <CardContent className="pt-6 overflow-y-auto">
+              <form id="add-class-form" onSubmit={handleAddClass} className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'اسم الفصل' : 'Class Name'}</label>
+                    <Input required placeholder="Grade 3A" value={newClassName} onChange={(e) => setNewClassName(e.target.value)} />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'المادة' : 'Subject'}</label>
+                    <Input required placeholder="Mathematics" value={newSubject} onChange={(e) => setNewSubject(e.target.value)} />
+                  </div>
+                </div>
+
+                <div className="border-t pt-4 mt-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-bold text-slate-800">{lang === 'ar' ? 'الجدول الأسبوعي' : 'Weekly Schedule'}</h3>
+                    <Button type="button" variant="outline" size="sm" onClick={addScheduleBlock} className="text-blue-600 border-blue-200 hover:bg-blue-50">
+                      <Plus className="h-4 w-4 mr-1" />
+                      {lang === 'ar' ? 'إضافة يوم آخر' : 'Add Another Day'}
+                    </Button>
+                  </div>
+                  <div className="space-y-4">
+                    {schedules.map((schedule, index) => (
+                      <div key={index} className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-slate-50 border rounded-lg relative group">
+                        {schedules.length > 1 && (
+                          <button type="button" onClick={() => removeScheduleBlock(index)} className="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 border border-red-200 hover:bg-red-200 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+                        )}
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-slate-500">{lang === 'ar' ? 'اليوم' : 'Day'}</label>
+                          <Select value={schedule.day_of_week} onValueChange={(val) => val && handleScheduleChange(index, 'day_of_week', val)}>
+                            <SelectTrigger className="h-9"><span className="truncate">{translateDay(schedule.day_of_week, lang)}</span></SelectTrigger>
+                            <SelectContent>
+                              {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].map(day => (
+                                <SelectItem key={day} value={day}>{translateDay(day, lang)}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-slate-500">{lang === 'ar' ? 'الغرفة' : 'Room'}</label>
+                          <Input className="h-9" placeholder="101" value={schedule.room} onChange={(e) => handleScheduleChange(index, 'room', e.target.value)} />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-slate-500">{lang === 'ar' ? 'من' : 'Start'}</label>
+                          <Input className="h-9" type="time" required value={schedule.start_time} onChange={(e) => handleScheduleChange(index, 'start_time', e.target.value)} />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-slate-500">{lang === 'ar' ? 'إلى' : 'End'}</label>
+                          <Input className="h-9" type="time" required value={schedule.end_time} onChange={(e) => handleScheduleChange(index, 'end_time', e.target.value)} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </form>
+            </CardContent>
+            <div className="p-4 border-t shrink-0 flex gap-2 justify-end bg-slate-50 rounded-b-xl">
+              <Button type="button" variant="outline" onClick={() => setIsAddModalOpen(false)}>{lang === 'ar' ? 'إلغاء' : 'Cancel'}</Button>
+              <Button type="submit" form="add-class-form" className="bg-blue-600 hover:bg-blue-700 text-white">{lang === 'ar' ? 'حفظ الفصل' : 'Save Class'}</Button>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {isEditModalOpen && editingClass && (
+        <div className="fixed inset-0 z-50 bg-slate-950/50 flex items-center justify-center p-4">
+          <Card className="w-full max-w-xl shadow-xl border-0 max-h-[90vh] flex flex-col">
+            <CardHeader className="flex flex-row items-center justify-between border-b pb-4 shrink-0">
+              <div><CardTitle>{lang === 'ar' ? 'إعدادات الفصل' : 'Class Settings'}</CardTitle></div>
+              <Button variant="ghost" size="icon" onClick={() => setIsEditModalOpen(false)}><X className="h-4 w-4" /></Button>
+            </CardHeader>
+            <CardContent className="pt-6 overflow-y-auto">
+              <form id="edit-class-form" onSubmit={handleEditClass} className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'اسم الفصل' : 'Class Name'}</label>
+                    <Input required value={editClassName} onChange={(e) => setEditClassName(e.target.value)} />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'المادة' : 'Subject'}</label>
+                    <Input required value={editSubject} onChange={(e) => setEditSubject(e.target.value)} />
+                  </div>
+                </div>
+                <div className="border-t pt-4 mt-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-bold text-slate-800">{lang === 'ar' ? 'الجدول الأسبوعي' : 'Weekly Schedule'}</h3>
+                    <Button type="button" variant="outline" size="sm" onClick={addEditScheduleBlock} className="text-blue-600 border-blue-200 hover:bg-blue-50">
+                      <Plus className="h-4 w-4 mr-1" />{lang === 'ar' ? 'إضافة يوم آخر' : 'Add Another Day'}
+                    </Button>
+                  </div>
+                  <div className="space-y-4">
+                    {editSchedules.map((schedule, index) => (
+                      <div key={index} className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-slate-50 border rounded-lg relative group">
+                        {editSchedules.length > 1 && (
+                          <button type="button" onClick={() => removeEditScheduleBlock(index)} className="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 border border-red-200 hover:bg-red-200 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+                        )}
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-slate-500">{lang === 'ar' ? 'اليوم' : 'Day'}</label>
+                          <Select value={schedule.day_of_week} onValueChange={(val) => val && handleEditScheduleChange(index, 'day_of_week', val)}>
+                            <SelectTrigger className="h-9"><span className="truncate">{translateDay(schedule.day_of_week, lang)}</span></SelectTrigger>
+                            <SelectContent>
+                              {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].map(day => (
+                                <SelectItem key={day} value={day}>{translateDay(day, lang)}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-slate-500">{lang === 'ar' ? 'الغرفة' : 'Room'}</label>
+                          <Input className="h-9" placeholder="101" value={schedule.room} onChange={(e) => handleEditScheduleChange(index, 'room', e.target.value)} />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-slate-500">{lang === 'ar' ? 'من' : 'Start'}</label>
+                          <Input className="h-9" type="time" required value={schedule.start_time} onChange={(e) => handleEditScheduleChange(index, 'start_time', e.target.value)} />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-slate-500">{lang === 'ar' ? 'إلى' : 'End'}</label>
+                          <Input className="h-9" type="time" required value={schedule.end_time} onChange={(e) => handleEditScheduleChange(index, 'end_time', e.target.value)} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </form>
+            </CardContent>
+            <div className="p-4 border-t shrink-0 flex items-center justify-between bg-slate-50 rounded-b-xl">
+              <Button type="button" variant="destructive" className="flex items-center gap-2" onClick={() => handleDeleteClass(editingClass.id)}>
+                <Trash2 className="h-4 w-4" /><span className="hidden sm:inline">{lang === 'ar' ? 'حذف الفصل' : 'Delete Class'}</span>
+              </Button>
+              <div className="flex gap-2">
+                <Button type="button" variant="outline" onClick={() => setIsEditModalOpen(false)}>{lang === 'ar' ? 'إلغاء' : 'Cancel'}</Button>
+                <Button type="submit" form="edit-class-form" className="bg-blue-600 hover:bg-blue-700 text-white">{lang === 'ar' ? 'تحديث البيانات' : 'Update Class'}</Button>
+              </div>
+            </div>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
+}
+
+D:\STUDENT TRACKER\student-tracker\app\classes\[id]\page.tsx:
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
+import { supabase } from '@/lib/supabaseClient';
+import { useLanguage } from '@/context/LanguageContext';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ArrowLeft, ArrowRight, CheckCircle, Clock, XCircle, Search, Save, UserPlus, X, AlertTriangle, Calendar, FileText, CheckSquare, Plus, MessageCircle } from 'lucide-react';
+import Link from 'next/link';
+
+interface Student {
+    id: string;
+    full_name: string;
+    phone_number: string;
+}
+
+const translateAssType = (type: string, lang: string) => {
+    if (lang !== 'ar') return type;
+    const map: Record<string, string> = { 'Quiz': 'اختبار قصير', 'Midterm': 'نصفي', 'Final': 'نهائي' };
+    return map[type] || type;
+};
+
+const getLocalTodayDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
+const getSafeDateObj = (dateStr: string) => {
+    if (!dateStr) return new Date();
+    const [y, m, d] = dateStr.split('-');
+    return new Date(Number(y), Number(m) - 1, Number(d));
+};
+
+export default function ClassDetailsPage() {
+    const params = useParams();
+    const id = params?.id as string;
+    const { lang } = useLanguage();
+
+    const [students, setStudents] = useState<Student[]>([]);
+    const [classSchedules, setClassSchedules] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [activeTab, setActiveTab] = useState<'attendance' | 'assessments'>('attendance');
+
+    const [globalDate, setGlobalDate] = useState(getLocalTodayDate());
+    const [studentDates, setStudentDates] = useState<Record<string, string>>({});
+    const [attendance, setAttendance] = useState<Record<string, string>>({});
+    const [bonuses, setBonuses] = useState<Record<string, string>>({});
+    const [hasSessionToday, setHasSessionToday] = useState(true);
+
+    const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
+    const [newStudentName, setNewStudentName] = useState('');
+    const [newStudentPhone, setNewStudentPhone] = useState('');
+
+    const [assessments, setAssessments] = useState<any[]>([]);
+    const [isAddAssessmentModalOpen, setIsAddAssessmentModalOpen] = useState(false);
+    const [newAssType, setNewAssType] = useState('Quiz');
+    const [newAssTitle, setNewAssTitle] = useState('');
+    const [newAssMaxGrade, setNewAssMaxGrade] = useState('');
+    const [newAssDate, setNewAssDate] = useState(getLocalTodayDate());
+    
+    const [activeAssessment, setActiveAssessment] = useState<any>(null);
+    const [assessmentGrades, setAssessmentGrades] = useState<Record<string, string>>({});
+
+    useEffect(() => {
+        const local = getLocalTodayDate();
+        if (globalDate !== local) {
+            setGlobalDate(local);
+            setNewAssDate(local);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (id) {
+            fetchStudentsAndSchedule();
+            fetchAssessments();
+        }
+    }, [id]);
+
+    useEffect(() => {
+        checkSession(globalDate, classSchedules);
+    }, [globalDate, classSchedules]);
+
+    // FETCH EXISTING ATTENDANCE
+    async function fetchAttendanceForDate(dateStr: string, studentList: Student[]) {
+        if (!studentList.length) return;
+        const studentIds = studentList.map(s => s.id);
+        
+        const { data } = await supabase
+            .from('attendance')
+            .select('*')
+            .in('student_id', studentIds)
+            .eq('date', dateStr);
+
+        const newAttendance: Record<string, string> = {};
+        const newBonuses: Record<string, string> = {};
+        const newDates: Record<string, string> = {};
+
+        // Default everyone to present locally
+        studentList.forEach(s => {
+            newAttendance[s.id] = 'Present';
+            newBonuses[s.id] = '';
+            newDates[s.id] = dateStr;
+        });
+
+        // Override with data from database if they have records
+        data?.forEach(record => {
+            newAttendance[record.student_id] = record.status;
+            newBonuses[record.student_id] = record.bonus_marks > 0 ? record.bonus_marks.toString() : '';
+        });
+
+        setAttendance(newAttendance);
+        setBonuses(newBonuses);
+        setStudentDates(newDates);
+    }
+
+    async function fetchStudentsAndSchedule() {
+        setLoading(true);
+        const { data: classData } = await supabase.from('classes').select('class_schedules(day_of_week)').eq('id', id).single();
+        const schedules = classData?.class_schedules || [];
+        setClassSchedules(schedules);
+        checkSession(globalDate, schedules);
+
+        const { data, error } = await supabase.from('students').select('*').eq('class_id', id);
+        if (!error && data) {
+            setStudents(data);
+            await fetchAttendanceForDate(globalDate, data);
+        }
+        setLoading(false);
+    }
+
+    async function fetchAssessments() {
+        const { data } = await supabase.from('assessments').select('*').eq('class_id', id).order('assessment_date', { ascending: false });
+        setAssessments(data || []);
+    }
+
+    const checkSession = (dateStr: string, schedules: any[]) => {
+        if (!dateStr) return;
+        const date = getSafeDateObj(dateStr);
+        const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+        setHasSessionToday(schedules.some(s => s.day_of_week === dayName));
+    };
+
+    const handleGlobalDateChange = (date: string) => {
+        setGlobalDate(date);
+        fetchAttendanceForDate(date, students); // Reload data for the new date
+    };
+
+    const handleStudentDateChange = (studentId: string, date: string) => {
+        setStudentDates(prev => ({ ...prev, [studentId]: date }));
+    };
+
+    const handleAttendanceChange = (studentId: string, value: string) => {
+        setAttendance(prev => ({ ...prev, [studentId]: value }));
+    };
+
+    const handleBonusChange = (studentId: string, value: string) => {
+        setBonuses(prev => ({ ...prev, [studentId]: value }));
+    };
+
+    // --- ADD STUDENT ---
+    const handleAddStudent = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const saudiPhoneRegex = /^9665\d{8}$/;
+        if (!saudiPhoneRegex.test(newStudentPhone)) {
+            alert(lang === 'ar' ? 'الرجاء إدخال رقم سعودي صحيح يبدأ بـ 9665' : 'Please enter a valid Saudi number starting with 9665');
+            return;
+        }
+
+        // VALIDATION: Duplicate check
+        const { data: existing } = await supabase.from('students')
+            .select('id')
+            .eq('class_id', id)
+            .eq('phone_number', newStudentPhone);
+
+        if (existing && existing.length > 0) {
+            alert(lang === 'ar' ? 'هذا الطالب مسجل بالفعل برقم الهاتف هذا في هذا الفصل.' : 'A student with this phone number is already registered in this class.');
+            return;
+        }
+
+        const { error } = await supabase.from('students').insert([{ class_id: id, full_name: newStudentName, phone_number: newStudentPhone }]);
+        if (error) alert(lang === 'ar' ? `خطأ: ${error.message}` : `Error: ${error.message}`);
+        else {
+            setNewStudentName(''); setNewStudentPhone(''); setIsAddStudentModalOpen(false); fetchStudentsAndSchedule();
+        }
+    };
+
+    // --- SAVE ATTENDANCE & BONUS ---
+    const saveAttendance = async () => {
+        setSaving(true);
+        try {
+            const attendanceRecords = students.map(student => ({
+                student_id: student.id,
+                date: studentDates[student.id] || globalDate,
+                status: attendance[student.id] || 'Present',
+                bonus_marks: parseFloat(bonuses[student.id]) || 0
+            }));
+
+            if (attendanceRecords.length > 0) {
+                const { error } = await supabase.from('attendance').upsert(attendanceRecords, { onConflict: 'student_id, date' });
+                if (error) throw error;
+            }
+            alert(lang === 'ar' ? 'تم الحفظ بنجاح!' : 'Saved successfully!');
+        } catch (err: any) {
+            alert(lang === 'ar' ? `حدث خطأ أثناء الحفظ` : `Error saving: ${err.message}`);
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const sendWhatsAppAttendance = (student: Student) => {
+        const status = attendance[student.id] || 'Present';
+        const date = studentDates[student.id] || globalDate;
+        const bonus = bonuses[student.id] && bonuses[student.id] !== '0' ? `\n⭐ بونص: +${bonuses[student.id]}` : '';
+        
+        const msg = lang === 'ar' 
+            ? `مرحباً بك يا ولي أمر الطالب/ة ${student.full_name}،\nتحديث الحضور لتاريخ ${date}:\n📌 الحالة: ${status}${bonus}`
+            : `Hello parent of ${student.full_name},\nAttendance update for ${date}:\n📌 Status: ${status}${bonus ? `\n⭐ Bonus: +${bonuses[student.id]}` : ''}`;
+            
+        window.open(`https://wa.me/${student.phone_number}?text=${encodeURIComponent(msg)}`, '_blank');
+    };
+
+    const handleAddAssessment = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const { error } = await supabase.from('assessments').insert([{ 
+            class_id: id, type: newAssType, title: newAssTitle, max_grade: newAssMaxGrade, assessment_date: newAssDate 
+        }]);
+
+        if (error) alert(error.message);
+        else {
+            setNewAssTitle(''); setNewAssMaxGrade(''); setIsAddAssessmentModalOpen(false); fetchAssessments();
+        }
+    };
+
+    const openGradingView = async (assessment: any) => {
+        setActiveAssessment(assessment);
+        const { data } = await supabase.from('assessment_grades').select('*').eq('assessment_id', assessment.id);
+        const gradesMap: Record<string, string> = {};
+        data?.forEach(g => gradesMap[g.student_id] = g.score.toString());
+        setAssessmentGrades(gradesMap);
+    };
+
+    const handleGradeChange = (studentId: string, val: string) => {
+        setAssessmentGrades(prev => ({ ...prev, [studentId]: val }));
+    };
+
+    const saveGrades = async () => {
+        setSaving(true);
+        try {
+            for (const sId of Object.keys(assessmentGrades)) {
+                if (assessmentGrades[sId] !== '') {
+                    const score = parseFloat(assessmentGrades[sId]);
+                    if (score < 0 || score > activeAssessment.max_grade) {
+                        alert(lang === 'ar' 
+                            ? `خطأ: توجد درجة غير صالحة (${score}). يجب أن تكون بين 0 و ${activeAssessment.max_grade}` 
+                            : `Error: Invalid score (${score}). Must be between 0 and ${activeAssessment.max_grade}`);
+                        setSaving(false);
+                        return;
+                    }
+                }
+            }
+
+            const records = Object.keys(assessmentGrades).filter(sId => assessmentGrades[sId] !== '').map(sId => ({
+                assessment_id: activeAssessment.id,
+                student_id: sId,
+                score: parseFloat(assessmentGrades[sId])
+            }));
+
+            if (records.length > 0) {
+                const { error } = await supabase.from('assessment_grades').upsert(records, { onConflict: 'assessment_id, student_id' });
+                if (error) throw error;
+            }
+            alert(lang === 'ar' ? 'تم حفظ الدرجات!' : 'Grades saved!');
+            setActiveAssessment(null);
+        } catch (err: any) {
+            alert(`Error saving: ${err.message}`);
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const filteredStudents = students.filter(s => s.full_name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    return (
+        <div className="space-y-6 relative">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                    <Link href="/classes">
+                        <Button variant="outline" size="icon">
+                            {lang === 'ar' ? <ArrowRight className="h-4 w-4" /> : <ArrowLeft className="h-4 w-4" />}
+                        </Button>
+                    </Link>
+                    <div>
+                        <h1 className="text-2xl font-bold text-slate-900">
+                            {lang === 'ar' ? 'إدارة الفصل' : 'Class Operations'}
+                        </h1>
+                    </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3">
+                    <div className="relative w-full md:w-56">
+                        <Search className="absolute start-3 top-2.5 h-4 w-4 text-slate-400" />
+                        <Input placeholder={lang === 'ar' ? 'بحث عن طالب...' : 'Search student...'} className="ps-9" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                    </div>
+                    <Button onClick={() => setIsAddStudentModalOpen(true)} variant="outline" className="flex items-center gap-2 border-slate-300">
+                        <UserPlus className="h-4 w-4 text-slate-600" />
+                        <span className="hidden sm:inline">{lang === 'ar' ? 'طالب جديد' : 'Add Student'}</span>
+                    </Button>
+                </div>
+            </div>
+
+            <div className="flex border-b border-slate-200">
+                <button 
+                    onClick={() => { setActiveTab('attendance'); setActiveAssessment(null); }}
+                    className={`px-4 py-2 text-sm font-medium border-b-2 flex items-center gap-2 transition-colors ${activeTab === 'attendance' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+                >
+                    <CheckSquare className="h-4 w-4" />
+                    {lang === 'ar' ? 'الحضور والغياب' : 'Daily Attendance'}
+                </button>
+                <button 
+                    onClick={() => setActiveTab('assessments')}
+                    className={`px-4 py-2 text-sm font-medium border-b-2 flex items-center gap-2 transition-colors ${activeTab === 'assessments' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+                >
+                    <FileText className="h-4 w-4" />
+                    {lang === 'ar' ? 'التقييمات والدرجات' : 'Assessments & Grades'}
+                </button>
+            </div>
+
+            {!hasSessionToday && activeTab === 'attendance' && (
+                <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-md flex items-center gap-3">
+                    <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
+                    <p className="text-sm font-medium">
+                        {lang === 'ar' 
+                            ? `تنبيه: لا يوجد حصة مجدولة لهذا الفصل في يوم ${getSafeDateObj(globalDate).toLocaleDateString('ar-EG', {weekday: 'long'})}. يمكنك المتابعة وتسجيل الحضور على أي حال.` 
+                            : `Warning: No session is scheduled for this class on ${getSafeDateObj(globalDate).toLocaleDateString('en-US', {weekday: 'long'})}. You can still proceed and save.`}
+                    </p>
+                </div>
+            )}
+
+            {activeTab === 'attendance' && (
+                <Card>
+                    <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4">
+                        <CardTitle className="text-lg font-bold flex items-center gap-2">
+                            {lang === 'ar' ? 'سجل الحضور والبونص' : 'Attendance & Bonus'}
+                        </CardTitle>
+                        <div className="flex items-center gap-3 w-full sm:w-auto">
+                            <div className="flex items-center gap-2 bg-slate-50 border px-3 py-1.5 rounded-md flex-1 sm:flex-none">
+                                <Calendar className="h-4 w-4 text-slate-500" />
+                                <Input 
+                                    type="date" 
+                                    value={globalDate} 
+                                    onChange={(e) => handleGlobalDateChange(e.target.value)}
+                                    className="border-0 bg-transparent h-8 w-full p-0 shadow-none focus-visible:ring-0" 
+                                />
+                            </div>
+                            <Button onClick={saveAttendance} disabled={saving} className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 shrink-0">
+                                <Save className="h-4 w-4" />
+                                <span className="hidden sm:inline">{saving ? (lang === 'ar' ? 'جاري...' : 'Saving...') : (lang === 'ar' ? 'حفظ الجميع' : 'Save All')}</span>
+                            </Button>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="overflow-x-auto">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-[200px]">{lang === 'ar' ? 'اسم الطالب' : 'Student Name'}</TableHead>
+                                        <TableHead className="w-[160px]">{lang === 'ar' ? 'تاريخ الحضور' : 'Date Override'}</TableHead>
+                                        <TableHead className="w-[160px]">{lang === 'ar' ? 'الحالة' : 'Status'}</TableHead>
+                                        <TableHead className="w-[100px] text-center">{lang === 'ar' ? 'بونص' : 'Bonus'}</TableHead>
+                                        <TableHead className="text-center w-[100px]">{lang === 'ar' ? 'واتساب' : 'WhatsApp'}</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {filteredStudents.map((student) => (
+                                        <TableRow key={student.id}>
+                                            <TableCell className="font-medium text-slate-900">{student.full_name}</TableCell>
+                                            <TableCell>
+                                                <Input 
+                                                    type="date" 
+                                                    value={studentDates[student.id] || globalDate}
+                                                    onChange={(e) => handleStudentDateChange(student.id, e.target.value)}
+                                                    className="h-9 text-sm"
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <Select value={attendance[student.id] || 'Present'} onValueChange={(val) => { if (val) handleAttendanceChange(student.id, val); }}>
+                                                    <SelectTrigger className="h-9 w-full"><SelectValue /></SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="Present"><span className="flex items-center gap-1.5 text-green-600"><CheckCircle className="h-3.5 w-3.5" />{lang === 'ar' ? 'حاضر' : 'Present'}</span></SelectItem>
+                                                        <SelectItem value="Absent"><span className="flex items-center gap-1.5 text-red-600"><XCircle className="h-3.5 w-3.5" />{lang === 'ar' ? 'غائب' : 'Absent'}</span></SelectItem>
+                                                        <SelectItem value="Late"><span className="flex items-center gap-1.5 text-amber-600"><Clock className="h-3.5 w-3.5" />{lang === 'ar' ? 'متأخر' : 'Late'}</span></SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </TableCell>
+                                            <TableCell className="text-center">
+                                                <Input 
+                                                    type="number" 
+                                                    min="0"
+                                                    placeholder="+0"
+                                                    value={bonuses[student.id] || ''}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value;
+                                                        if (val !== '' && parseFloat(val) < 0) return;
+                                                        handleBonusChange(student.id, val);
+                                                    }}
+                                                    className="h-9 w-16 mx-auto text-center font-bold text-emerald-600 border-emerald-200 focus-visible:ring-emerald-500"
+                                                />
+                                            </TableCell>
+                                            <TableCell className="text-center">
+                                                <Button size="sm" variant="ghost" className="text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700" onClick={() => sendWhatsAppAttendance(student)}>
+                                                    <MessageCircle className="h-5 w-5" />
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
+
+            {activeTab === 'assessments' && !activeAssessment && (
+                <div className="space-y-4">
+                    <div className="flex justify-between items-center bg-white p-4 rounded-lg border shadow-sm">
+                        <div>
+                            <h2 className="text-lg font-bold text-slate-800">{lang === 'ar' ? 'التقييمات والاختبارات' : 'Assessments & Quizzes'}</h2>
+                            <p className="text-sm text-slate-500">{lang === 'ar' ? 'قم بإضافة تقييم جديد لتعيين الدرجات' : 'Create an assessment to assign grades'}</p>
+                        </div>
+                        <Button onClick={() => setIsAddAssessmentModalOpen(true)} className="bg-slate-900 text-white hover:bg-slate-800">
+                            <Plus className="h-4 w-4 mr-2" />
+                            {lang === 'ar' ? 'إضافة تقييم' : 'Add Assessment'}
+                        </Button>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {assessments.length === 0 ? (
+                            <div className="col-span-3 text-center py-12 text-slate-500 bg-white rounded-lg border border-dashed">
+                                {lang === 'ar' ? 'لا يوجد تقييمات حتى الآن.' : 'No assessments created yet.'}
+                            </div>
+                        ) : (
+                            assessments.map(ass => (
+                                <Card key={ass.id} className="cursor-pointer hover:border-blue-500 transition-colors shadow-sm" onClick={() => openGradingView(ass)}>
+                                    <CardHeader className="pb-3">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <span className="text-xs font-bold text-blue-700 bg-blue-100 px-2.5 py-0.5 rounded-full">{translateAssType(ass.type, lang)}</span>
+                                            <span className="text-xs text-slate-500 font-mono">{ass.assessment_date}</span>
+                                        </div>
+                                        <CardTitle className="text-md leading-tight">{ass.title}</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="flex justify-between text-sm font-medium text-slate-600 border-t pt-3 mt-1">
+                                            <span>{lang === 'ar' ? 'الدرجة القصوى:' : 'Max Grade:'}</span>
+                                            <span className="text-slate-900">{ass.max_grade}</span>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {activeTab === 'assessments' && activeAssessment && (
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between border-b pb-4 bg-slate-50 rounded-t-xl">
+                        <div>
+                            <Button variant="ghost" size="sm" onClick={() => setActiveAssessment(null)} className="mb-2 text-slate-500 hover:text-slate-900 -ml-2">
+                                {lang === 'ar' ? <ArrowRight className="h-4 w-4 mr-1" /> : <ArrowLeft className="h-4 w-4 mr-1" />}
+                                {lang === 'ar' ? 'العودة للتقييمات' : 'Back to Assessments'}
+                            </Button>
+                            <CardTitle className="text-xl font-bold flex items-center gap-2">
+                                {activeAssessment.title}
+                                <span className="text-xs bg-white border px-2 py-0.5 rounded text-slate-500 font-normal">Out of {activeAssessment.max_grade}</span>
+                            </CardTitle>
+                        </div>
+                        <Button onClick={saveGrades} disabled={saving} className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2">
+                            <Save className="h-4 w-4" />
+                            <span>{saving ? (lang === 'ar' ? 'جاري...' : 'Saving...') : (lang === 'ar' ? 'حفظ الدرجات' : 'Save Marks')}</span>
+                        </Button>
+                    </CardHeader>
+                    <CardContent className="pt-4">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>{lang === 'ar' ? 'اسم الطالب' : 'Student Name'}</TableHead>
+                                    <TableHead className="w-[150px]">{lang === 'ar' ? 'الدرجة' : 'Score'}</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {filteredStudents.map(student => (
+                                    <TableRow key={student.id}>
+                                        <TableCell className="font-medium text-slate-900">{student.full_name}</TableCell>
+                                        <TableCell>
+                                            <Input 
+                                                type="number" 
+                                                min="0"
+                                                max={activeAssessment.max_grade}
+                                                placeholder={`/ ${activeAssessment.max_grade}`}
+                                                className="w-full text-center"
+                                                value={assessmentGrades[student.id] || ''} 
+                                                onChange={(e) => {
+                                                    const val = e.target.value;
+                                                    if (val !== '') {
+                                                        const num = parseFloat(val);
+                                                        if (num < 0 || num > activeAssessment.max_grade) return;
+                                                    }
+                                                    handleGradeChange(student.id, val);
+                                                }} 
+                                            />
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
+            )}
+
+            {isAddStudentModalOpen && (
+                <div className="fixed inset-0 z-50 bg-slate-950/50 flex items-center justify-center p-4">
+                    <Card className="w-full max-w-md shadow-xl border-0">
+                        <CardHeader className="flex flex-row items-center justify-between border-b pb-4">
+                            <CardTitle>{lang === 'ar' ? 'طالب جديد' : 'New Student'}</CardTitle>
+                            <Button variant="ghost" size="icon" onClick={() => setIsAddStudentModalOpen(false)}><X className="h-4 w-4" /></Button>
+                        </CardHeader>
+                        <CardContent className="pt-6">
+                            <form onSubmit={handleAddStudent} className="space-y-4">
+                                <div className="space-y-1">
+                                    <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'اسم الطالب' : 'Student Name'}</label>
+                                    <Input required value={newStudentName} onChange={(e) => setNewStudentName(e.target.value)} />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'رقم الهاتف (واتساب)' : 'WhatsApp Number'}</label>
+                                    <Input required type="tel" maxLength={12} value={newStudentPhone} onChange={(e) => {
+                                        let val = e.target.value.replace(/\D/g, '');
+                                        if (val.length > 0 && !val.startsWith('9')) val = '9665' + val;
+                                        setNewStudentPhone(val.slice(0, 12));
+                                    }} />
+                                </div>
+                                <div className="pt-4 flex gap-2 justify-end">
+                                    <Button type="button" variant="outline" onClick={() => setIsAddStudentModalOpen(false)}>{lang === 'ar' ? 'إلغاء' : 'Cancel'}</Button>
+                                    <Button type="submit" className="bg-blue-600 text-white">{lang === 'ar' ? 'حفظ' : 'Save'}</Button>
+                                </div>
+                            </form>
+                        </CardContent>
+                    </Card>
+                </div>
+            )}
+
+            {isAddAssessmentModalOpen && (
+                <div className="fixed inset-0 z-50 bg-slate-950/50 flex items-center justify-center p-4">
+                    <Card className="w-full max-w-md shadow-xl border-0">
+                        <CardHeader className="flex flex-row items-center justify-between border-b pb-4">
+                            <CardTitle>{lang === 'ar' ? 'إضافة تقييم جديد' : 'New Assessment'}</CardTitle>
+                            <Button variant="ghost" size="icon" onClick={() => setIsAddAssessmentModalOpen(false)}><X className="h-4 w-4" /></Button>
+                        </CardHeader>
+                        <CardContent className="pt-6">
+                            <form onSubmit={handleAddAssessment} className="space-y-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-1">
+                                        <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'النوع' : 'Type'}</label>
+                                        <Select value={newAssType} onValueChange={(val) => { if (val) setNewAssType(val); }}>
+                                            <SelectTrigger className="h-9">
+                                                <SelectValue>{translateAssType(newAssType, lang)}</SelectValue>
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="Quiz">{translateAssType('Quiz', lang)}</SelectItem>
+                                                <SelectItem value="Midterm">{translateAssType('Midterm', lang)}</SelectItem>
+                                                <SelectItem value="Final">{translateAssType('Final', lang)}</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'الدرجة القصوى' : 'Max Grade'}</label>
+                                        <Input required type="number" min="1" placeholder="100" value={newAssMaxGrade} onChange={(e) => setNewAssMaxGrade(e.target.value)} />
+                                    </div>
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'عنوان التقييم' : 'Title'}</label>
+                                    <Input required placeholder={lang === 'ar' ? 'مثال: اختبار الوحدة الأولى' : 'e.g. Unit 1 Quiz'} value={newAssTitle} onChange={(e) => setNewAssTitle(e.target.value)} />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'تاريخ التقييم' : 'Date'}</label>
+                                    <Input required type="date" value={newAssDate} onChange={(e) => setNewAssDate(e.target.value)} />
+                                </div>
+                                <div className="pt-4 flex gap-2 justify-end">
+                                    <Button type="button" variant="outline" onClick={() => setIsAddAssessmentModalOpen(false)}>{lang === 'ar' ? 'إلغاء' : 'Cancel'}</Button>
+                                    <Button type="submit" className="bg-blue-600 text-white">{lang === 'ar' ? 'إضافة' : 'Add'}</Button>
+                                </div>
+                            </form>
+                        </CardContent>
+                    </Card>
+                </div>
+            )}
+        </div>
+    );
+}
+
+D:\STUDENT TRACKER\student-tracker\app\login\page.tsx:
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabaseClient';
+import { useLanguage } from '@/context/LanguageContext';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { LogIn, Send, ArrowLeft } from 'lucide-react';
+
+export default function LoginPage() {
+  const { lang } = useLanguage();
+  const router = useRouter();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
+  const [isResetMode, setIsResetMode] = useState(false);
+
+  useEffect(() => {
+    // --- INVITATION & RECOVERY CATCHER ---
+    // If they land here from an email link, the URL will have a hash fragment.
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash;
+      if (hash.includes('type=invite') || hash.includes('type=recovery')) {
+        router.push('/update-password');
+        return;
+      }
+    }
+
+    // Fallback listener for Supabase auth events
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        router.push('/update-password');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [router]);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setErrorMsg('');
+
+    const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+    });
+
+    if (error) {
+        setErrorMsg(lang === 'ar' ? 'فشل التسجيل: البريد أو كلمة المرور غير صحيحة' : error.message);
+        setLoading(false);
+        return;
+    }
+
+    // Force a full navigation so middleware reads updated auth cookies
+    window.location.href = '/';
+  };
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      setErrorMsg(lang === 'ar' ? 'الرجاء إدخال البريد الإلكتروني أولاً' : 'Please enter your email first.');
+      return;
+    }
+    
+    setLoading(true);
+    setErrorMsg('');
+    setSuccessMsg('');
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/update-password`,
+    });
+
+    if (error) {
+      setErrorMsg(error.message);
+    } else {
+      setSuccessMsg(lang === 'ar' ? 'تم إرسال رابط استعادة كلمة المرور إلى بريدك!' : 'Password reset link sent to your email!');
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-100 p-4">
+      <Card className="w-full max-w-md shadow-lg">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl font-bold text-slate-900">
+            {lang === 'ar' ? 'بوابة المعلمين' : 'Teacher Portal'}
+          </CardTitle>
+          <CardDescription>
+            {isResetMode 
+              ? (lang === 'ar' ? 'أدخل بريدك الإلكتروني لاستعادة كلمة المرور' : 'Enter your email to receive a secure reset link')
+              : (lang === 'ar' ? 'سجل دخولك لإدارة فصولك' : 'Sign in to manage your classes and students')}
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent className="space-y-6">
+          {errorMsg && (
+            <div className="p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-md text-center font-medium">
+              {errorMsg}
+            </div>
+          )}
+          {successMsg && (
+            <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-600 text-xs rounded-md text-center font-medium">
+              {successMsg}
+            </div>
+          )}
+
+          {isResetMode ? (
+            <form onSubmit={handleResetPassword} className="space-y-4">
+              <div className="space-y-1 text-start">
+                <label className="text-xs font-semibold text-slate-700">
+                  {lang === 'ar' ? 'البريد الإلكتروني' : 'Email Address'}
+                </label>
+                <Input
+                  type="email"
+                  required
+                  placeholder="teacher@school.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 mt-2"
+              >
+                <Send className="h-4 w-4" />
+                <span>
+                  {loading
+                    ? (lang === 'ar' ? 'جاري الإرسال...' : 'Sending Link...')
+                    : (lang === 'ar' ? 'إرسال رابط الاستعادة' : 'Send Reset Link')}
+                </span>
+              </Button>
+
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => { setIsResetMode(false); setErrorMsg(''); setSuccessMsg(''); }}
+                className="w-full text-slate-500 hover:text-slate-700 flex items-center justify-center gap-2 mt-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span>{lang === 'ar' ? 'العودة لتسجيل الدخول' : 'Back to Login'}</span>
+              </Button>
+            </form>
+          ) : (
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-1 text-start">
+                <label className="text-xs font-semibold text-slate-700">
+                  {lang === 'ar' ? 'البريد الإلكتروني' : 'Email Address'}
+                </label>
+                <Input
+                  type="email"
+                  required
+                  placeholder="teacher@school.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              <div className="space-y-1 text-start">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-slate-700">
+                    {lang === 'ar' ? 'كلمة المرور' : 'Password'}
+                  </label>
+                  <button 
+                    type="button"
+                    onClick={() => { setIsResetMode(true); setErrorMsg(''); setSuccessMsg(''); }}
+                    className="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                  >
+                    {lang === 'ar' ? 'نسيت كلمة المرور؟' : 'Forgot password?'}
+                  </button>
+                </div>
+                <Input
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 mt-2"
+              >
+                <LogIn className="h-4 w-4" />
+                <span>
+                  {loading
+                    ? (lang === 'ar' ? 'جاري الدخول...' : 'Logging in...')
+                    : (lang === 'ar' ? 'تسجيل الدخول' : 'Sign In')}
+                </span>
+              </Button>
+            </form>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+D:\STUDENT TRACKER\student-tracker\app\settings\page.tsx:
+'use client';
+
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabaseClient';
+import { useLanguage } from '@/context/LanguageContext';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { User, Bell, Globe, Shield, Save, Key, Smartphone, LogOut } from 'lucide-react';
+
+export default function SettingsPage() {
+    const { lang, toggleLanguage } = useLanguage();
+    
+    // UI State
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [activeTab, setActiveTab] = useState<'profile' | 'notifications' | 'localization' | 'security'>('profile');
+    
+    // User State
+    const [userId, setUserId] = useState('');
+    const [email, setEmail] = useState('');
+    const [fullName, setFullName] = useState('');
+    
+    // Notification & Localization State
+    const defaultTemplate = lang === 'ar' 
+        ? "مرحباً يا ولي أمر {name}،\nتحديث حضور يوم {date}:\n📌 الحالة: {status}\n⭐ بونص: {bonus}" 
+        : "Hello parent of {name},\nAttendance update for {date}:\n📌 Status: {status}\n⭐ Bonus: {bonus}";
+        
+    const [whatsappTemplate, setWhatsappTemplate] = useState('');
+    const [timezone, setTimezone] = useState('Asia/Riyadh');
+
+    useEffect(() => {
+        fetchProfile();
+    }, []);
+
+    async function fetchProfile() {
+        setLoading(true);
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+            setUserId(user.id);
+            setEmail(user.email || '');
+            
+            // Fetch extended profile from teachers table
+            const { data: teacherData } = await supabase
+                .from('teachers')
+                .select('full_name, whatsapp_template, timezone')
+                .eq('id', user.id)
+                .single();
+                
+            if (teacherData) {
+                setFullName(teacherData.full_name || '');
+                setWhatsappTemplate(teacherData.whatsapp_template || defaultTemplate);
+                setTimezone(teacherData.timezone || 'Asia/Riyadh');
+            } else {
+                setWhatsappTemplate(defaultTemplate);
+            }
+        }
+        setLoading(false);
+    }
+
+    // --- SAVE PROFILE & SETTINGS ---
+    const handleSaveProfile = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSaving(true);
+        
+        try {
+            // Update Teacher Table
+            const { error: dbError } = await supabase
+                .from('teachers')
+                .update({ 
+                    full_name: fullName,
+                    whatsapp_template: whatsappTemplate,
+                    timezone: timezone
+                })
+                .eq('id', userId);
+                
+            if (dbError) throw dbError;
+
+            // Optional: Update Email in Supabase Auth (Requires user to verify both emails usually)
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user?.email !== email) {
+                const { error: authError } = await supabase.auth.updateUser({ email: email });
+                if (authError) throw authError;
+                alert(lang === 'ar' ? 'تم إرسال رابط تأكيد إلى البريد الجديد.' : 'Confirmation link sent to new email.');
+            } else {
+                alert(lang === 'ar' ? 'تم حفظ الإعدادات بنجاح!' : 'Settings saved successfully!');
+            }
+        } catch (err: any) {
+            alert(lang === 'ar' ? `خطأ: ${err.message}` : `Error: ${err.message}`);
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    // --- SECURITY ACTIONS ---
+    const handlePasswordReset = async () => {
+        if (!email) return;
+        const confirm = window.confirm(lang === 'ar' ? 'هل تريد إرسال رابط إعادة تعيين كلمة المرور إلى بريدك؟' : 'Send password reset link to your email?');
+        if (!confirm) return;
+
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + '/settings',
+        });
+        
+        if (error) alert(error.message);
+        else alert(lang === 'ar' ? 'تم إرسال رابط إعادة التعيين!' : 'Password reset link sent!');
+    };
+
+    const handleSignOutOtherDevices = async () => {
+        const confirm = window.confirm(lang === 'ar' ? 'هل أنت متأكد من تسجيل الخروج من جميع الأجهزة الأخرى؟' : 'Are you sure you want to sign out of all other devices?');
+        if (!confirm) return;
+
+        // Supabase function to sign out of all scopes except current
+        const { error } = await supabase.auth.signOut({ scope: 'others' });
+        
+        if (error) alert(error.message);
+        else alert(lang === 'ar' ? 'تم تسجيل الخروج من الأجهزة الأخرى.' : 'Signed out of other devices.');
+    };
+
+    if (loading) {
+        return <div className="text-center py-12 text-slate-500">{lang === 'ar' ? 'جاري التحميل...' : 'Loading settings...'}</div>;
+    }
+
+    return (
+        <div className="space-y-6 max-w-5xl mx-auto">
+            
+            {/* Header */}
+            <div>
+                <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+                    {lang === 'ar' ? 'الإعدادات' : 'Settings'}
+                </h1>
+                <p className="text-slate-500 mt-1">
+                    {lang === 'ar' ? 'إدارة حسابك، الإشعارات، والأمان.' : 'Manage your account, notifications, and security.'}
+                </p>
+            </div>
+
+            <div className="flex flex-col md:flex-row gap-6">
+                
+                {/* Sidebar Navigation */}
+                <Card className="w-full md:w-64 shrink-0 h-fit">
+                    <CardContent className="p-2 flex flex-col gap-1">
+                        <button 
+                            onClick={() => setActiveTab('profile')}
+                            className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${activeTab === 'profile' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
+                        >
+                            <User className="h-4 w-4" />
+                            {lang === 'ar' ? 'الملف الشخصي' : 'Profile'}
+                        </button>
+                        <button 
+                            onClick={() => setActiveTab('notifications')}
+                            className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${activeTab === 'notifications' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
+                        >
+                            <Bell className="h-4 w-4" />
+                            {lang === 'ar' ? 'الإشعارات (واتساب)' : 'Notifications'}
+                        </button>
+                        <button 
+                            onClick={() => setActiveTab('localization')}
+                            className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${activeTab === 'localization' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
+                        >
+                            <Globe className="h-4 w-4" />
+                            {lang === 'ar' ? 'اللغة والمنطقة' : 'Localization'}
+                        </button>
+                        <button 
+                            onClick={() => setActiveTab('security')}
+                            className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${activeTab === 'security' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
+                        >
+                            <Shield className="h-4 w-4" />
+                            {lang === 'ar' ? 'الأمان والحساب' : 'Security'}
+                        </button>
+                    </CardContent>
+                </Card>
+
+                {/* Main Content Area */}
+                <div className="flex-1">
+                    <form onSubmit={handleSaveProfile}>
+                        
+                        {/* PROFILE TAB */}
+                        {activeTab === 'profile' && (
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>{lang === 'ar' ? 'تخصيص الملف الشخصي' : 'Profile Customization'}</CardTitle>
+                                    <CardDescription>{lang === 'ar' ? 'قم بتحديث اسم العرض الخاص بك وبريدك الإلكتروني.' : 'Update your display name and contact email.'}</CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div className="space-y-1.5">
+                                        <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'الاسم الكامل' : 'Full Name'}</label>
+                                        <Input value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'البريد الإلكتروني الأساسي' : 'Primary Email'}</label>
+                                        <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                                        <p className="text-xs text-slate-500">
+                                            {lang === 'ar' ? 'ملاحظة: تغيير البريد الإلكتروني يتطلب تأكيداً.' : 'Note: Changing your email requires verification.'}
+                                        </p>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        {/* NOTIFICATIONS TAB */}
+                        {activeTab === 'notifications' && (
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>{lang === 'ar' ? 'قوالب واتساب' : 'WhatsApp Templates'}</CardTitle>
+                                    <CardDescription>{lang === 'ar' ? 'قم بتكوين رسالة الحضور الافتراضية الخاصة بك.' : 'Pre-configure your standard attendance alert format.'}</CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div className="space-y-1.5">
+                                        <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'قالب رسالة الحضور' : 'Attendance Message Template'}</label>
+                                        <textarea 
+                                            value={whatsappTemplate}
+                                            onChange={(e) => setWhatsappTemplate(e.target.value)}
+                                            rows={6}
+                                            className="flex w-full rounded-md border border-slate-200 bg-transparent px-3 py-2 text-sm ring-offset-white placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2"
+                                        />
+                                        <div className="bg-slate-50 border rounded-md p-3 mt-2">
+                                            <p className="text-xs font-semibold text-slate-700 mb-1">{lang === 'ar' ? 'المتغيرات المتاحة:' : 'Available Variables:'}</p>
+                                            <div className="flex gap-2 flex-wrap text-xs text-blue-600 font-mono">
+                                                <span className="bg-blue-100 px-1.5 py-0.5 rounded">{`{name}`}</span>
+                                                <span className="bg-blue-100 px-1.5 py-0.5 rounded">{`{date}`}</span>
+                                                <span className="bg-blue-100 px-1.5 py-0.5 rounded">{`{status}`}</span>
+                                                <span className="bg-blue-100 px-1.5 py-0.5 rounded">{`{bonus}`}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        {/* LOCALIZATION TAB */}
+                        {activeTab === 'localization' && (
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>{lang === 'ar' ? 'اللغة والمنطقة' : 'Localization Defaults'}</CardTitle>
+                                    <CardDescription>{lang === 'ar' ? 'اضبط تفضيلات اللغة والمنطقة الزمنية.' : 'Set your language and timezone preferences.'}</CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                    <div className="space-y-1.5">
+                                        <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'لغة الواجهة' : 'Interface Language'}</label>
+                                        <div className="flex items-center gap-4">
+                                            <Button 
+                                                type="button"
+                                                variant={lang === 'ar' ? 'default' : 'outline'} 
+                                                onClick={() => { if(lang !== 'ar') toggleLanguage(); }}
+                                                className={lang === 'ar' ? 'bg-blue-600' : ''}
+                                            >
+                                                العربية
+                                            </Button>
+                                            <Button 
+                                                type="button"
+                                                variant={lang === 'en' ? 'default' : 'outline'} 
+                                                onClick={() => { if(lang !== 'en') toggleLanguage(); }}
+                                                className={lang === 'en' ? 'bg-blue-600' : ''}
+                                            >
+                                                English
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'المنطقة الزمنية النظامية' : 'System Timezone'}</label>
+                                        <Select value={timezone} onValueChange={(val) => val && setTimezone(val)}>
+                                            <SelectTrigger className="w-full md:w-[300px]">
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="Asia/Riyadh">
+                                                    {lang === 'ar' ? 'توقيت السعودية (الرياض) - UTC+3' : 'Saudi Arabia (Riyadh) - UTC+3'}
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <p className="text-xs text-slate-500">
+                                            {lang === 'ar' ? 'يتم قفل المنطقة الزمنية على توقيت السعودية لضمان دقة توثيق سجلات الحضور.' : 'Timezone is locked to Saudi Arabia to ensure accurate attendance stamping.'}
+                                        </p>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        {/* SECURITY TAB */}
+                        {activeTab === 'security' && (
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>{lang === 'ar' ? 'الأمان وإدارة الجلسات' : 'Security Management'}</CardTitle>
+                                    <CardDescription>{lang === 'ar' ? 'حماية حسابك وإدارة الأجهزة المتصلة.' : 'Protect your account and manage connected devices.'}</CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 border rounded-lg bg-slate-50">
+                                        <div>
+                                            <h4 className="font-semibold text-slate-900 flex items-center gap-2">
+                                                <Key className="h-4 w-4 text-slate-500" />
+                                                {lang === 'ar' ? 'إعادة تعيين كلمة المرور' : 'Password Reset'}
+                                            </h4>
+                                            <p className="text-sm text-slate-500 mt-1">
+                                                {lang === 'ar' ? 'أرسل رابطاً آمناً إلى بريدك الإلكتروني لتغيير كلمة المرور.' : 'Send a secure link to your email to change your password.'}
+                                            </p>
+                                        </div>
+                                        <Button type="button" variant="outline" onClick={handlePasswordReset} className="shrink-0">
+                                            {lang === 'ar' ? 'إرسال الرابط' : 'Send Reset Link'}
+                                        </Button>
+                                    </div>
+
+                                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 border rounded-lg bg-slate-50">
+                                        <div>
+                                            <h4 className="font-semibold text-slate-900 flex items-center gap-2">
+                                                <Smartphone className="h-4 w-4 text-slate-500" />
+                                                {lang === 'ar' ? 'الجلسات النشطة' : 'Active Sessions'}
+                                            </h4>
+                                            <p className="text-sm text-slate-500 mt-1">
+                                                {lang === 'ar' ? 'تسجيل الخروج قسرياً من جميع الأجهزة الأخرى.' : 'Forcefully sign out of all other devices you might be logged into.'}
+                                            </p>
+                                        </div>
+                                        <Button type="button" variant="destructive" onClick={handleSignOutOtherDevices} className="shrink-0 flex items-center gap-2">
+                                            <LogOut className="h-4 w-4" />
+                                            {lang === 'ar' ? 'خروج من الأجهزة الأخرى' : 'Sign Out Others'}
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        {/* Global Save Button (Only show for tabs that require form saving) */}
+                        {['profile', 'notifications', 'localization'].includes(activeTab) && (
+                            <div className="mt-6 flex justify-end">
+                                <Button type="submit" disabled={saving} className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 px-8">
+                                    <Save className="h-4 w-4" />
+                                    <span>{saving ? (lang === 'ar' ? 'جاري الحفظ...' : 'Saving...') : (lang === 'ar' ? 'حفظ التغييرات' : 'Save Changes')}</span>
+                                </Button>
+                            </div>
+                        )}
+                    </form>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+D:\STUDENT TRACKER\student-tracker\app\students\page.tsx:
+'use client';
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { supabase } from '@/lib/supabaseClient';
+import { useLanguage } from '@/context/LanguageContext';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Users, Search, Plus, X, Trash2, Edit, AlertTriangle, Send, Activity, GraduationCap } from "lucide-react";
+
+interface ClassData {
+  id: string;
+  class_name: string;
+}
+
+interface StudentData {
+  id: string;
+  full_name: string;
+  phone_number: string;
+  class_id: string;
+  classes: { class_name: string };
+  attendanceRate: number;
+  avgGrade: number | null;
+  isAtRisk: boolean;
+}
+
+export default function StudentsPage() {
+  const { lang } = useLanguage();
+  const [students, setStudents] = useState<StudentData[]>([]);
+  const [classes, setClasses] = useState<ClassData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Filters
+  const [searchQuery, setSearchQuery] = useState('');
+  const [classFilter, setClassFilter] = useState<string>('all');
+
+  // Add Modal State
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newStudentName, setNewStudentName] = useState('');
+  const [newStudentPhone, setNewStudentPhone] = useState('');
+  const [newStudentClassId, setNewStudentClassId] = useState('');
+
+  // Edit Modal State
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingStudentId, setEditingStudentId] = useState('');
+  const [editStudentName, setEditStudentName] = useState('');
+  const [editStudentPhone, setEditStudentPhone] = useState('');
+  const [editStudentClassId, setEditStudentClassId] = useState('');
+
+  // Metrics
+  const [metrics, setMetrics] = useState({ total: 0, avgAttendance: 0, atRisk: 0 });
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  async function fetchData() {
+    setLoading(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    // Fetch Teacher's Classes securely
+    const { data: classData } = await supabase
+      .from('classes')
+      .select('id, class_name')
+      .eq('teacher_id', user.id);
+
+    if (classData) setClasses(classData);
+
+    if (!classData || classData.length === 0) {
+      setLoading(false);
+      return;
+    }
+
+    const classIds = classData.map(c => c.id);
+
+    // Fetch Students associated with those classes
+    const { data: studentData, error } = await supabase
+      .from('students')
+      .select(`
+        id, 
+        full_name, 
+        phone_number, 
+        class_id,
+        classes (class_name),
+        attendance (status),
+        assessment_grades (score, assessments(max_grade))
+      `)
+      .in('class_id', classIds);
+
+    if (error) {
+      console.error('Error fetching students:', error);
+      setLoading(false);
+      return;
+    }
+
+    let totalAttendancePercentage = 0;
+    let atRiskCount = 0;
+
+    const processedStudents: StudentData[] = (studentData || []).map((student: any) => {
+      // Calculate Attendance
+      const totalDays = student.attendance?.length || 0;
+      const presentDays = student.attendance?.filter((a: any) => a.status !== 'Absent').length || 0;
+      const attendanceRate = totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 100;
+      
+      totalAttendancePercentage += attendanceRate;
+
+      // Calculate Average Grade from assessments
+      let avgGrade = null;
+      if (student.assessment_grades && student.assessment_grades.length > 0) {
+        const totalScore = student.assessment_grades.reduce((acc: number, g: any) => {
+           const max = g.assessments?.max_grade || 100;
+           return acc + (g.score / max);
+        }, 0);
+        avgGrade = Math.round((totalScore / student.assessment_grades.length) * 100);
+      }
+
+      const isAtRisk = attendanceRate < 75 || (avgGrade !== null && avgGrade < 60);
+      if (isAtRisk) atRiskCount++;
+
+      const classInfo = Array.isArray(student.classes) ? student.classes[0] : student.classes;
+
+      return {
+        id: student.id,
+        full_name: student.full_name,
+        phone_number: student.phone_number,
+        class_id: student.class_id,
+        classes: { class_name: classInfo?.class_name || 'Unknown' },
+        attendanceRate,
+        avgGrade,
+        isAtRisk
+      };
+    });
+
+    setStudents(processedStudents);
+    setMetrics({
+      total: processedStudents.length,
+      avgAttendance: processedStudents.length > 0 ? Math.round(totalAttendancePercentage / processedStudents.length) : 0,
+      atRisk: atRiskCount
+    });
+
+    setLoading(false);
+  }
+
+  // --- ADD STUDENT ---
+  const handleAddStudent = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const saudiPhoneRegex = /^9665\d{8}$/;
+    if (!saudiPhoneRegex.test(newStudentPhone)) {
+      alert(lang === 'ar' ? 'الرجاء إدخال رقم سعودي صحيح يبدأ بـ 9665' : 'Please enter a valid Saudi number starting with 9665');
+      return;
+    }
+    if (!newStudentClassId) {
+      alert(lang === 'ar' ? 'الرجاء اختيار الفصل.' : 'Please select a class.');
+      return;
+    }
+
+    const { data: existing } = await supabase.from('students')
+        .select('id')
+        .eq('class_id', newStudentClassId)
+        .eq('phone_number', newStudentPhone);
+
+    if (existing && existing.length > 0) {
+        alert(lang === 'ar' ? 'هذا الطالب مسجل بالفعل برقم الهاتف هذا في هذا الفصل.' : 'A student with this phone number is already registered in this class.');
+        return;
+    }
+
+    const { error } = await supabase.from('students').insert([
+      { class_id: newStudentClassId, full_name: newStudentName, phone_number: newStudentPhone }
+    ]);
+
+    if (error) {
+      alert(lang === 'ar' ? `خطأ: ${error.message}` : `Error: ${error.message}`);
+    } else {
+      setNewStudentName('');
+      setNewStudentPhone('');
+      setNewStudentClassId('');
+      setIsAddModalOpen(false);
+      fetchData();
+    }
+  };
+
+  // --- EDIT STUDENT ---
+  const openEditModal = (student: StudentData) => {
+    setEditingStudentId(student.id);
+    setEditStudentName(student.full_name);
+    setEditStudentPhone(student.phone_number);
+    setEditStudentClassId(student.class_id);
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditStudent = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const saudiPhoneRegex = /^9665\d{8}$/;
+    if (!saudiPhoneRegex.test(editStudentPhone)) {
+      alert(lang === 'ar' ? 'الرجاء إدخال رقم سعودي صحيح يبدأ بـ 9665' : 'Please enter a valid Saudi number starting with 9665');
+      return;
+    }
+
+    const { error } = await supabase
+      .from('students')
+      .update({ full_name: editStudentName, phone_number: editStudentPhone, class_id: editStudentClassId })
+      .eq('id', editingStudentId);
+
+    if (error) {
+      alert(lang === 'ar' ? `خطأ: ${error.message}` : `Error: ${error.message}`);
+    } else {
+      setIsEditModalOpen(false);
+      fetchData();
+    }
+  };
+
+  // --- DELETE STUDENT ---
+  const handleDeleteStudent = async (studentId: string) => {
+    const confirmDelete = window.confirm(
+      lang === 'ar' ? 'هل أنت متأكد من حذف هذا الطالب بالكامل؟ (سيتم حذف سجل الحضور والدرجات أيضاً)' : 'Are you sure you want to delete this student? (All attendance and grades will be lost)'
+    );
+
+    if (!confirmDelete) return;
+
+    const { error } = await supabase.from('students').delete().eq('id', studentId);
+    
+    if (error) {
+      alert(lang === 'ar' ? `خطأ: ${error.message}` : `Error: ${error.message}`);
+    } else {
+      fetchData();
+    }
+  };
+
+  const sendWhatsApp = (phone: string, name: string) => {
+    const msg = lang === 'ar' ? `مرحباً بك يا ولي أمر الطالب/ة ${name}،` : `Hello parent of ${name},`;
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+  };
+
+  const filteredStudents = students.filter(student => {
+    const matchesSearch = student.full_name.toLowerCase().includes(searchQuery.toLowerCase()) || student.phone_number.includes(searchQuery);
+    const matchesClass = classFilter === 'all' || student.class_id === classFilter;
+    return matchesSearch && matchesClass;
+  });
+
+  return (
+    <div className="space-y-6 relative">
+      
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+            {lang === 'ar' ? 'دليل الطلاب' : 'Student Directory'}
+          </h1>
+          <p className="text-slate-500 mt-1">
+            {lang === 'ar' ? 'إدارة جميع طلابك عبر الفصول المختلفة.' : 'Manage all your students across different sections.'}
+          </p>
+        </div>
+        <Button onClick={() => setIsAddModalOpen(true)} className="bg-slate-900 hover:bg-slate-800 text-white flex items-center gap-2 shadow-sm">
+          <Plus className="h-4 w-4" />
+          {lang === 'ar' ? 'إضافة طالب' : 'Add Student'}
+        </Button>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardContent className="p-6 flex items-center gap-4">
+            <div className="p-3 bg-blue-50 text-blue-600 rounded-lg shrink-0">
+              <Users className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-slate-500">{lang === 'ar' ? 'إجمالي الطلاب' : 'Total Students'}</p>
+              <h3 className="text-2xl font-bold text-slate-900">{metrics.total}</h3>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-6 flex items-center gap-4">
+            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-lg shrink-0">
+              <Activity className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-slate-500">{lang === 'ar' ? 'متوسط نسبة الحضور' : 'Overall Attendance'}</p>
+              <h3 className="text-2xl font-bold text-slate-900">{metrics.avgAttendance}%</h3>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className={metrics.atRisk > 0 ? "border-red-200 bg-red-50/30" : ""}>
+          <CardContent className="p-6 flex items-center gap-4">
+            <div className={`p-3 rounded-lg shrink-0 ${metrics.atRisk > 0 ? 'bg-red-100 text-red-600' : 'bg-slate-100 text-slate-600'}`}>
+              <AlertTriangle className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-slate-500">{lang === 'ar' ? 'طلاب في خطر (أكاديمياً)' : 'At-Risk Students'}</p>
+              <h3 className={`text-2xl font-bold ${metrics.atRisk > 0 ? 'text-red-700' : 'text-slate-900'}`}>{metrics.atRisk}</h3>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute start-3 top-2.5 h-4 w-4 text-slate-400" />
+          <Input
+            placeholder={lang === 'ar' ? 'بحث بالاسم أو رقم الهاتف...' : 'Search by name or phone...'}
+            className="ps-9"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <div className="w-full sm:w-64">
+          <Select value={classFilter} onValueChange={(val) => val && setClassFilter(val)}>
+            <SelectTrigger>
+              <SelectValue>
+                {classFilter === 'all' 
+                  ? (lang === 'ar' ? 'جميع الفصول' : 'All Classes')
+                  : classes.find(c => c.id === classFilter)?.class_name || (lang === 'ar' ? 'تصفية حسب الفصل' : 'Filter by Class')}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{lang === 'ar' ? 'جميع الفصول' : 'All Classes'}</SelectItem>
+              {classes.map(cls => (
+                <SelectItem key={cls.id} value={cls.id}>{cls.class_name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <Card className="overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-slate-50 border-b text-slate-600 font-medium">
+              <tr>
+                <th className="px-4 py-3">{lang === 'ar' ? 'الطالب والفصل' : 'Student & Section'}</th>
+                <th className="px-4 py-3">{lang === 'ar' ? 'جهة الاتصال' : 'Contact'}</th>
+                <th className="px-4 py-3">{lang === 'ar' ? 'ملخص أكاديمي' : 'Academic Snapshot'}</th>
+                <th className="px-4 py-3 text-center">{lang === 'ar' ? 'إجراءات' : 'Actions'}</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {loading ? (
+                <tr>
+                  <td colSpan={4} className="text-center py-8 text-slate-500">
+                    {lang === 'ar' ? 'جاري التحميل...' : 'Loading...'}
+                  </td>
+                </tr>
+              ) : filteredStudents.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="text-center py-8 text-slate-500">
+                    {lang === 'ar' ? 'لا يوجد طلاب يطابقون بحثك.' : 'No students found.'}
+                  </td>
+                </tr>
+              ) : (
+                filteredStudents.map((student) => (
+                  <tr key={student.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+                          {student.full_name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-slate-900">{student.full_name}</p>
+                          <div className="flex items-center gap-1.5 mt-0.5">
+                            <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-500/10">
+                              {student.classes?.class_name}
+                            </span>
+                            {student.isAtRisk && (
+                              <span className="inline-flex items-center rounded-md bg-red-50 px-1.5 py-0.5 text-[10px] font-medium text-red-600 ring-1 ring-inset ring-red-500/10">
+                                {lang === 'ar' ? 'في خطر' : 'At Risk'}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-slate-600 font-mono text-xs">{student.phone_number}</span>
+                        <Button 
+                          size="icon" 
+                          variant="ghost" 
+                          className="h-7 w-7 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                          onClick={() => sendWhatsApp(student.phone_number, student.full_name)}
+                        >
+                          <Send className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2 text-xs">
+                          <Activity className={`h-3.5 w-3.5 ${student.attendanceRate < 75 ? 'text-red-500' : 'text-slate-400'}`} />
+                          <span className={student.attendanceRate < 75 ? 'text-red-600 font-medium' : 'text-slate-600'}>
+                            {lang === 'ar' ? 'الحضور:' : 'Attendance:'} {student.attendanceRate}%
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs">
+                          <GraduationCap className={`h-3.5 w-3.5 ${(student.avgGrade !== null && student.avgGrade < 60) ? 'text-red-500' : 'text-slate-400'}`} />
+                          <span className={(student.avgGrade !== null && student.avgGrade < 60) ? 'text-red-600 font-medium' : 'text-slate-600'}>
+                            {lang === 'ar' ? 'المعدل:' : 'Grade:'} {student.avgGrade !== null ? `${student.avgGrade}%` : 'N/A'}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <div className="flex items-center justify-center gap-1">
+                        <Button variant="ghost" size="icon" onClick={() => openEditModal(student)} className="h-8 w-8 text-slate-400 hover:text-blue-600">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => handleDeleteStudent(student.id)} className="h-8 w-8 text-slate-400 hover:text-red-600">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      {/* --- ADD STUDENT MODAL --- */}
+      {isAddModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/50 flex items-center justify-center p-4">
+          <Card className="w-full max-w-md shadow-xl border-0">
+            <CardHeader className="flex flex-row items-center justify-between border-b pb-4">
+              <div>
+                <CardTitle>{lang === 'ar' ? 'إضافة طالب جديد' : 'Add New Student'}</CardTitle>
+              </div>
+              <Button variant="ghost" size="icon" onClick={() => setIsAddModalOpen(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <form onSubmit={handleAddStudent} className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'الفصل' : 'Assign to Class'}</label>
+                  <Select value={newStudentClassId} onValueChange={(val) => val && setNewStudentClassId(val)} required>
+                    <SelectTrigger>
+                      <SelectValue>
+                        {newStudentClassId 
+                          ? classes.find(c => c.id === newStudentClassId)?.class_name 
+                          : (lang === 'ar' ? 'اختر الفصل...' : 'Select a class...')}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {classes.map(cls => (
+                        <SelectItem key={cls.id} value={cls.id}>{cls.class_name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'اسم الطالب' : 'Student Name'}</label>
+                  <Input required placeholder={lang === 'ar' ? 'سارة محمد' : 'Sara Mohammed'} value={newStudentName} onChange={(e) => setNewStudentName(e.target.value)} />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'رقم الهاتف (واتساب)' : 'Phone Number (WhatsApp)'}</label>
+                  <Input 
+                    required type="tel" maxLength={12} placeholder="9665XXXXXXXX" 
+                    value={newStudentPhone} 
+                    onChange={(e) => {
+                      let val = e.target.value.replace(/\D/g, '');
+                      if (val.length > 0 && !val.startsWith('9')) val = '9665' + val;
+                      setNewStudentPhone(val.slice(0, 12));
+                    }} 
+                  />
+                </div>
+                <div className="pt-4 flex gap-2 justify-end">
+                  <Button type="button" variant="outline" onClick={() => setIsAddModalOpen(false)}>
+                    {lang === 'ar' ? 'إلغاء' : 'Cancel'}
+                  </Button>
+                  <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">
+                    {lang === 'ar' ? 'حفظ الطالب' : 'Save Student'}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* --- EDIT STUDENT MODAL --- */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/50 flex items-center justify-center p-4">
+          <Card className="w-full max-w-md shadow-xl border-0">
+            <CardHeader className="flex flex-row items-center justify-between border-b pb-4">
+              <div>
+                <CardTitle>{lang === 'ar' ? 'تعديل بيانات الطالب' : 'Edit Student Details'}</CardTitle>
+              </div>
+              <Button variant="ghost" size="icon" onClick={() => setIsEditModalOpen(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <form onSubmit={handleEditStudent} className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'تغيير الفصل' : 'Change Class'}</label>
+                  <Select value={editStudentClassId} onValueChange={(val) => val && setEditStudentClassId(val)} required>
+                    <SelectTrigger>
+                      <SelectValue>
+                        {classes.find(c => c.id === editStudentClassId)?.class_name}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {classes.map(cls => (
+                        <SelectItem key={cls.id} value={cls.id}>{cls.class_name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'اسم الطالب' : 'Student Name'}</label>
+                  <Input required value={editStudentName} onChange={(e) => setEditStudentName(e.target.value)} />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'رقم الهاتف (واتساب)' : 'Phone Number (WhatsApp)'}</label>
+                  <Input 
+                    required type="tel" maxLength={12} 
+                    value={editStudentPhone} 
+                    onChange={(e) => {
+                      let val = e.target.value.replace(/\D/g, '');
+                      if (val.length > 0 && !val.startsWith('9')) val = '9665' + val;
+                      setEditStudentPhone(val.slice(0, 12));
+                    }} 
+                  />
+                </div>
+                <div className="pt-4 flex gap-2 justify-end">
+                  <Button type="button" variant="outline" onClick={() => setIsEditModalOpen(false)}>
+                    {lang === 'ar' ? 'إلغاء' : 'Cancel'}
+                  </Button>
+                  <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                    {lang === 'ar' ? 'تحديث البيانات' : 'Update Details'}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
+}
+
+D:\STUDENT TRACKER\student-tracker\app\update-password\page.tsx:
+'use client';
+
+import { useState } from 'react';
+import { supabase } from '@/lib/supabaseClient';
+import { useLanguage } from '@/context/LanguageContext';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Save, Lock } from 'lucide-react';
+
+export default function UpdatePasswordPage() {
+  const { lang } = useLanguage();
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setErrorMsg('');
+
+    if (password.length < 6) {
+      setErrorMsg(lang === 'ar' ? 'يجب أن تتكون كلمة المرور من 6 أحرف على الأقل.' : 'Password must be at least 6 characters.');
+      setLoading(false);
+      return;
+    }
+
+    const { error } = await supabase.auth.updateUser({ password });
+
+    if (error) {
+      setErrorMsg(error.message);
+    } else {
+      alert(lang === 'ar' ? 'تم تأكيد كلمة المرور بنجاح! جاري التوجيه...' : 'Password secured successfully! Redirecting...');
+      window.location.href = '/'; 
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-100 p-4">
+      <Card className="w-full max-w-md shadow-lg">
+        <CardHeader className="text-center">
+          <div className="mx-auto bg-blue-100 text-blue-600 p-3 rounded-full w-fit mb-3">
+            <Lock className="h-6 w-6" />
+          </div>
+          <CardTitle className="text-2xl font-bold text-slate-900">
+            {lang === 'ar' ? 'إعداد كلمة المرور' : 'Setup Password'}
+          </CardTitle>
+          <CardDescription>
+            {lang === 'ar' ? 'أدخل كلمة مرور قوية لحسابك أدناه لحفظها.' : 'Please enter a new secure password for your account.'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {errorMsg && (
+            <div className="p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-md text-center mb-4 font-medium">
+              {errorMsg}
+            </div>
+          )}
+          <form onSubmit={handleUpdatePassword} className="space-y-4">
+            <div className="space-y-1 text-start">
+              <label className="text-xs font-semibold text-slate-700">
+                {lang === 'ar' ? 'كلمة المرور الجديدة' : 'New Password'}
+              </label>
+              <Input
+                type="password"
+                required
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 pt-1"
+            >
+              <Save className="h-4 w-4" />
+              <span>
+                {loading
+                  ? (lang === 'ar' ? 'جاري الحفظ...' : 'Saving...')
+                  : (lang === 'ar' ? 'حفظ ودخول' : 'Save & Login')}
+              </span>
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+D:\STUDENT TRACKER\student-tracker\components\ui\AppShell.tsx:
+'use client';
+
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import Sidebar from '@/components/ui/Sidebar';
+import { Providers } from '@/components/ui/Providers';
+import { Menu } from 'lucide-react';
+
+export default function AppShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isLoginPage = pathname === '/login';
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Automatically close the mobile sidebar whenever the user navigates to a new page
+  useEffect(() => {
+    setIsSidebarOpen(false);
+  }, [pathname]);
+
+  return (
+    <Providers>
+      {isLoginPage ? (
+        // Clean layout for Login page (No Sidebar)
+        <main className="min-h-screen w-full bg-slate-100">
+          {children}
+        </main>
+      ) : (
+        // Dashboard layout with Responsive Sidebar
+        <div className="flex flex-col md:flex-row w-full min-h-screen bg-slate-100 overflow-hidden">
+          
+          {/* Mobile Top Navigation Bar */}
+          <div className="md:hidden bg-slate-950 text-white p-4 flex items-center justify-between shadow-md z-30 shrink-0">
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={() => setIsSidebarOpen(true)} 
+                className="p-1.5 hover:bg-slate-800 rounded-md transition-colors"
+              >
+                <Menu className="h-6 w-6" />
+              </button>
+              <span className="font-bold text-lg text-slate-200">Teacher Portal</span>
+            </div>
+          </div>
+
+          {/* Sidebar Component */}
+          <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+
+          {/* Main Content Area */}
+          <main className="flex-1 p-4 md:p-8 overflow-y-auto w-full h-[calc(100vh-64px)] md:h-screen">
+            <div className="max-w-7xl mx-auto">
+              {children}
+            </div>
+          </main>
+          
+        </div>
+      )}
+    </Providers>
+  );
+}
+
+D:\STUDENT TRACKER\student-tracker\components\ui\button.tsx:
+import { Button as ButtonPrimitive } from "@base-ui/react/button"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+const buttonVariants = cva(
+  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/80",
+        outline:
+          "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
+        ghost:
+          "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
+        destructive:
+          "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
+        link: "text-primary underline-offset-4 hover:underline",
+      },
+      size: {
+        default:
+          "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+        xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+        lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+        icon: "size-8",
+        "icon-xs":
+          "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
+        "icon-sm":
+          "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
+        "icon-lg": "size-9",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+)
+
+function Button({
+  className,
+  variant = "default",
+  size = "default",
+  ...props
+}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
+  return (
+    <ButtonPrimitive
+      data-slot="button"
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
+    />
+  )
+}
+
+export { Button, buttonVariants }
+
+
+D:\STUDENT TRACKER\student-tracker\components\ui\card.tsx:
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
+
+function Card({
+  className,
+  size = "default",
+  ...props
+}: React.ComponentProps<"div"> & { size?: "default" | "sm" }) {
+  return (
+    <div
+      data-slot="card"
+      data-size={size}
+      className={cn(
+        "group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card py-(--card-spacing) text-sm text-card-foreground ring-1 ring-foreground/10 [--card-spacing:--spacing(4)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-header"
+      className={cn(
+        "group/card-header @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-(--card-spacing) has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-(--card-spacing)",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-title"
+      className={cn(
+        "font-heading text-base leading-snug font-medium group-data-[size=sm]/card:text-sm",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-description"
+      className={cn("text-sm text-muted-foreground", className)}
+      {...props}
+    />
+  )
+}
+
+function CardAction({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-action"
+      className={cn(
+        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function CardContent({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-content"
+      className={cn("px-(--card-spacing)", className)}
+      {...props}
+    />
+  )
+}
+
+function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-footer"
+      className={cn(
+        "flex items-center rounded-b-xl border-t bg-muted/50 p-(--card-spacing)",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+export {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardAction,
+  CardDescription,
+  CardContent,
+}
+
+
+D:\STUDENT TRACKER\student-tracker\components\ui\input.tsx:
+import * as React from "react"
+import { Input as InputPrimitive } from "@base-ui/react/input"
+
+import { cn } from "@/lib/utils"
+
+function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+  return (
+    <InputPrimitive
+      type={type}
+      data-slot="input"
+      className={cn(
+        "h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+export { Input }
+
+
+D:\STUDENT TRACKER\student-tracker\components\ui\Providers.tsx:
+'use client';
+
+import { LanguageProvider } from '@/context/LanguageContext';
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return <LanguageProvider>{children}</LanguageProvider>;
+}
+
+D:\STUDENT TRACKER\student-tracker\components\ui\select.tsx:
+"use client"
+
+import * as React from "react"
+import { Select as SelectPrimitive } from "@base-ui/react/select"
+
+import { cn } from "@/lib/utils"
+import { ChevronDownIcon, CheckIcon, ChevronUpIcon } from "lucide-react"
+
+const Select = SelectPrimitive.Root
+
+function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {
+  return (
+    <SelectPrimitive.Group
+      data-slot="select-group"
+      className={cn("scroll-my-1 p-1", className)}
+      {...props}
+    />
+  )
+}
+
+function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {
+  return (
+    <SelectPrimitive.Value
+      data-slot="select-value"
+      className={cn("flex flex-1 text-left", className)}
+      {...props}
+    />
+  )
+}
+
+function SelectTrigger({
+  className,
+  size = "default",
+  children,
+  ...props
+}: SelectPrimitive.Trigger.Props & {
+  size?: "sm" | "default"
+}) {
+  return (
+    <SelectPrimitive.Trigger
+      data-slot="select-trigger"
+      data-size={size}
+      className={cn(
+        "flex w-fit items-center justify-between gap-1.5 rounded-lg border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground data-[size=default]:h-8 data-[size=sm]:h-7 data-[size=sm]:rounded-[min(var(--radius-md),10px)] *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        className
+      )}
+      {...props}
+    >
+      {children}
+      <SelectPrimitive.Icon
+        render={
+          <ChevronDownIcon className="pointer-events-none size-4 text-muted-foreground" />
+        }
+      />
+    </SelectPrimitive.Trigger>
+  )
+}
+
+function SelectContent({
+  className,
+  children,
+  side = "bottom",
+  sideOffset = 4,
+  align = "center",
+  alignOffset = 0,
+  alignItemWithTrigger = true,
+  ...props
+}: SelectPrimitive.Popup.Props &
+  Pick<
+    SelectPrimitive.Positioner.Props,
+    "align" | "alignOffset" | "side" | "sideOffset" | "alignItemWithTrigger"
+  >) {
+  return (
+    <SelectPrimitive.Portal>
+      <SelectPrimitive.Positioner
+        side={side}
+        sideOffset={sideOffset}
+        align={align}
+        alignOffset={alignOffset}
+        alignItemWithTrigger={alignItemWithTrigger}
+        className="isolate z-50"
+      >
+        <SelectPrimitive.Popup
+          data-slot="select-content"
+          data-align-trigger={alignItemWithTrigger}
+          className={cn("relative isolate z-50 max-h-(--available-height) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100 data-[align-trigger=true]:animate-none data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95", className )}
+          {...props}
+        >
+          <SelectScrollUpButton />
+          <SelectPrimitive.List>{children}</SelectPrimitive.List>
+          <SelectScrollDownButton />
+        </SelectPrimitive.Popup>
+      </SelectPrimitive.Positioner>
+    </SelectPrimitive.Portal>
+  )
+}
+
+function SelectLabel({
+  className,
+  ...props
+}: SelectPrimitive.GroupLabel.Props) {
+  return (
+    <SelectPrimitive.GroupLabel
+      data-slot="select-label"
+      className={cn("px-1.5 py-1 text-xs text-muted-foreground", className)}
+      {...props}
+    />
+  )
+}
+
+function SelectItem({
+  className,
+  children,
+  ...props
+}: SelectPrimitive.Item.Props) {
+  return (
+    <SelectPrimitive.Item
+      data-slot="select-item"
+      className={cn(
+        "relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+        className
+      )}
+      {...props}
+    >
+      <SelectPrimitive.ItemText className="flex flex-1 shrink-0 gap-2 whitespace-nowrap">
+        {children}
+      </SelectPrimitive.ItemText>
+      <SelectPrimitive.ItemIndicator
+        render={
+          <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center" />
+        }
+      >
+        <CheckIcon className="pointer-events-none" />
+      </SelectPrimitive.ItemIndicator>
+    </SelectPrimitive.Item>
+  )
+}
+
+function SelectSeparator({
+  className,
+  ...props
+}: SelectPrimitive.Separator.Props) {
+  return (
+    <SelectPrimitive.Separator
+      data-slot="select-separator"
+      className={cn("pointer-events-none -mx-1 my-1 h-px bg-border", className)}
+      {...props}
+    />
+  )
+}
+
+function SelectScrollUpButton({
+  className,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.ScrollUpArrow>) {
+  return (
+    <SelectPrimitive.ScrollUpArrow
+      data-slot="select-scroll-up-button"
+      className={cn(
+        "top-0 z-10 flex w-full cursor-default items-center justify-center bg-popover py-1 [&_svg:not([class*='size-'])]:size-4",
+        className
+      )}
+      {...props}
+    >
+      <ChevronUpIcon
+      />
+    </SelectPrimitive.ScrollUpArrow>
+  )
+}
+
+function SelectScrollDownButton({
+  className,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.ScrollDownArrow>) {
+  return (
+    <SelectPrimitive.ScrollDownArrow
+      data-slot="select-scroll-down-button"
+      className={cn(
+        "bottom-0 z-10 flex w-full cursor-default items-center justify-center bg-popover py-1 [&_svg:not([class*='size-'])]:size-4",
+        className
+      )}
+      {...props}
+    >
+      <ChevronDownIcon
+      />
+    </SelectPrimitive.ScrollDownArrow>
+  )
+}
+
+export {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+}
+
+
+D:\STUDENT TRACKER\student-tracker\components\ui\Sidebar.tsx:
+'use client';
+
+import Link from 'next/link';
+import { LayoutDashboard, BookOpen, Users, Settings, Languages, LogOut, X } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabaseClient';
+
+interface SidebarProps {
+  isOpen?: boolean;
+  setIsOpen?: (isOpen: boolean) => void;
+}
+
+export default function Sidebar({ isOpen = false, setIsOpen }: SidebarProps) {
+  const { lang, toggleLanguage, t } = useLanguage();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push('/login');
+  };
+
+  // Handle slide animations dynamically based on English (LTR) or Arabic (RTL)
+  const translateClass = isOpen ? "translate-x-0" : (lang === 'ar' ? "translate-x-full" : "-translate-x-full");
+  const positionClass = lang === 'ar' ? 'right-0 border-l' : 'left-0 border-r';
+
+  return (
+    <>
+      {/* Mobile Overlay Backdrop */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-950/60 z-40 md:hidden backdrop-blur-sm transition-opacity"
+          onClick={() => setIsOpen && setIsOpen(false)}
+        />
+      )}
+
+      {/* Sidebar Navigation */}
+      <aside className={`
+        fixed top-0 bottom-0 z-50 w-64 bg-slate-950 text-slate-300 p-4 flex flex-col border-slate-800 shrink-0 
+        transition-transform duration-300 ease-in-out md:relative md:translate-x-0
+        ${positionClass} ${translateClass}
+      `}>
+        <div className="flex items-center justify-between mb-8 px-2 text-white">
+          <div className="flex items-center gap-2">
+            <LayoutDashboard className="h-6 w-6 text-blue-500" />
+            <span className="text-xl font-bold">{t('portalTitle') || 'Portal'}</span>
+          </div>
+          {/* Mobile Close Button */}
+          <button 
+            onClick={() => setIsOpen && setIsOpen(false)} 
+            className="md:hidden p-1 text-slate-400 hover:text-white rounded hover:bg-slate-800 transition-colors"
+          >
+            <X className="h-6 w-6" />
+          </button>
+        </div>
+        
+        <nav className="flex flex-col gap-2 flex-1">
+          <Link href="/" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-slate-800 hover:text-white transition-colors">
+            <LayoutDashboard className="h-5 w-5" />
+            <span>{t('dashboard')}</span>
+          </Link>
+          <Link href="/classes" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-slate-800 hover:text-white transition-colors">
+            <BookOpen className="h-5 w-5" />
+            <span>{t('classes')}</span>
+          </Link>
+          <Link href="/students" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-slate-800 hover:text-white transition-colors">
+            <Users className="h-5 w-5" />
+            <span>{t('students')}</span>
+          </Link>
+          <Link href="/settings" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-slate-800 hover:text-white transition-colors">
+            <Settings className="h-5 w-5" />
+            <span>{t('settings')}</span>
+          </Link>
+        </nav>
+
+        {/* Footer Controls: Language Switcher & Logout */}
+        <div className="pt-4 border-t border-slate-800 mt-auto flex flex-col gap-2">
+          <button
+            onClick={toggleLanguage}
+            className="w-full flex items-center justify-between px-3 py-2.5 rounded-md bg-slate-900 hover:bg-slate-800 text-slate-200 text-sm font-medium transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <Languages className="h-4 w-4 text-blue-400" />
+              <span>{lang === 'en' ? 'اللغة العربية' : 'English'}</span>
+            </div>
+            <span className="text-xs bg-slate-800 px-2 py-0.5 rounded text-slate-400 font-mono">
+              {lang === 'en' ? 'AR' : 'EN'}
+            </span>
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-md hover:bg-red-950/50 text-red-400 hover:text-red-300 transition-colors text-sm font-medium"
+          >
+            <LogOut className="h-4 w-4" />
+            <span>{lang === 'ar' ? 'تسجيل الخروج' : 'Sign Out'}</span>
+          </button>
+        </div>
+      </aside>
+    </>
+  );
+}
+
+D:\STUDENT TRACKER\student-tracker\components\ui\table.tsx:
+"use client"
+
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
+
+function Table({ className, ...props }: React.ComponentProps<"table">) {
+  return (
+    <div
+      data-slot="table-container"
+      className="relative w-full overflow-x-auto"
+    >
+      <table
+        data-slot="table"
+        className={cn("w-full caption-bottom text-sm", className)}
+        {...props}
+      />
+    </div>
+  )
+}
+
+function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
+  return (
+    <thead
+      data-slot="table-header"
+      className={cn("[&_tr]:border-b", className)}
+      {...props}
+    />
+  )
+}
+
+function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
+  return (
+    <tbody
+      data-slot="table-body"
+      className={cn("[&_tr:last-child]:border-0", className)}
+      {...props}
+    />
+  )
+}
+
+function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
+  return (
+    <tfoot
+      data-slot="table-footer"
+      className={cn(
+        "border-t bg-muted/50 font-medium [&>tr]:last:border-b-0",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
+  return (
+    <tr
+      data-slot="table-row"
+      className={cn(
+        "border-b transition-colors hover:bg-muted/50 has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function TableHead({ className, ...props }: React.ComponentProps<"th">) {
+  return (
+    <th
+      data-slot="table-head"
+      className={cn(
+        "h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground [&:has([role=checkbox])]:pr-0",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function TableCell({ className, ...props }: React.ComponentProps<"td">) {
+  return (
+    <td
+      data-slot="table-cell"
+      className={cn(
+        "p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function TableCaption({
+  className,
+  ...props
+}: React.ComponentProps<"caption">) {
+  return (
+    <caption
+      data-slot="table-caption"
+      className={cn("mt-4 text-sm text-muted-foreground", className)}
+      {...props}
+    />
+  )
+}
+
+export {
+  Table,
+  TableHeader,
+  TableBody,
+  TableFooter,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableCaption,
+}
+
+
+D:\STUDENT TRACKER\student-tracker\context\LanguageContext.tsx:
+'use client';
+
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+type Language = 'en' | 'ar';
+
+interface LanguageContextType {
+  lang: Language;
+  dir: 'ltr' | 'rtl';
+  toggleLanguage: () => void;
+  t: (key: string) => string;
+}
+
+const translations: Record<Language, Record<string, string>> = {
+  en: {
+    portalTitle: "Portal Admin",
+    dashboard: "Dashboard",
+    classes: "Classes",
+    students: "Students",
+    settings: "Settings",
+    timetableTitle: "Today's Timetable",
+    timetableSubtitle: "Select a class session below to log attendance, grades, or send updates.",
+    todayDate: "Today, August 23",
+    manageClass: "Manage Class",
+    allClasses: "All Enrolled Classes",
+    studentsCount: "Students",
+  },
+  ar: {
+    portalTitle: "لوحة التحكم",
+    dashboard: "الرئيسية",
+    classes: "الفصول",
+    students: "الطلاب",
+    settings: "الإعدادات",
+    timetableTitle: "جدول اليوم",
+    timetableSubtitle: "اختر الفصل للبدء في تسجيل الحضور، الدرجات، أو إرسال التنبيهات.",
+    todayDate: "اليوم، 23 أغسطس",
+    manageClass: "إدارة الفصل",
+    allClasses: "جميع الفصول المسجلة",
+    studentsCount: "طالب",
+  }
+};
+
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
+  const [lang, setLang] = useState<Language>('en');
+  const dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+  useEffect(() => {
+    document.documentElement.dir = dir;
+    document.documentElement.lang = lang;
+  }, [lang, dir]);
+
+  const toggleLanguage = () => {
+    setLang((prev) => (prev === 'en' ? 'ar' : 'en'));
+  };
+
+  const t = (key: string) => {
+    return translations[lang][key] || key;
+  };
+
+  return (
+    <LanguageContext.Provider value={{ lang, dir, toggleLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+}
+
+export function useLanguage() {
+  const context = useContext(LanguageContext);
+  if (!context) {
+    throw new Error('useLanguage must be used within a LanguageProvider');
+  }
+  return context;
+}
+
+D:\STUDENT TRACKER\student-tracker\lib\supabaseClient.ts:
+import { createBrowserClient } from '@supabase/ssr';
+
+export const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+D:\STUDENT TRACKER\student-tracker\lib\utils.ts:
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+
+

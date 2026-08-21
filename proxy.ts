@@ -29,14 +29,13 @@ export default async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  // 1. If NOT logged in and trying to access dashboard/protected pages -> Redirect to /login
-  if (!user && !request.nextUrl.pathname.startsWith('/login')) {
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
+  const isPublicRoute = 
+    request.nextUrl.pathname.startsWith('/login') || 
+    request.nextUrl.pathname.startsWith('/update-password');
 
-  // 2. If logged in and trying to access /login -> Redirect to main dashboard
-  if (user && request.nextUrl.pathname.startsWith('/login')) {
-    return NextResponse.redirect(new URL('/', request.url));
+  // 1. Unauthenticated users trying to access protected routes -> /login
+  if (!user && !isPublicRoute) {
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
   return response;

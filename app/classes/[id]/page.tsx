@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { useLanguage } from '@/context/LanguageContext';
@@ -9,18 +9,26 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, ArrowRight, CheckCircle, Clock, XCircle, Search, Save, UserPlus, X, AlertTriangle, Calendar, FileText, CheckSquare, Plus, MessageCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle, Clock, XCircle, Search, Save, UserPlus, X, AlertTriangle, Calendar, FileText, CheckSquare, Plus, MessageCircle, FileSpreadsheet, Upload } from 'lucide-react';
 import Link from 'next/link';
+import * as XLSX from 'xlsx';
 
 interface Student {
     id: string;
+    school_student_id?: string;
     full_name: string;
     phone_number: string;
 }
 
 const translateAssType = (type: string, lang: string) => {
     if (lang !== 'ar') return type;
-    const map: Record<string, string> = { 'Quiz': 'اختبار قصير', 'Midterm': 'نصفي', 'Final': 'نهائي' };
+    const map: Record<string, string> = { 
+        'Quiz': 'اختبار قصير', 
+        'Midterm': 'اختبار نصفي', 
+        'Final': 'اختبار نهائي',
+        'Qudurat': 'تجريبي قدرات',
+        'Tahsili': 'تجريبي تحصيلي'
+    };
     return map[type] || type;
 };
 
@@ -42,6 +50,7 @@ export default function ClassDetailsPage() {
     const params = useParams();
     const id = params?.id as string;
     const { lang } = useLanguage();
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [students, setStudents] = useState<Student[]>([]);
     const [classSchedules, setClassSchedules] = useState<any[]>([]);
@@ -58,6 +67,7 @@ export default function ClassDetailsPage() {
 
     const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
     const [newStudentName, setNewStudentName] = useState('');
+    const [newStudentSchoolId, setNewStudentSchoolId] = useState('');
     const [newStudentPhone, setNewStudentPhone] = useState('');
 
     const [assessments, setAssessments] = useState<any[]>([]);
@@ -89,7 +99,6 @@ export default function ClassDetailsPage() {
         checkSession(globalDate, classSchedules);
     }, [globalDate, classSchedules]);
 
-    // FETCH EXISTING ATTENDANCE
     async function fetchAttendanceForDate(dateStr: string, studentList: Student[]) {
         if (!studentList.length) return;
         const studentIds = studentList.map(s => s.id);
@@ -104,14 +113,12 @@ export default function ClassDetailsPage() {
         const newBonuses: Record<string, string> = {};
         const newDates: Record<string, string> = {};
 
-        // Default everyone to present locally
         studentList.forEach(s => {
             newAttendance[s.id] = 'Present';
             newBonuses[s.id] = '';
             newDates[s.id] = dateStr;
         });
 
-        // Override with data from database if they have records
         data?.forEach(record => {
             newAttendance[record.student_id] = record.status;
             newBonuses[record.student_id] = record.bonus_marks > 0 ? record.bonus_marks.toString() : '';
@@ -151,7 +158,7 @@ export default function ClassDetailsPage() {
 
     const handleGlobalDateChange = (date: string) => {
         setGlobalDate(date);
-        fetchAttendanceForDate(date, students); // Reload data for the new date
+        fetchAttendanceForDate(date, students);
     };
 
     const handleStudentDateChange = (studentId: string, date: string) => {
@@ -166,7 +173,6 @@ export default function ClassDetailsPage() {
         setBonuses(prev => ({ ...prev, [studentId]: value }));
     };
 
-    // --- ADD STUDENT ---
     const handleAddStudent = async (e: React.FormEvent) => {
         e.preventDefault();
         const saudiPhoneRegex = /^9665\d{8}$/;
@@ -175,7 +181,6 @@ export default function ClassDetailsPage() {
             return;
         }
 
-        // VALIDATION: Duplicate check
         const { data: existing } = await supabase.from('students')
             .select('id')
             .eq('class_id', id)
@@ -186,14 +191,23 @@ export default function ClassDetailsPage() {
             return;
         }
 
-        const { error } = await supabase.from('students').insert([{ class_id: id, full_name: newStudentName, phone_number: newStudentPhone }]);
+        const { error } = await supabase.from('students').insert([{ 
+            class_id: id, 
+            full_name: newStudentName, 
+            school_student_id: newStudentSchoolId || null,
+            phone_number: newStudentPhone 
+        }]);
+
         if (error) alert(lang === 'ar' ? `خطأ: ${error.message}` : `Error: ${error.message}`);
         else {
-            setNewStudentName(''); setNewStudentPhone(''); setIsAddStudentModalOpen(false); fetchStudentsAndSchedule();
+            setNewStudentName(''); 
+            setNewStudentSchoolId('');
+            setNewStudentPhone(''); 
+            setIsAddStudentModalOpen(false); 
+            fetchStudentsAndSchedule();
         }
     };
 
-    // --- SAVE ATTENDANCE & BONUS ---
     const saveAttendance = async () => {
         setSaving(true);
         try {
@@ -219,11 +233,11 @@ export default function ClassDetailsPage() {
     const sendWhatsAppAttendance = (student: Student) => {
         const status = attendance[student.id] || 'Present';
         const date = studentDates[student.id] || globalDate;
-        const bonus = bonuses[student.id] && bonuses[student.id] !== '0' ? `\n⭐ بونص: +${bonuses[student.id]}` : '';
+        const bonus = bonuses[student.id] && bonuses[student.id] !== '0' ? `\n⭐ درجات مشاركة: +${bonuses[student.id]}` : '';
         
         const msg = lang === 'ar' 
             ? `مرحباً بك يا ولي أمر الطالب/ة ${student.full_name}،\nتحديث الحضور لتاريخ ${date}:\n📌 الحالة: ${status}${bonus}`
-            : `Hello parent of ${student.full_name},\nAttendance update for ${date}:\n📌 Status: ${status}${bonus ? `\n⭐ Bonus: +${bonuses[student.id]}` : ''}`;
+            : `Hello parent of ${student.full_name},\nAttendance update for ${date}:\n📌 Status: ${status}${bonus ? `\n⭐ Participation: +${bonuses[student.id]}` : ''}`;
             
         window.open(`https://wa.me/${student.phone_number}?text=${encodeURIComponent(msg)}`, '_blank');
     };
@@ -250,6 +264,62 @@ export default function ClassDetailsPage() {
 
     const handleGradeChange = (studentId: string, val: string) => {
         setAssessmentGrades(prev => ({ ...prev, [studentId]: val }));
+    };
+
+    // --- EXCEL IMPORT HANDLER ---
+    const handleExcelUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file || !activeAssessment) return;
+
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+            try {
+                const bstr = evt.target?.result;
+                const wb = XLSX.read(bstr, { type: 'binary' });
+                const wsname = wb.SheetNames[0];
+                const ws = wb.Sheets[wsname];
+                const data: any[] = XLSX.utils.sheet_to_json(ws);
+
+                if (!data || data.length === 0) {
+                    alert(lang === 'ar' ? 'الملف فارغ أو غير صالح.' : 'File is empty or invalid.');
+                    return;
+                }
+
+                const updatedGrades = { ...assessmentGrades };
+                let matchedCount = 0;
+
+                data.forEach((row: any) => {
+                    const rowKeys = Object.keys(row);
+                    const idKey = rowKeys.find(k => /id|رقم|كود|school_id|student_id|الرقم/i.test(k));
+                    const gradeKey = rowKeys.find(k => /grade|mark|score|درجة|الدرجة|النتيجة/i.test(k));
+
+                    const rowIdVal = idKey ? String(row[idKey]).trim() : null;
+                    const rowGradeVal = gradeKey ? parseFloat(row[gradeKey]) : null;
+
+                    if (rowIdVal && rowGradeVal !== null && !isNaN(rowGradeVal)) {
+                        const targetStudent = students.find(s => 
+                            (s.school_student_id && s.school_student_id.trim() === rowIdVal) ||
+                            s.full_name.trim() === rowIdVal
+                        );
+
+                        if (targetStudent) {
+                            const validGrade = Math.min(Math.max(0, rowGradeVal), activeAssessment.max_grade);
+                            updatedGrades[targetStudent.id] = String(validGrade);
+                            matchedCount++;
+                        }
+                    }
+                });
+
+                setAssessmentGrades(updatedGrades);
+                alert(lang === 'ar' 
+                    ? `تم استيراد ${matchedCount} درجة ومطابقتها بنجاح!` 
+                    : `Successfully matched and imported ${matchedCount} student grades!`);
+            } catch (err: any) {
+                alert(lang === 'ar' ? `حدث خطأ أثناء قراءة الملف: ${err.message}` : `Error parsing file: ${err.message}`);
+            }
+        };
+        reader.readAsBinaryString(file);
+        e.target.value = '';
     };
 
     const saveGrades = async () => {
@@ -287,7 +357,10 @@ export default function ClassDetailsPage() {
         }
     };
 
-    const filteredStudents = students.filter(s => s.full_name.toLowerCase().includes(searchQuery.toLowerCase()));
+    const filteredStudents = students.filter(s => 
+        s.full_name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        (s.school_student_id && s.school_student_id.includes(searchQuery))
+    );
 
     return (
         <div className="space-y-6 relative">
@@ -308,7 +381,7 @@ export default function ClassDetailsPage() {
                 <div className="flex flex-wrap items-center gap-3">
                     <div className="relative w-full md:w-56">
                         <Search className="absolute start-3 top-2.5 h-4 w-4 text-slate-400" />
-                        <Input placeholder={lang === 'ar' ? 'بحث عن طالب...' : 'Search student...'} className="ps-9" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                        <Input placeholder={lang === 'ar' ? 'بحث بالاسم أو الرقم...' : 'Search student...'} className="ps-9" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                     </div>
                     <Button onClick={() => setIsAddStudentModalOpen(true)} variant="outline" className="flex items-center gap-2 border-slate-300">
                         <UserPlus className="h-4 w-4 text-slate-600" />
@@ -323,7 +396,7 @@ export default function ClassDetailsPage() {
                     className={`px-4 py-2 text-sm font-medium border-b-2 flex items-center gap-2 transition-colors ${activeTab === 'attendance' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
                 >
                     <CheckSquare className="h-4 w-4" />
-                    {lang === 'ar' ? 'الحضور والغياب' : 'Daily Attendance'}
+                    {lang === 'ar' ? 'الحضور والمشاركة' : 'Daily Attendance'}
                 </button>
                 <button 
                     onClick={() => setActiveTab('assessments')}
@@ -345,11 +418,12 @@ export default function ClassDetailsPage() {
                 </div>
             )}
 
+            {/* TAB CONTENT: ATTENDANCE & PARTICIPATION */}
             {activeTab === 'attendance' && (
                 <Card>
                     <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4">
                         <CardTitle className="text-lg font-bold flex items-center gap-2">
-                            {lang === 'ar' ? 'سجل الحضور والبونص' : 'Attendance & Bonus'}
+                            {lang === 'ar' ? 'سجل الحضور والمشاركة' : 'Attendance & Participation'}
                         </CardTitle>
                         <div className="flex items-center gap-3 w-full sm:w-auto">
                             <div className="flex items-center gap-2 bg-slate-50 border px-3 py-1.5 rounded-md flex-1 sm:flex-none">
@@ -372,17 +446,19 @@ export default function ClassDetailsPage() {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="w-[200px]">{lang === 'ar' ? 'اسم الطالب' : 'Student Name'}</TableHead>
+                                        <TableHead className="w-[180px]">{lang === 'ar' ? 'اسم الطالب' : 'Student Name'}</TableHead>
+                                        <TableHead className="w-[120px]">{lang === 'ar' ? 'الرقم الأكاديمي' : 'School ID'}</TableHead>
                                         <TableHead className="w-[160px]">{lang === 'ar' ? 'تاريخ الحضور' : 'Date Override'}</TableHead>
-                                        <TableHead className="w-[160px]">{lang === 'ar' ? 'الحالة' : 'Status'}</TableHead>
-                                        <TableHead className="w-[100px] text-center">{lang === 'ar' ? 'بونص' : 'Bonus'}</TableHead>
-                                        <TableHead className="text-center w-[100px]">{lang === 'ar' ? 'واتساب' : 'WhatsApp'}</TableHead>
+                                        <TableHead className="w-[150px]">{lang === 'ar' ? 'الحالة' : 'Status'}</TableHead>
+                                        <TableHead className="w-[110px] text-center">{lang === 'ar' ? 'المشاركة' : 'Participation'}</TableHead>
+                                        <TableHead className="text-center w-[90px]">{lang === 'ar' ? 'واتساب' : 'WhatsApp'}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {filteredStudents.map((student) => (
                                         <TableRow key={student.id}>
                                             <TableCell className="font-medium text-slate-900">{student.full_name}</TableCell>
+                                            <TableCell className="text-slate-500 font-mono text-xs">{student.school_student_id || '-'}</TableCell>
                                             <TableCell>
                                                 <Input 
                                                     type="date" 
@@ -429,12 +505,13 @@ export default function ClassDetailsPage() {
                 </Card>
             )}
 
+            {/* TAB CONTENT: ASSESSMENTS LIST */}
             {activeTab === 'assessments' && !activeAssessment && (
                 <div className="space-y-4">
                     <div className="flex justify-between items-center bg-white p-4 rounded-lg border shadow-sm">
                         <div>
                             <h2 className="text-lg font-bold text-slate-800">{lang === 'ar' ? 'التقييمات والاختبارات' : 'Assessments & Quizzes'}</h2>
-                            <p className="text-sm text-slate-500">{lang === 'ar' ? 'قم بإضافة تقييم جديد لتعيين الدرجات' : 'Create an assessment to assign grades'}</p>
+                            <p className="text-sm text-slate-500">{lang === 'ar' ? 'قم بإضافة تقييم جديد لتعيين الدرجات أو استيرادها' : 'Create an assessment to assign or import grades'}</p>
                         </div>
                         <Button onClick={() => setIsAddAssessmentModalOpen(true)} className="bg-slate-900 text-white hover:bg-slate-800">
                             <Plus className="h-4 w-4 mr-2" />
@@ -470,9 +547,10 @@ export default function ClassDetailsPage() {
                 </div>
             )}
 
+            {/* TAB CONTENT: GRADING & EXCEL IMPORT */}
             {activeTab === 'assessments' && activeAssessment && (
                 <Card>
-                    <CardHeader className="flex flex-row items-center justify-between border-b pb-4 bg-slate-50 rounded-t-xl">
+                    <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4 bg-slate-50 rounded-t-xl">
                         <div>
                             <Button variant="ghost" size="sm" onClick={() => setActiveAssessment(null)} className="mb-2 text-slate-500 hover:text-slate-900 -ml-2">
                                 {lang === 'ar' ? <ArrowRight className="h-4 w-4 mr-1" /> : <ArrowLeft className="h-4 w-4 mr-1" />}
@@ -483,16 +561,37 @@ export default function ClassDetailsPage() {
                                 <span className="text-xs bg-white border px-2 py-0.5 rounded text-slate-500 font-normal">Out of {activeAssessment.max_grade}</span>
                             </CardTitle>
                         </div>
-                        <Button onClick={saveGrades} disabled={saving} className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2">
-                            <Save className="h-4 w-4" />
-                            <span>{saving ? (lang === 'ar' ? 'جاري...' : 'Saving...') : (lang === 'ar' ? 'حفظ الدرجات' : 'Save Marks')}</span>
-                        </Button>
+                        <div className="flex items-center gap-2">
+                            {/* Hidden file input for Excel */}
+                            <input 
+                                type="file" 
+                                ref={fileInputRef} 
+                                onChange={handleExcelUpload} 
+                                accept=".xlsx, .xls, .csv" 
+                                className="hidden" 
+                            />
+                            <Button 
+                                type="button" 
+                                variant="outline" 
+                                onClick={() => fileInputRef.current?.click()}
+                                className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 flex items-center gap-2"
+                            >
+                                <FileSpreadsheet className="h-4 w-4" />
+                                <span>{lang === 'ar' ? 'Excel' : 'Import Excel'}</span>
+                            </Button>
+
+                            <Button onClick={saveGrades} disabled={saving} className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2">
+                                <Save className="h-4 w-4" />
+                                <span>{saving ? (lang === 'ar' ? 'جاري...' : 'Saving...') : (lang === 'ar' ? 'حفظ الدرجات' : 'Save Marks')}</span>
+                            </Button>
+                        </div>
                     </CardHeader>
                     <CardContent className="pt-4">
                         <Table>
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>{lang === 'ar' ? 'اسم الطالب' : 'Student Name'}</TableHead>
+                                    <TableHead className="w-[140px]">{lang === 'ar' ? 'الرقم الأكاديمي' : 'School ID'}</TableHead>
                                     <TableHead className="w-[150px]">{lang === 'ar' ? 'الدرجة' : 'Score'}</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -500,6 +599,7 @@ export default function ClassDetailsPage() {
                                 {filteredStudents.map(student => (
                                     <TableRow key={student.id}>
                                         <TableCell className="font-medium text-slate-900">{student.full_name}</TableCell>
+                                        <TableCell className="text-slate-500 font-mono text-xs">{student.school_student_id || '-'}</TableCell>
                                         <TableCell>
                                             <Input 
                                                 type="number" 
@@ -526,6 +626,7 @@ export default function ClassDetailsPage() {
                 </Card>
             )}
 
+            {/* --- ADD STUDENT MODAL --- */}
             {isAddStudentModalOpen && (
                 <div className="fixed inset-0 z-50 bg-slate-950/50 flex items-center justify-center p-4">
                     <Card className="w-full max-w-md shadow-xl border-0">
@@ -538,6 +639,10 @@ export default function ClassDetailsPage() {
                                 <div className="space-y-1">
                                     <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'اسم الطالب' : 'Student Name'}</label>
                                     <Input required value={newStudentName} onChange={(e) => setNewStudentName(e.target.value)} />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'الرقم الأكاديمي / رقم الطالب' : 'School Student ID'}</label>
+                                    <Input placeholder="e.g. 4410293" value={newStudentSchoolId} onChange={(e) => setNewStudentSchoolId(e.target.value)} />
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'رقم الهاتف (واتساب)' : 'WhatsApp Number'}</label>
@@ -557,6 +662,7 @@ export default function ClassDetailsPage() {
                 </div>
             )}
 
+            {/* --- ADD ASSESSMENT MODAL --- */}
             {isAddAssessmentModalOpen && (
                 <div className="fixed inset-0 z-50 bg-slate-950/50 flex items-center justify-center p-4">
                     <Card className="w-full max-w-md shadow-xl border-0">
@@ -577,6 +683,8 @@ export default function ClassDetailsPage() {
                                                 <SelectItem value="Quiz">{translateAssType('Quiz', lang)}</SelectItem>
                                                 <SelectItem value="Midterm">{translateAssType('Midterm', lang)}</SelectItem>
                                                 <SelectItem value="Final">{translateAssType('Final', lang)}</SelectItem>
+                                                <SelectItem value="Qudurat">{translateAssType('Qudurat', lang)}</SelectItem>
+                                                <SelectItem value="Tahsili">{translateAssType('Tahsili', lang)}</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -587,7 +695,7 @@ export default function ClassDetailsPage() {
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'عنوان التقييم' : 'Title'}</label>
-                                    <Input required placeholder={lang === 'ar' ? 'مثال: اختبار الوحدة الأولى' : 'e.g. Unit 1 Quiz'} value={newAssTitle} onChange={(e) => setNewAssTitle(e.target.value)} />
+                                    <Input required placeholder={lang === 'ar' ? 'مثال: تجريبي قدرات 1' : 'e.g. Qudurat Practice 1'} value={newAssTitle} onChange={(e) => setNewAssTitle(e.target.value)} />
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'تاريخ التقييم' : 'Date'}</label>

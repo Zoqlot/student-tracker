@@ -7,13 +7,14 @@ import { useLanguage } from '@/context/LanguageContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { LogIn, Send, ArrowLeft } from 'lucide-react';
+import { LogIn, BookOpen, GraduationCap, Send, ArrowLeft } from 'lucide-react';
 
 export default function LoginPage() {
   const { lang } = useLanguage();
   const router = useRouter();
 
-  const [email, setEmail] = useState('');
+  const [role, setRole] = useState<'teacher' | 'student'>('teacher');
+  const [identifier, setIdentifier] = useState(''); // Email for teachers, Email or School ID for students
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -21,24 +22,12 @@ export default function LoginPage() {
   const [isResetMode, setIsResetMode] = useState(false);
 
   useEffect(() => {
-    // --- INVITATION & RECOVERY CATCHER ---
-    // If they land here from an email link, the URL will have a hash fragment.
     if (typeof window !== 'undefined') {
       const hash = window.location.hash;
       if (hash.includes('type=invite') || hash.includes('type=recovery')) {
         router.push('/update-password');
-        return;
       }
     }
-
-    // Fallback listener for Supabase auth events
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') {
-        router.push('/update-password');
-      }
-    });
-
-    return () => subscription.unsubscribe();
   }, [router]);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -46,25 +35,48 @@ export default function LoginPage() {
     setLoading(true);
     setErrorMsg('');
 
-    const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+    let emailToAuth = identifier.trim();
+
+    // If student enters a School ID instead of email, look up their email
+    if (role === 'student' && !emailToAuth.includes('@')) {
+      const { data: studentRecord, error: lookupErr } = await supabase
+        .from('students')
+        .select('phone_number, school_student_id')
+        .eq('school_student_id', emailToAuth)
+        .single();
+
+      if (lookupErr || !studentRecord) {
+        setErrorMsg(lang === 'ar' ? 'الرقم الأكاديمي غير مسجل.' : 'School ID not found.');
+        setLoading(false);
+        return;
+      }
+      // Standard convention: student ID mapped to internal email format if created via admin
+      emailToAuth = `student_${studentRecord.school_student_id}@school.local`;
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: emailToAuth,
+      password,
     });
 
     if (error) {
-        setErrorMsg(lang === 'ar' ? 'فشل التسجيل: البريد أو كلمة المرور غير صحيحة' : error.message);
-        setLoading(false);
-        return;
+      setErrorMsg(lang === 'ar' ? 'فشل الدخول: تحقق من صحة البيانات وكلمة المرور' : error.message);
+      setLoading(false);
+      return;
     }
 
-    // Force a full navigation so middleware reads updated auth cookies
-    window.location.href = '/';
+    // Role-based routing
+    if (role === 'teacher') {
+      window.location.href = '/';
+    } else {
+      window.location.href = '/student-portal';
+    }
   };
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) {
-      setErrorMsg(lang === 'ar' ? 'الرجاء إدخال البريد الإلكتروني أولاً' : 'Please enter your email first.');
+    if (!identifier || !identifier.includes('@')) {
+      setErrorMsg(lang === 'ar' ? 'الرجاء إدخال بريد إلكتروني صحيح' : 'Please enter a valid email address.');
       return;
     }
     
@@ -72,7 +84,7 @@ export default function LoginPage() {
     setErrorMsg('');
     setSuccessMsg('');
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    const { error } = await supabase.auth.resetPasswordForEmail(identifier, {
       redirectTo: `${window.location.origin}/update-password`,
     });
 
@@ -89,16 +101,42 @@ export default function LoginPage() {
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-slate-900">
-            {lang === 'ar' ? 'بوابة المعلمين' : 'Teacher Portal'}
+            {lang === 'ar' ? 'بوابة النظام التعليمي' : 'Portal Login'}
           </CardTitle>
           <CardDescription>
             {isResetMode 
-              ? (lang === 'ar' ? 'أدخل بريدك الإلكتروني لاستعادة كلمة المرور' : 'Enter your email to receive a secure reset link')
-              : (lang === 'ar' ? 'سجل دخولك لإدارة فصولك' : 'Sign in to manage your classes and students')}
+              ? (lang === 'ar' ? 'استعادة كلمة المرور' : 'Reset your password')
+              : (lang === 'ar' ? 'اختر نوع الحساب وسجل دخولك' : 'Choose your account type to proceed')}
           </CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-6">
+          {!isResetMode && (
+            <div className="grid grid-cols-2 gap-2 p-1 bg-slate-200 rounded-lg">
+              <button
+                type="button"
+                onClick={() => { setRole('teacher'); setErrorMsg(''); }}
+                className={`flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all ${
+                  role === 'teacher' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <BookOpen className="h-4 w-4" />
+                <span>{lang === 'ar' ? 'معلم' : 'Teacher'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => { setRole('student'); setErrorMsg(''); }}
+                className={`flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all ${
+                  role === 'student' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <GraduationCap className="h-4 w-4" />
+                <span>{lang === 'ar' ? 'طالب' : 'Student'}</span>
+              </button>
+            </div>
+          )}
+
           {errorMsg && (
             <div className="p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-md text-center font-medium">
               {errorMsg}
@@ -119,30 +157,22 @@ export default function LoginPage() {
                 <Input
                   type="email"
                   required
-                  placeholder="teacher@school.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="user@school.com"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
                 />
               </div>
 
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 mt-2"
-              >
+              <Button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2">
                 <Send className="h-4 w-4" />
-                <span>
-                  {loading
-                    ? (lang === 'ar' ? 'جاري الإرسال...' : 'Sending Link...')
-                    : (lang === 'ar' ? 'إرسال رابط الاستعادة' : 'Send Reset Link')}
-                </span>
+                <span>{loading ? (lang === 'ar' ? 'جاري الإرسال...' : 'Sending...') : (lang === 'ar' ? 'إرسال رابط الاستعادة' : 'Send Reset Link')}</span>
               </Button>
 
               <Button
                 type="button"
                 variant="ghost"
                 onClick={() => { setIsResetMode(false); setErrorMsg(''); setSuccessMsg(''); }}
-                className="w-full text-slate-500 hover:text-slate-700 flex items-center justify-center gap-2 mt-2"
+                className="w-full text-slate-500 hover:text-slate-700 flex items-center justify-center gap-2"
               >
                 <ArrowLeft className="h-4 w-4" />
                 <span>{lang === 'ar' ? 'العودة لتسجيل الدخول' : 'Back to Login'}</span>
@@ -152,14 +182,15 @@ export default function LoginPage() {
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-1 text-start">
                 <label className="text-xs font-semibold text-slate-700">
-                  {lang === 'ar' ? 'البريد الإلكتروني' : 'Email Address'}
+                  {role === 'teacher'
+                    ? (lang === 'ar' ? 'البريد الإلكتروني' : 'Email Address')
+                    : (lang === 'ar' ? 'الرقم الأكاديمي أو البريد' : 'School ID or Email')}
                 </label>
                 <Input
-                  type="email"
                   required
-                  placeholder="teacher@school.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={role === 'teacher' ? 'teacher@school.com' : '4410293'}
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
                 />
               </div>
 
@@ -168,13 +199,15 @@ export default function LoginPage() {
                   <label className="text-xs font-semibold text-slate-700">
                     {lang === 'ar' ? 'كلمة المرور' : 'Password'}
                   </label>
-                  <button 
-                    type="button"
-                    onClick={() => { setIsResetMode(true); setErrorMsg(''); setSuccessMsg(''); }}
-                    className="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
-                  >
-                    {lang === 'ar' ? 'نسيت كلمة المرور؟' : 'Forgot password?'}
-                  </button>
+                  {role === 'teacher' && (
+                    <button 
+                      type="button"
+                      onClick={() => { setIsResetMode(true); setErrorMsg(''); setSuccessMsg(''); }}
+                      className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                      {lang === 'ar' ? 'نسيت كلمة المرور؟' : 'Forgot password?'}
+                    </button>
+                  )}
                 </div>
                 <Input
                   type="password"
@@ -185,17 +218,9 @@ export default function LoginPage() {
                 />
               </div>
 
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 mt-2"
-              >
+              <Button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 mt-2">
                 <LogIn className="h-4 w-4" />
-                <span>
-                  {loading
-                    ? (lang === 'ar' ? 'جاري الدخول...' : 'Logging in...')
-                    : (lang === 'ar' ? 'تسجيل الدخول' : 'Sign In')}
-                </span>
+                <span>{loading ? (lang === 'ar' ? 'جاري الدخول...' : 'Logging in...') : (lang === 'ar' ? 'تسجيل الدخول' : 'Sign In')}</span>
               </Button>
             </form>
           )}
