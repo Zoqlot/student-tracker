@@ -17,10 +17,17 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
 
   // Form States
-  const [staffEmail, setStaffEmail] = useState('');
+  const [staffRole, setStaffRole] = useState('student');
   const [staffName, setStaffName] = useState('');
   const [staffPassword, setStaffPassword] = useState('');
-  const [staffRole, setStaffRole] = useState('teacher');
+  
+  // Specific to Admin/Teacher
+  const [staffEmail, setStaffEmail] = useState('');
+  
+  // Specific to Student
+  const [studentId, setStudentId] = useState('');
+  const [studentPhone, setStudentPhone] = useState('');
+  
   const [actionStatus, setActionStatus] = useState<any>(null);
   
   // Bulk States
@@ -56,16 +63,27 @@ export default function AdminDashboard() {
     window.location.href = '/login';
   };
 
-  const handleAddStaff = async (e: React.FormEvent) => {
+  const handleAddSingleUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    setActionStatus({ type: 'loading', msg: 'Creating user...' });
+    setActionStatus({ type: 'loading', msg: 'Creating user... (This may take up to 20 seconds if the server is waking up)' });
+
+    let userPayload: any = {
+      role: staffRole,
+      fullName: staffName,
+      password: staffPassword
+    };
+
+    if (staffRole === 'student') {
+      userPayload.school_student_id = studentId;
+      userPayload.phone_number = studentPhone;
+    } else {
+      userPayload.email = staffEmail;
+    }
 
     const res = await fetch('/api/admin/users', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        users: [{ role: staffRole, email: staffEmail, fullName: staffName, password: staffPassword }]
-      })
+      body: JSON.stringify({ users: [userPayload] })
     });
 
     const data = await res.json();
@@ -75,7 +93,7 @@ export default function AdminDashboard() {
       setActionStatus({ type: 'error', msg: data.failed[0].error });
     } else {
       setActionStatus({ type: 'success', msg: `${staffName} added successfully!` });
-      setStaffEmail(''); setStaffName(''); setStaffPassword('');
+      setStaffName(''); setStaffPassword(''); setStaffEmail(''); setStudentId(''); setStudentPhone('');
     }
   };
 
@@ -95,10 +113,8 @@ export default function AdminDashboard() {
         const ws = wb.Sheets[wsname];
         const data = XLSX.utils.sheet_to_json(ws);
 
-        // Map Excel columns to API payload
-        // Expected Excel Columns: 'الرقم' (ID), 'الاسم' (Name), 'الهاتف' (Phone)
         const usersToCreate = data.map((row: any) => {
-          const generatedPassword = Math.random().toString(36).slice(-8); // Random 8-char password
+          const generatedPassword = Math.random().toString(36).slice(-8);
           return {
             role: 'student',
             school_student_id: String(row['الرقم'] || row['ID'] || ''),
@@ -126,7 +142,6 @@ export default function AdminDashboard() {
             msg: `Success: ${result.successful.length} | Failed: ${result.failed.length}` 
           });
           
-          // Generate a download file with the new passwords so you can distribute them
           if (result.successful.length > 0) {
             const exportData = usersToCreate.map(u => ({
               'الرقم الأكاديمي': u.school_student_id,
@@ -177,22 +192,37 @@ export default function AdminDashboard() {
         )}
 
         <div className="grid md:grid-cols-2 gap-4">
-          {/* STAFF CREATION FORM */}
+          {/* SINGLE USER CREATION FORM */}
           <Card className="bg-slate-800 border-slate-700 text-slate-100">
-            <CardHeader><CardTitle className="flex items-center gap-2"><UserPlus className="h-5 w-5 text-blue-400" /> Add Staff (Admin / Teacher)</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="flex items-center gap-2"><UserPlus className="h-5 w-5 text-blue-400" /> Add Single User</CardTitle></CardHeader>
             <CardContent>
-              <form onSubmit={handleAddStaff} className="space-y-4">
+              <form onSubmit={handleAddSingleUser} className="space-y-4">
                 <select 
                   className="w-full bg-slate-900 border border-slate-700 rounded-md p-2"
                   value={staffRole} onChange={(e) => setStaffRole(e.target.value)}
                 >
-                  <option value="admin">Administrator</option>
+                  <option value="student">Student</option>
                   <option value="teacher">Teacher</option>
+                  <option value="admin">Administrator</option>
                 </select>
-                <Input placeholder="Full Name (e.g. ZOQLOT)" value={staffName} onChange={e => setStaffName(e.target.value)} required className="bg-slate-900 border-slate-700" />
-                <Input type="email" placeholder="Email" value={staffEmail} onChange={e => setStaffEmail(e.target.value)} required className="bg-slate-900 border-slate-700" />
+                
+                <Input placeholder="Full Name (e.g. Ahmed Ali)" value={staffName} onChange={e => setStaffName(e.target.value)} required className="bg-slate-900 border-slate-700" />
+                
+                {/* Dynamic Fields based on Role */}
+                {staffRole === 'student' ? (
+                  <>
+                    <Input type="text" placeholder="Student ID (الرقم)" value={studentId} onChange={e => setStudentId(e.target.value)} required className="bg-slate-900 border-slate-700" />
+                    <Input type="text" placeholder="Phone Number (الهاتف)" value={studentPhone} onChange={e => setStudentPhone(e.target.value)} className="bg-slate-900 border-slate-700" />
+                  </>
+                ) : (
+                  <Input type="email" placeholder="Email Address" value={staffEmail} onChange={e => setStaffEmail(e.target.value)} required className="bg-slate-900 border-slate-700" />
+                )}
+
                 <Input type="text" placeholder="Password" value={staffPassword} onChange={e => setStaffPassword(e.target.value)} required className="bg-slate-900 border-slate-700" />
-                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">Create Staff Account</Button>
+                
+                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                  Create {staffRole.charAt(0).toUpperCase() + staffRole.slice(1)} Account
+                </Button>
               </form>
             </CardContent>
           </Card>
@@ -207,7 +237,7 @@ export default function AdminDashboard() {
               <div className="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center hover:bg-slate-700/50 transition-colors relative">
                 <Input type="file" accept=".xlsx, .xls, .csv" onChange={handleBulkUpload} disabled={bulkProcessing} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                 <Upload className="h-8 w-8 text-slate-400 mx-auto mb-2" />
-                <p className="text-sm font-medium text-slate-300">{bulkProcessing ? 'Processing 250 records...' : 'Click or drag Excel file here'}</p>
+                <p className="text-sm font-medium text-slate-300">{bulkProcessing ? 'Processing records...' : 'Click or drag Excel file here'}</p>
               </div>
             </CardContent>
           </Card>

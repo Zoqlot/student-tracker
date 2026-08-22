@@ -3,6 +3,13 @@ import { createServerClient } from '@supabase/ssr';
 import { isTeacherRoute, isStudentRoute, isAdminRoute, isLoginRoute, isUpdatePasswordRoute } from '@/lib/routes';
 
 export default async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // 1. CRITICAL: Never intercept API routes with page redirects
+  if (pathname.startsWith('/api')) {
+    return NextResponse.next();
+  }
+
   let response = NextResponse.next({
     request: { headers: request.headers },
   });
@@ -23,18 +30,17 @@ export default async function proxy(request: NextRequest) {
   );
 
   const { data: { user } } = await supabase.auth.getUser();
-  const { pathname } = request.nextUrl;
 
   const isLogin = isLoginRoute(pathname);
   const isUpdatePassword = isUpdatePasswordRoute(pathname);
   const isPublicRoute = isLogin || isUpdatePassword;
 
-  // 1. Unauthenticated users -> Send to login
+  // 2. Unauthenticated users -> Send to login
   if (!user && !isPublicRoute) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // 2. Authenticated users -> Strict Routing
+  // 3. Authenticated users -> Strict Routing
   if (user) {
     const { data: profile, error } = await supabase
       .from('profiles')
@@ -51,19 +57,17 @@ export default async function proxy(request: NextRequest) {
 
     const role = profile.role;
 
-    // IMPORTANT: Authenticated users must be allowed to stay on password recovery
     if (isUpdatePassword) {
       return response;
     }
 
-    // Only bounce logged-in users away if they are explicitly on the /login page
     if (isLogin) {
       if (role === 'admin') return NextResponse.redirect(new URL('/admin', request.url));
       if (role === 'teacher') return NextResponse.redirect(new URL('/', request.url));
       if (role === 'student') return NextResponse.redirect(new URL('/student-portal', request.url));
     }
 
-    // EXHAUSTIVE ROUTE PROTECTION (Using centralized lib/routes.ts)
+    // Role-specific URL protection
     if (role === 'teacher' && !isTeacherRoute(pathname)) {
       return NextResponse.redirect(new URL('/', request.url));
     }
