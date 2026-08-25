@@ -103,7 +103,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-slate-900">
-            {lang === 'ar' ? 'بوابة النظام التعليمي' : 'Portal Login'}
+            {lang === 'ar' ? 'التقييم والتواصل الرقمي' : 'Assessment and Digital Communication'}
           </CardTitle>
           <CardDescription>
             {isResetMode 
@@ -123,7 +123,7 @@ export default function LoginPage() {
                 }`}
               >
                 <BookOpen className="h-4 w-4" />
-                <span>{lang === 'ar' ? 'معلم / إدارة' : 'Staff / Admin'}</span>
+                <span>{lang === 'ar' ? 'معلم' : 'Staff'}</span>
               </button>
 
               <button
@@ -159,7 +159,7 @@ export default function LoginPage() {
                 <Input
                   type="email"
                   required
-                  placeholder="user@school.com"
+                  placeholder="Email"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                 />
@@ -190,7 +190,7 @@ export default function LoginPage() {
                 </label>
                 <Input
                   required
-                  placeholder={uiTab === 'teacher' ? 'admin@school.com' : '4410293'}
+                  placeholder={uiTab === 'teacher' ? 'Email' : 'Student ID'}
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                 />
