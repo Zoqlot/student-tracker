@@ -6,7 +6,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { GraduationCap, Activity, Award, LogOut, BookOpen, CheckCircle, Clock, XCircle } from 'lucide-react';
+import { GraduationCap, Activity, Award, LogOut, BookOpen, CheckCircle, Clock, XCircle, Settings } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function StudentPortalPage() {
@@ -111,10 +111,17 @@ export default function StudentPortalPage() {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center flex-wrap gap-2">
             <Button variant="outline" size="sm" onClick={toggleLanguage}>
               {lang === 'en' ? 'العربية' : 'English'}
             </Button>
+            
+            {/* NEW SETTINGS BUTTON */}
+            <Button variant="outline" size="sm" onClick={() => router.push('/update-password')} className="text-slate-600">
+              <Settings className="h-4 w-4 mr-1" />
+              {lang === 'ar' ? 'تغيير كلمة المرور' : 'Settings'}
+            </Button>
+
             <Button variant="ghost" size="sm" onClick={handleLogout} className="text-red-600 hover:bg-red-50">
               <LogOut className="h-4 w-4 mr-1" />
               {lang === 'ar' ? 'خروج' : 'Sign Out'}
