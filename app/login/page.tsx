@@ -7,10 +7,10 @@ import { useLanguage } from '@/context/LanguageContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { LogIn, BookOpen, GraduationCap, Send, ArrowLeft } from 'lucide-react';
+import { LogIn, BookOpen, GraduationCap, Send, ArrowLeft, Globe } from 'lucide-react';
 
 export default function LoginPage() {
-  const { lang } = useLanguage();
+  const { lang, toggleLanguage } = useLanguage();
   const router = useRouter();
 
   // Role state is strictly for UI placeholders. NO admin tab exists here.
@@ -99,7 +99,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-100 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-100 p-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-slate-900">
@@ -228,6 +228,17 @@ export default function LoginPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Language Toggle Footer */}
+      <div className="mt-8">
+        <button
+          onClick={toggleLanguage}
+          className="flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-200 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors shadow-sm"
+        >
+          <Globe className="h-4 w-4 text-blue-500" />
+          {lang === 'en' ? '🌐 التبديل إلى العربية' : 'Switch to English'}
+        </button>
+      </div>
     </div>
   );
 }

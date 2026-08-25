@@ -8,9 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { User, Bell, Globe, Shield, Save, Key, Smartphone, LogOut } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function SettingsPage() {
     const { lang, toggleLanguage } = useLanguage();
+    const router = useRouter();
     
     // UI State
     const [loading, setLoading] = useState(true);
@@ -94,19 +96,6 @@ export default function SettingsPage() {
     };
 
     // --- SECURITY ACTIONS ---
-    const handlePasswordReset = async () => {
-        if (!email) return;
-        const confirm = window.confirm(lang === 'ar' ? 'هل تريد إرسال رابط إعادة تعيين كلمة المرور إلى بريدك؟' : 'Send password reset link to your email?');
-        if (!confirm) return;
-
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin,
-        });
-        
-        if (error) alert(error.message);
-        else alert(lang === 'ar' ? 'تم إرسال رابط إعادة التعيين!' : 'Password reset link sent!');
-    };
-
     const handleSignOutOtherDevices = async () => {
         const confirm = window.confirm(lang === 'ar' ? 'هل أنت متأكد من تسجيل الخروج من جميع الأجهزة الأخرى؟' : 'Are you sure you want to sign out of all other devices?');
         if (!confirm) return;
@@ -292,14 +281,14 @@ export default function SettingsPage() {
                                         <div>
                                             <h4 className="font-semibold text-slate-900 flex items-center gap-2">
                                                 <Key className="h-4 w-4 text-slate-500" />
-                                                {lang === 'ar' ? 'إعادة تعيين كلمة المرور' : 'Password Reset'}
+                                                {lang === 'ar' ? 'تغيير كلمة المرور' : 'Change Password'}
                                             </h4>
                                             <p className="text-sm text-slate-500 mt-1">
-                                                {lang === 'ar' ? 'أرسل رابطاً آمناً إلى بريدك الإلكتروني لتغيير كلمة المرور.' : 'Send a secure link to your email to change your password.'}
+                                                {lang === 'ar' ? 'قم بتحديث كلمة المرور الخاصة بحسابك بأمان.' : 'Securely update your account password.'}
                                             </p>
                                         </div>
-                                        <Button type="button" variant="outline" onClick={handlePasswordReset} className="shrink-0">
-                                            {lang === 'ar' ? 'إرسال الرابط' : 'Send Reset Link'}
+                                        <Button type="button" variant="outline" onClick={() => router.push('/update-password')} className="shrink-0">
+                                            {lang === 'ar' ? 'تغيير كلمة المرور' : 'Update Password'}
                                         </Button>
                                     </div>
 

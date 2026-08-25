@@ -119,7 +119,7 @@ export default function StudentPortalPage() {
             {/* NEW SETTINGS BUTTON */}
             <Button variant="outline" size="sm" onClick={() => router.push('/update-password')} className="text-slate-600">
               <Settings className="h-4 w-4 mr-1" />
-              {lang === 'ar' ? 'تغيير كلمة المرور' : 'Settings'}
+              {lang === 'ar' ? 'تغيير كلمة المرور' : 'Change Password'}
             </Button>
 
             <Button variant="ghost" size="sm" onClick={handleLogout} className="text-red-600 hover:bg-red-50">
