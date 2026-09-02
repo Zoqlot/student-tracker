@@ -18,7 +18,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <header className="md:hidden bg-slate-950 text-white p-4 flex items-center justify-between shrink-0">
           <span className="font-bold">{lang === 'ar' ? 'لوحة الإدارة' : 'Admin Portal'}</span>
           <button 
-            onClick={() => setIsOpen(!isSidebarOpen)}
+            type="button"
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className="p-1 hover:bg-slate-800 rounded transition-colors"
           >
             <Menu className="h-6 w-6" />
