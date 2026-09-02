@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { useLanguage } from '@/context/LanguageContext';
+import { normalizeSaudiPhone } from '@/lib/students/normalizePhone';
+import { getStudentAuthEmail } from '@/lib/students/authUtils';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,9 +12,7 @@ import { LogIn, BookOpen, GraduationCap, Send, ArrowLeft, Globe } from 'lucide-r
 
 export default function LoginPage() {
   const { lang, toggleLanguage } = useLanguage();
-  const router = useRouter();
 
-  // Role state is strictly for UI placeholders. NO admin tab exists here.
   const [uiTab, setUiTab] = useState<'teacher' | 'student'>('teacher');
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
@@ -29,13 +28,29 @@ export default function LoginPage() {
 
     let emailToAuth = identifier.trim();
 
-    // INFORMATION DISCLOSURE FIX:
-    // If the input lacks an '@', assume it's a student ID and construct the email.
-    // Do NOT query the database to verify if it exists before auth. Let Supabase handle failures.
-    if (!emailToAuth.includes('@')) {
-      emailToAuth = `student_${emailToAuth}@school.local`;
+    // 1. STUDENT LOGIN FLOW
+    if (uiTab === 'student') {
+      const phoneResult = normalizeSaudiPhone(emailToAuth);
+      
+      // Prevent Supabase request entirely if phone format is invalid
+      if (!phoneResult.valid) {
+        setErrorMsg(lang === 'ar' ? 'رقم الجوال غير صحيح. يجب أن يبدأ بـ 05' : 'Invalid phone number format.');
+        setLoading(false);
+        return;
+      }
+      
+      emailToAuth = getStudentAuthEmail(phoneResult.normalized!);
+    } 
+    // 2. TEACHER/ADMIN LOGIN FLOW
+    else {
+      if (!emailToAuth.includes('@')) {
+        setErrorMsg(lang === 'ar' ? 'الرجاء إدخال بريد إلكتروني صحيح' : 'Please enter a valid email address.');
+        setLoading(false);
+        return;
+      }
     }
 
+    // AUTHENTICATE
     const { data, error } = await supabase.auth.signInWithPassword({
       email: emailToAuth,
       password,
@@ -47,7 +62,7 @@ export default function LoginPage() {
       return;
     }
 
-    // AUTHENTICATED: Now check authorization strictly from profiles
+    // AUTHORIZE
     const { data: profile, error: profileErr } = await supabase
       .from('profiles')
       .select('role')
@@ -61,12 +76,28 @@ export default function LoginPage() {
       return;
     }
 
-    // STRICT ROUTING
+    // ROUTE
     if (profile.role === 'admin') {
       window.location.href = '/admin';
     } else if (profile.role === 'teacher') {
       window.location.href = '/';
     } else if (profile.role === 'student') {
+      
+      // --- SUSPENSION CHECK ---
+      const { data: studentRecord } = await supabase
+        .from('students')
+        .select('status')
+        .eq('auth_id', data.user.id)
+        .single();
+
+      if (studentRecord?.status === 'SUSPENDED') {
+        await supabase.auth.signOut();
+        setErrorMsg(lang === 'ar' ? 'تم إيقاف حسابك. يرجى مراجعة الإدارة.' : 'Account suspended. Please contact administration.');
+        setLoading(false);
+        return;
+      }
+      // ------------------------
+
       window.location.href = '/student-portal';
     } else {
       await supabase.auth.signOut();
@@ -117,18 +148,18 @@ export default function LoginPage() {
             <div className="grid grid-cols-2 gap-2 p-1 bg-slate-200 rounded-lg">
               <button
                 type="button"
-                onClick={() => { setUiTab('teacher'); setErrorMsg(''); }}
+                onClick={() => { setUiTab('teacher'); setIdentifier(''); setErrorMsg(''); }}
                 className={`flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all ${
                   uiTab === 'teacher' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <BookOpen className="h-4 w-4" />
-                <span>{lang === 'ar' ? 'معلم' : 'Staff'}</span>
+                <span>{lang === 'ar' ? 'معلم / إدارة' : 'Staff / Admin'}</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => { setUiTab('student'); setErrorMsg(''); }}
+                onClick={() => { setUiTab('student'); setIdentifier(''); setErrorMsg(''); }}
                 className={`flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all ${
                   uiTab === 'student' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
                 }`}
@@ -186,13 +217,14 @@ export default function LoginPage() {
                 <label className="text-xs font-semibold text-slate-700">
                   {uiTab === 'teacher'
                     ? (lang === 'ar' ? 'البريد الإلكتروني' : 'Email Address')
-                    : (lang === 'ar' ? 'الرقم الأكاديمي' : 'School ID')}
+                    : (lang === 'ar' ? 'رقم الجوال' : 'Phone Number')}
                 </label>
                 <Input
                   required
-                  placeholder={uiTab === 'teacher' ? 'Email' : 'Student ID'}
+                  placeholder={uiTab === 'teacher' ? 'Email' : '05XXXXXXXX'}
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
+                  dir="ltr"
                 />
               </div>
 
@@ -217,6 +249,7 @@ export default function LoginPage() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  dir="ltr"
                 />
               </div>
 
@@ -229,7 +262,6 @@ export default function LoginPage() {
         </CardContent>
       </Card>
 
-      {/* Language Toggle Footer */}
       <div className="mt-8">
         <button
           onClick={toggleLanguage}
