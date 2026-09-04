@@ -9,13 +9,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, ArrowRight, CheckCircle, Clock, XCircle, Search, Save, UserPlus, X, AlertTriangle, Calendar, FileText, CheckSquare, Plus, MessageCircle, FileSpreadsheet, Upload } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle, Clock, XCircle, Search, Save, UserPlus, X, AlertTriangle, Calendar, FileText, CheckSquare, Plus, MessageCircle, FileSpreadsheet } from 'lucide-react';
 import Link from 'next/link';
 import * as XLSX from 'xlsx';
 
 interface Student {
     id: string;
-    school_student_id?: string;
     full_name: string;
     phone_number: string;
 }
@@ -67,7 +66,6 @@ export default function ClassDetailsPage() {
 
     const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
     const [newStudentName, setNewStudentName] = useState('');
-    const [newStudentSchoolId, setNewStudentSchoolId] = useState('');
     const [newStudentPhone, setNewStudentPhone] = useState('');
 
     const [assessments, setAssessments] = useState<any[]>([]);
@@ -137,10 +135,29 @@ export default function ClassDetailsPage() {
         setClassSchedules(schedules);
         checkSession(globalDate, schedules);
 
-        const { data, error } = await supabase.from('students').select('*').eq('class_id', id);
-        if (!error && data) {
-            setStudents(data);
-            await fetchAttendanceForDate(globalDate, data);
+        // Fetch students safely through class_enrollments (which captures the bulk imported students)
+        const { data: enrollments, error } = await supabase
+            .from('class_enrollments')
+            .select(`
+                student_id,
+                students (id, full_name, phone_number)
+            `)
+            .eq('class_id', id)
+            .eq('is_current', true);
+
+        if (error) {
+            console.error('[ClassDetails] Student roster error:', error);
+        } else if (enrollments) {
+            const studentRoster = enrollments
+                .map(e => e.students)
+                .filter(Boolean) as Student[];
+
+            studentRoster.sort((a, b) =>
+                a.full_name.localeCompare(b.full_name, 'ar')
+            );
+
+            setStudents(studentRoster);
+            await fetchAttendanceForDate(globalDate, studentRoster);
         }
         setLoading(false);
     }
@@ -184,25 +201,33 @@ export default function ClassDetailsPage() {
 
         const { data: existing } = await supabase.from('students')
             .select('id')
-            .eq('class_id', id)
-            .eq('phone_number', newStudentPhone);
+            .eq('normalized_phone', newStudentPhone);
 
         if (existing && existing.length > 0) {
-            alert(lang === 'ar' ? 'هذا الطالب مسجل بالفعل برقم الهاتف هذا في هذا الفصل.' : 'A student with this phone number is already registered in this class.');
+            alert(lang === 'ar' ? 'هذا الطالب مسجل بالفعل في النظام.' : 'A student with this phone number is already registered.');
             return;
         }
 
-        const { error } = await supabase.from('students').insert([{ 
-            class_id: id, 
+        const { data: newStudent, error: insertError } = await supabase.from('students').insert([{ 
             full_name: newStudentName, 
-            school_student_id: newStudentSchoolId || null,
-            phone_number: newStudentPhone 
-        }]);
+            phone_number: newStudentPhone,
+            normalized_phone: newStudentPhone
+        }]).select().single();
 
-        if (error) alert(lang === 'ar' ? `خطأ: ${error.message}` : `Error: ${error.message}`);
-        else {
+        if (insertError) {
+            alert(lang === 'ar' ? `خطأ: ${insertError.message}` : `Error: ${insertError.message}`);
+            return;
+        }
+
+        if (newStudent) {
+            await supabase.from('class_enrollments').insert({
+                student_id: newStudent.id,
+                class_id: id,
+                academic_year: '2026-2027', // Adjust dynamically if needed
+                is_current: true
+            });
+            
             setNewStudentName(''); 
-            setNewStudentSchoolId('');
             setNewStudentPhone(''); 
             setIsAddStudentModalOpen(false); 
             fetchStudentsAndSchedule();
@@ -213,6 +238,7 @@ export default function ClassDetailsPage() {
         setSaving(true);
         try {
             const attendanceRecords = students.map(student => ({
+                class_id: id,
                 student_id: student.id,
                 date: studentDates[student.id] || globalDate,
                 status: attendance[student.id] || 'Present',
@@ -267,7 +293,6 @@ export default function ClassDetailsPage() {
         setAssessmentGrades(prev => ({ ...prev, [studentId]: val }));
     };
 
-    // --- CLEAN EXCEL IMPORT HANDLER ---
     const handleExcelUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file || !activeAssessment) return;
@@ -292,23 +317,14 @@ export default function ClassDetailsPage() {
 
                 data.forEach((row: any, index: number) => {
                     const rowKeys = Object.keys(row);
-                    const idKey = rowKeys.find(k => k.trim() === 'الرقم' || /id/i.test(k));
                     const nameKey = rowKeys.find(k => k.trim() === 'الاسم' || /name/i.test(k));
                     const gradeKey = rowKeys.find(k => k.trim() === 'Total Score' || /score|grade|درجة|النتيجة/i.test(k));
 
-                    let rowIdVal = idKey ? String(row[idKey]).trim() : null;
                     const rowNameVal = nameKey ? String(row[nameKey]).trim() : 'Unknown';
                     const rowGradeVal = gradeKey ? parseFloat(row[gradeKey]) : null;
 
-                    // Treat "-2" or empty as missing ID
-                    if (rowIdVal === '-2' || rowIdVal === '-' || rowIdVal === '') {
-                        rowIdVal = null;
-                    }
-
                     if (rowGradeVal !== null && !isNaN(rowGradeVal)) {
-                        // 1. Try to find student by School ID first, then fallback to Full Name
                         const targetStudent = students.find(s => 
-                            (rowIdVal && s.school_student_id && s.school_student_id.trim() === rowIdVal) ||
                             (rowNameVal && s.full_name.trim() === rowNameVal) ||
                             (rowNameVal && s.full_name.trim().includes(rowNameVal)) ||
                             (rowNameVal && rowNameVal.includes(s.full_name.trim()))
@@ -381,8 +397,7 @@ export default function ClassDetailsPage() {
     };
 
     const filteredStudents = students.filter(s => 
-        s.full_name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        (s.school_student_id && s.school_student_id.includes(searchQuery))
+        s.full_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
@@ -404,7 +419,7 @@ export default function ClassDetailsPage() {
                 <div className="flex flex-wrap items-center gap-3">
                     <div className="relative w-full md:w-56">
                         <Search className="absolute start-3 top-2.5 h-4 w-4 text-slate-400" />
-                        <Input placeholder={lang === 'ar' ? 'بحث بالاسم أو الرقم...' : 'Search student...'} className="ps-9" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                        <Input placeholder={lang === 'ar' ? 'بحث بالاسم...' : 'Search student...'} className="ps-9" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                     </div>
                     <Button onClick={() => setIsAddStudentModalOpen(true)} variant="outline" className="flex items-center gap-2 border-slate-300">
                         <UserPlus className="h-4 w-4 text-slate-600" />
@@ -470,8 +485,7 @@ export default function ClassDetailsPage() {
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead className="w-[180px]">{lang === 'ar' ? 'اسم الطالب' : 'Student Name'}</TableHead>
-                                        <TableHead className="w-[120px]">{lang === 'ar' ? 'الرقم الأكاديمي' : 'School ID'}</TableHead>
-                                        <TableHead className="w-[160px]">{lang === 'ar' ? 'تاريخ الحضور' : 'Date Override'}</TableHead>
+                                        <TableHead className="w-[160px]">{lang === 'ar' ? 'تاريخ الحضور' : 'Date'}</TableHead>
                                         <TableHead className="w-[150px]">{lang === 'ar' ? 'الحالة' : 'Status'}</TableHead>
                                         <TableHead className="w-[110px] text-center">{lang === 'ar' ? 'المشاركة' : 'Participation'}</TableHead>
                                         <TableHead className="text-center w-[90px]">{lang === 'ar' ? 'واتساب' : 'WhatsApp'}</TableHead>
@@ -481,7 +495,6 @@ export default function ClassDetailsPage() {
                                     {filteredStudents.map((student) => (
                                         <TableRow key={student.id}>
                                             <TableCell className="font-medium text-slate-900">{student.full_name}</TableCell>
-                                            <TableCell className="text-slate-500 font-mono text-xs">{student.school_student_id || '-'}</TableCell>
                                             <TableCell>
                                                 <Input 
                                                     type="date" 
@@ -647,7 +660,6 @@ export default function ClassDetailsPage() {
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>{lang === 'ar' ? 'اسم الطالب' : 'Student Name'}</TableHead>
-                                    <TableHead className="w-[140px]">{lang === 'ar' ? 'الرقم الأكاديمي' : 'School ID'}</TableHead>
                                     <TableHead className="w-[150px]">{lang === 'ar' ? 'الدرجة' : 'Score'}</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -655,7 +667,6 @@ export default function ClassDetailsPage() {
                                 {filteredStudents.map(student => (
                                     <TableRow key={student.id}>
                                         <TableCell className="font-medium text-slate-900">{student.full_name}</TableCell>
-                                        <TableCell className="text-slate-500 font-mono text-xs">{student.school_student_id || '-'}</TableCell>
                                         <TableCell>
                                             <Input 
                                                 type="number" 
@@ -695,10 +706,6 @@ export default function ClassDetailsPage() {
                                 <div className="space-y-1">
                                     <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'اسم الطالب' : 'Student Name'}</label>
                                     <Input required value={newStudentName} onChange={(e) => setNewStudentName(e.target.value)} />
-                                </div>
-                                <div className="space-y-1">
-                                    <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'الرقم الأكاديمي / رقم الطالب' : 'School Student ID'}</label>
-                                    <Input placeholder="e.g. 4410293" value={newStudentSchoolId} onChange={(e) => setNewStudentSchoolId(e.target.value)} />
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-sm font-medium text-slate-700">{lang === 'ar' ? 'رقم الهاتف (واتساب)' : 'WhatsApp Number'}</label>

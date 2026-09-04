@@ -57,20 +57,83 @@ export default function ManageClassesPage() {
 
   async function fetchClasses() {
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
 
-    // CRITICAL SECURITY FIX: .eq('teacher_id', user.id)
-    const { data, error } = await supabase
-      .from('classes')
-      .select('*, students(count), class_schedules(*)')
-      .eq('teacher_id', user.id)
-      .order('created_at', { ascending: false });
+    try {
+      const {
+        data: { user },
+        error: authError
+      } = await supabase.auth.getUser();
 
-    if (!error && data) {
-      setClasses(data);
+      if (authError || !user) {
+        console.error('Teacher auth error:', authError);
+        setClasses([]);
+        return;
+      }
+
+      // 1. Get classes assigned to this teacher
+      const { data: assignments, error: assignmentError } = await supabase
+        .from('class_teachers')
+        .select('class_id')
+        .eq('teacher_id', user.id);
+
+      if (assignmentError) {
+        console.error('Class assignment error:', assignmentError);
+        setClasses([]);
+        return;
+      }
+
+      const classIds = (assignments || []).map(a => a.class_id);
+
+      if (classIds.length === 0) {
+        setClasses([]);
+        return;
+      }
+
+      // 2. Fetch the actual classes
+      const { data: classData, error: classError } = await supabase
+        .from('classes')
+        .select('*')
+        .in('id', classIds)
+        .order('created_at', { ascending: false });
+
+      if (classError) {
+        console.error('Classes query error:', classError);
+        setClasses([]);
+        return;
+      }
+
+      // 3. Get current student counts
+      const { data: enrollments, error: enrollmentError } = await supabase
+        .from('class_enrollments')
+        .select('class_id')
+        .in('class_id', classIds)
+        .eq('is_current', true);
+
+      if (enrollmentError) {
+        console.error('Enrollment query error:', enrollmentError);
+      }
+
+      const countMap = (enrollments || []).reduce(
+        (acc: Record<string, number>, row) => {
+          acc[row.class_id] = (acc[row.class_id] || 0) + 1;
+          return acc;
+        },
+        {}
+      );
+
+      const finalData = (classData || []).map(cls => ({
+        ...cls,
+        student_count: countMap[cls.id] || 0
+      }));
+
+      setClasses(finalData);
+
+    } catch (error) {
+      console.error('fetchClasses fatal error:', error);
+      setClasses([]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   const handleScheduleChange = (index: number, field: string, value: string) => {
@@ -91,7 +154,7 @@ export default function ManageClassesPage() {
 
   const openSettings = (cls: any) => {
     setEditingClass(cls);
-    setEditClassName(cls.class_name);
+    setEditClassName(cls.class_name || cls.name);
     setEditSubject(cls.subject);
     if (cls.class_schedules && cls.class_schedules.length > 0) {
       setEditSchedules(cls.class_schedules.map((s: any) => ({
@@ -111,7 +174,6 @@ export default function ManageClassesPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    // VALIDATION: Force class name to have at least one letter
     if (!/[a-zA-Z\u0600-\u06FF]/.test(newClassName)) {
       alert(lang === 'ar' ? 'يجب أن يحتوي اسم الفصل على حروف، وليس أرقام فقط.' : 'Class name must contain at least one letter.');
       return;
@@ -135,9 +197,11 @@ export default function ManageClassesPage() {
       }
     }
 
-    const { data: myClasses } = await supabase.from('classes').select('id, class_name').eq('teacher_id', user.id);
-    if (myClasses && myClasses.length > 0) {
-      const myClassIds = myClasses.map(c => c.id);
+    const { data: classTeachers } = await supabase.from('class_teachers').select('class_id, classes(id, class_name)').eq('teacher_id', user.id);
+    if (classTeachers && classTeachers.length > 0) {
+      const myClassIds = classTeachers.map(ct => ct.class_id);
+      const myClassNames = new Map(classTeachers.map(ct => [ct.class_id, (ct.classes as any)?.class_name]));
+      
       const { data: existingSchedules } = await supabase.from('class_schedules').select('class_id, day_of_week, start_time, end_time').in('class_id', myClassIds);
       
       if (existingSchedules) {
@@ -147,7 +211,7 @@ export default function ManageClassesPage() {
             return isTimeOverlapping(newSched.start_time, newSched.end_time, existing.start_time, existing.end_time);
           });
           if (conflict) {
-            const conflictingClass = myClasses.find(c => c.id === conflict.class_id)?.class_name;
+            const conflictingClass = myClassNames.get(conflict.class_id);
             alert(lang === 'ar' ? `تعارض: لديك فصل آخر (${conflictingClass}) في نفس الوقت.` : `Conflict: You have (${conflictingClass}) scheduled at this time.`);
             return;
           }
@@ -155,17 +219,24 @@ export default function ManageClassesPage() {
       }
     }
 
+    // Insert class
     const { data: classData, error: classError } = await supabase.from('classes').insert([
-      { teacher_id: user.id, class_name: newClassName, subject: newSubject }
+      { class_name: newClassName, subject: newSubject }
     ]).select().single();
 
     if (classError) return alert(`Error: ${classError.message}`);
 
-    if (classData && schedules.length > 0) {
-      const scheduleRecords = schedules.map(s => ({
-        class_id: classData.id, day_of_week: s.day_of_week, start_time: s.start_time, end_time: s.end_time, room: s.room
-      }));
-      await supabase.from('class_schedules').insert(scheduleRecords);
+    if (classData) {
+      // Connect teacher
+      await supabase.from('class_teachers').insert({ class_id: classData.id, teacher_id: user.id });
+
+      // Insert schedules
+      if (schedules.length > 0) {
+        const scheduleRecords = schedules.map(s => ({
+          class_id: classData.id, day_of_week: s.day_of_week, start_time: s.start_time, end_time: s.end_time, room: s.room
+        }));
+        await supabase.from('class_schedules').insert(scheduleRecords);
+      }
     }
 
     setNewClassName('');
@@ -180,7 +251,6 @@ export default function ManageClassesPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user || !editingClass) return;
 
-    // VALIDATION: Force class name to have at least one letter
     if (!/[a-zA-Z\u0600-\u06FF]/.test(editClassName)) {
       alert(lang === 'ar' ? 'يجب أن يحتوي اسم الفصل على حروف، وليس أرقام فقط.' : 'Class name must contain at least one letter.');
       return;
@@ -204,9 +274,11 @@ export default function ManageClassesPage() {
       }
     }
 
-    const { data: myClasses } = await supabase.from('classes').select('id, class_name').eq('teacher_id', user.id);
-    if (myClasses && myClasses.length > 0) {
-      const myClassIds = myClasses.map(c => c.id);
+    const { data: classTeachers } = await supabase.from('class_teachers').select('class_id, classes(id, class_name)').eq('teacher_id', user.id);
+    if (classTeachers && classTeachers.length > 0) {
+      const myClassIds = classTeachers.map(ct => ct.class_id);
+      const myClassNames = new Map(classTeachers.map(ct => [ct.class_id, (ct.classes as any)?.class_name]));
+      
       const { data: existingSchedules } = await supabase.from('class_schedules').select('class_id, day_of_week, start_time, end_time').in('class_id', myClassIds);
       
       if (existingSchedules) {
@@ -217,7 +289,7 @@ export default function ManageClassesPage() {
             return isTimeOverlapping(newSched.start_time, newSched.end_time, existing.start_time, existing.end_time);
           });
           if (conflict) {
-            const conflictingClass = myClasses.find(c => c.id === conflict.class_id)?.class_name;
+            const conflictingClass = myClassNames.get(conflict.class_id);
             alert(lang === 'ar' ? `تعارض: لديك فصل آخر (${conflictingClass}) في نفس الوقت.` : `Conflict: You have (${conflictingClass}) scheduled at this time.`);
             return;
           }
@@ -247,10 +319,15 @@ export default function ManageClassesPage() {
 
   async function handleDeleteClass(classId: string) {
     const confirmDelete = window.confirm(
-      lang === 'ar' ? 'هل أنت متأكد من حذف هذا الفصل بالكامل؟ (سيتم حذف الطلاب والدرجات أيضاً)' : 'Are you sure you want to delete this class? (All students and grades will be lost)'
+      lang === 'ar' ? 'هل أنت متأكد من حذف هذا الفصل بالكامل؟ (سيتم حذف سجل الطلاب والدرجات أيضاً)' : 'Are you sure you want to delete this class? (All records will be lost)'
     );
     if (!confirmDelete) return;
 
+    // Delete connections
+    await supabase.from('class_teachers').delete().eq('class_id', classId);
+    await supabase.from('class_enrollments').delete().eq('class_id', classId);
+
+    // Delete base class
     const { error } = await supabase.from('classes').delete().eq('id', classId);
     if (error) {
       alert(lang === 'ar' ? `خطأ: ${error.message}` : `Error: ${error.message}`);
@@ -287,7 +364,7 @@ export default function ManageClassesPage() {
             <Card key={cls.id} className="hover:border-blue-400 transition-colors">
               <CardHeader className="pb-3 border-b border-slate-100">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-xl font-bold">{cls.class_name}</CardTitle>
+                  <CardTitle className="text-xl font-bold">{cls.class_name || cls.name}</CardTitle>
                   <Button 
                     variant="ghost" 
                     size="icon" 
@@ -299,14 +376,14 @@ export default function ManageClassesPage() {
                 </div>
                 <div className="text-sm text-slate-500 flex items-center gap-2">
                   <BookOpen className="h-3.5 w-3.5" />
-                  {cls.subject}
+                  {cls.subject || 'General'}
                 </div>
               </CardHeader>
               <CardContent className="pt-4 flex items-center justify-between">
                 <div className="flex flex-col">
                   <div className="flex items-center gap-2 text-sm font-medium text-slate-600 mb-1">
                     <Users className="h-4 w-4 text-blue-500" />
-                    <span>{cls.students[0]?.count || 0} {lang === 'ar' ? 'طالب' : 'Students'}</span>
+                    <span>{cls.student_count} {lang === 'ar' ? 'طالب' : 'Students'}</span>
                   </div>
                   {cls.class_schedules && cls.class_schedules.length > 0 && (
                     <span className="text-xs text-slate-400">
