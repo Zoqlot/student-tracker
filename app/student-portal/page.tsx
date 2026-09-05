@@ -9,9 +9,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { 
   GraduationCap, Activity, Award, LogOut, BookOpen, 
   CheckCircle2, Clock, XCircle, Settings, Star, Sparkles, 
-  Trophy, Flame, Calendar, ChevronRight
+  Trophy, Flame, Calendar, ChevronRight, PlayCircle
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function StudentPortalPage() {
   const { lang, toggleLanguage } = useLanguage();
@@ -21,10 +22,10 @@ export default function StudentPortalPage() {
   const [enrollments, setEnrollments] = useState<any[]>([]);
   const [attendanceRecords, setAttendanceRecords] = useState<any[]>([]);
   const [grades, setGrades] = useState<any[]>([]);
+  const [lessons, setLessons] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Interactive UI States
-  const [activeTab, setActiveTab] = useState<'overview' | 'grades' | 'attendance' | 'badges'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'grades' | 'attendance' | 'badges' | 'lessons'>('overview');
   const [attendanceFilter, setAttendanceFilter] = useState<'ALL' | 'Present' | 'Absent' | 'Late'>('ALL');
 
   useEffect(() => {
@@ -54,15 +55,44 @@ export default function StudentPortalPage() {
 
     setStudent(sData);
 
-    // Fetch Enrolled Classes
     const { data: enrolledClasses } = await supabase
       .from('class_enrollments')
-      .select('class_id, classes(id, name, class_name, subject, teachers(full_name))')
-      .eq('student_id', sData.id);
+      .select('class_id, academic_year, is_current, classes(id, name, class_name, subject, teachers(full_name))')
+      .eq('student_id', sData.id)
+      .eq('is_current', true);
 
     setEnrollments(enrolledClasses || []);
 
-    // Fetch Attendance
+    if (enrolledClasses && enrolledClasses.length > 0) {
+      const activeClassIds = enrolledClasses.map(e => e.class_id);
+      const { data: lessonData } = await supabase
+        .from('lessons')
+        .select(`
+          id,
+          title,
+          description,
+          class_id,
+          classes(class_name, subject),
+          lesson_progress(student_id, progress, score, completed)
+        `)
+        .in('class_id', activeClassIds)
+        .eq('is_published', true)
+        .order('created_at', { ascending: false });
+
+      const mappedLessons = (lessonData || []).map(l => {
+        const myProgress =
+          l.lesson_progress?.find((p: any) => p.student_id === sData.id) ||
+          { progress: 0, completed: false, score: null };
+
+        return {
+          ...l,
+          progress: myProgress
+        };
+      });
+
+      setLessons(mappedLessons);
+    }
+
     const { data: attData } = await supabase
       .from('attendance')
       .select('*')
@@ -71,7 +101,6 @@ export default function StudentPortalPage() {
 
     setAttendanceRecords(attData || []);
 
-    // Fetch Assessment Grades
     const { data: gradeData } = await supabase
       .from('assessment_grades')
       .select('score, assessments(title, type, max_grade, assessment_date, classes(name, class_name, subject))')
@@ -99,7 +128,6 @@ export default function StudentPortalPage() {
     return lang === 'ar' ? 'مبتدئة واعدة 🌱' : 'Rising Talent 🌱';
   }, [totalParticipation, lang]);
 
-  // Achievements List (Excludes the removed generic readiness badge)
   const badges = [
     {
       id: 'golden_attendance',
@@ -147,7 +175,6 @@ export default function StudentPortalPage() {
     <div className="min-h-screen bg-slate-50 p-4 md:p-8" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
       <div className="max-w-5xl mx-auto space-y-6">
         
-        {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
           <div className="flex items-center gap-4">
             <div className="h-14 w-14 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xl shadow-md shadow-blue-500/20 shrink-0">
@@ -184,7 +211,6 @@ export default function StudentPortalPage() {
           </div>
         </div>
 
-        {/* Stats Grid (Attendance & Bonus Marks Only) */}
         <div className="grid gap-4 sm:grid-cols-2">
           <Card className="rounded-2xl border-slate-200 hover:shadow-sm transition-shadow">
             <CardContent className="p-5 flex items-center gap-4">
@@ -211,7 +237,6 @@ export default function StudentPortalPage() {
           </Card>
         </div>
 
-        {/* Navigation Tabs */}
         <div className="flex border-b border-slate-200 gap-2 overflow-x-auto pb-1 text-sm font-semibold">
           <button
             onClick={() => setActiveTab('overview')}
@@ -221,6 +246,16 @@ export default function StudentPortalPage() {
           >
             <BookOpen className="h-4 w-4" />
             {lang === 'ar' ? 'المقررات الدراسية' : 'Enrolled Classes'}
+          </button>
+
+          <button
+            onClick={() => setActiveTab('lessons')}
+            className={`px-4 py-2.5 rounded-xl transition-colors flex items-center gap-2 shrink-0 ${
+              activeTab === 'lessons' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            <PlayCircle className="h-4 w-4" />
+            {lang === 'ar' ? 'الدروس التفاعلية' : 'Lessons'}
           </button>
 
           <button
@@ -254,7 +289,6 @@ export default function StudentPortalPage() {
           </button>
         </div>
 
-        {/* TAB 1: CLASSES */}
         {activeTab === 'overview' && (
           <div className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
@@ -287,7 +321,64 @@ export default function StudentPortalPage() {
           </div>
         )}
 
-        {/* TAB 2: GRADES */}
+        {activeTab === 'lessons' && (
+          <div className="space-y-4">
+            <div className="grid gap-4 md:grid-cols-2">
+              {lessons.length === 0 ? (
+                <div className="col-span-2 text-center py-12 bg-white rounded-2xl border text-slate-400">
+                  <PlayCircle className="h-10 w-10 mx-auto mb-2 text-slate-300" />
+                  <p>{lang === 'ar' ? 'لا توجد دروس متاحة حالياً.' : 'No lessons available yet.'}</p>
+                </div>
+              ) : (
+                lessons.map((lesson, idx) => {
+                  const isCompleted = lesson.progress.completed;
+                  return (
+                    <Card key={idx} className={`hover:border-blue-300 transition-colors shadow-sm overflow-hidden ${isCompleted ? 'bg-slate-50/50' : 'bg-white'}`}>
+                      <CardContent className="p-5 flex flex-col h-full">
+                        <div className="flex-1 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">
+                              {lesson.classes?.subject || 'General'}
+                            </span>
+                            {isCompleted && (
+                              <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                                <CheckCircle2 className="h-3 w-3" /> {lang === 'ar' ? 'مكتمل' : 'Completed'}
+                              </span>
+                            )}
+                          </div>
+                          <h4 className="font-extrabold text-lg text-slate-900">{lesson.title}</h4>
+                          <p className="text-xs text-slate-500 line-clamp-2">{lesson.description}</p>
+                        </div>
+                        
+                        <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between">
+                          <div className="flex flex-col gap-1 w-1/2">
+                            <div className="flex justify-between text-xs font-bold text-slate-600">
+                              <span>{lang === 'ar' ? 'التقدم' : 'Progress'}</span>
+                              <span>{lesson.progress.progress}%</span>
+                            </div>
+                            <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                              <div 
+                                className={`h-full transition-all ${isCompleted ? 'bg-emerald-500' : 'bg-blue-600'}`} 
+                                style={{ width: `${lesson.progress.progress}%` }} 
+                              />
+                            </div>
+                          </div>
+                          
+                          <Link href={`/student-portal/lessons/${lesson.id}`}>
+                            <Button size="sm" className={isCompleted ? "bg-slate-800 text-white" : "bg-blue-600 hover:bg-blue-700 text-white"}>
+                              {isCompleted ? (lang === 'ar' ? 'مراجعة الدرس' : 'Review') : (lang === 'ar' ? 'ابدأ الدرس' : 'Start')}
+                            </Button>
+                          </Link>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        )}
+
         {activeTab === 'grades' && (
           <Card className="rounded-2xl border-slate-200 shadow-sm overflow-hidden">
             <CardHeader className="border-b bg-slate-50/50">
@@ -340,7 +431,6 @@ export default function StudentPortalPage() {
           </Card>
         )}
 
-        {/* TAB 3: ATTENDANCE LOG */}
         {activeTab === 'attendance' && (
           <Card className="rounded-2xl border-slate-200 shadow-sm">
             <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4">
@@ -412,7 +502,6 @@ export default function StudentPortalPage() {
           </Card>
         )}
 
-        {/* TAB 4: ACHIEVEMENTS */}
         {activeTab === 'badges' && (
           <div className="grid gap-4 sm:grid-cols-3">
             {badges.map((b) => (

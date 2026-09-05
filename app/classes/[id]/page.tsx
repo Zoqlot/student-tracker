@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, ArrowRight, CheckCircle, Clock, XCircle, Search, Save, UserPlus, X, AlertTriangle, Calendar, FileText, CheckSquare, Plus, MessageCircle, FileSpreadsheet } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle, Clock, XCircle, Search, Save, UserPlus, X, AlertTriangle, Calendar, FileText, CheckSquare, Plus, MessageCircle, FileSpreadsheet, PlayCircle, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import * as XLSX from 'xlsx';
 
@@ -56,7 +56,7 @@ export default function ClassDetailsPage() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const [activeTab, setActiveTab] = useState<'attendance' | 'assessments'>('attendance');
+    const [activeTab, setActiveTab] = useState<'attendance' | 'assessments' | 'lessons'>('attendance');
 
     const [globalDate, setGlobalDate] = useState(getLocalTodayDate());
     const [studentDates, setStudentDates] = useState<Record<string, string>>({});
@@ -79,6 +79,8 @@ export default function ClassDetailsPage() {
     const [assessmentGrades, setAssessmentGrades] = useState<Record<string, string>>({});
     const [importSummary, setImportSummary] = useState<{ matched: number, errors: { row: number, name: string, issue: string }[] } | null>(null);
 
+    const [lessons, setLessons] = useState<any[]>([]);
+
     useEffect(() => {
         const local = getLocalTodayDate();
         if (globalDate !== local) {
@@ -91,6 +93,7 @@ export default function ClassDetailsPage() {
         if (id) {
             fetchStudentsAndSchedule();
             fetchAssessments();
+            fetchLessons();
         }
     }, [id]);
 
@@ -135,7 +138,6 @@ export default function ClassDetailsPage() {
         setClassSchedules(schedules);
         checkSession(globalDate, schedules);
 
-        // Fetch students safely through class_enrollments (which captures the bulk imported students)
         const { data: enrollments, error } = await supabase
             .from('class_enrollments')
             .select(`
@@ -149,8 +151,8 @@ export default function ClassDetailsPage() {
             console.error('[ClassDetails] Student roster error:', error);
         } else if (enrollments) {
             const studentRoster = enrollments
-                .map(e => e.students)
-                .filter(Boolean) as Student[];
+                .map(e => (Array.isArray(e.students) ? e.students[0] : e.students))
+                .filter((s): s is Student => Boolean(s && s.id && s.full_name));
 
             studentRoster.sort((a, b) =>
                 a.full_name.localeCompare(b.full_name, 'ar')
@@ -165,6 +167,21 @@ export default function ClassDetailsPage() {
     async function fetchAssessments() {
         const { data } = await supabase.from('assessments').select('*').eq('class_id', id).order('assessment_date', { ascending: false });
         setAssessments(data || []);
+    }
+
+    async function fetchLessons() {
+        const { data, error } = await supabase
+            .from('lessons')
+            .select('*, lesson_progress(student_id, completed)')
+            .eq('class_id', id)
+            .order('created_at', { ascending: false });
+        
+        if (error) {
+            console.error('Error fetching lessons:', error);
+            return;
+        }
+
+        setLessons(data || []);
     }
 
     const checkSession = (dateStr: string, schedules: any[]) => {
@@ -223,7 +240,7 @@ export default function ClassDetailsPage() {
             await supabase.from('class_enrollments').insert({
                 student_id: newStudent.id,
                 class_id: id,
-                academic_year: '2026-2027', // Adjust dynamically if needed
+                academic_year: '2026-2027',
                 is_current: true
             });
             
@@ -396,6 +413,19 @@ export default function ClassDetailsPage() {
         }
     };
 
+    const togglePublishLesson = async (lessonId: string, currentStatus: boolean) => {
+        const { error } = await supabase
+            .from('lessons')
+            .update({ is_published: !currentStatus })
+            .eq('id', lessonId);
+            
+        if (error) {
+            alert(lang === 'ar' ? 'حدث خطأ' : 'Error updating lesson');
+        } else {
+            fetchLessons();
+        }
+    };
+
     const filteredStudents = students.filter(s => 
         s.full_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -428,20 +458,27 @@ export default function ClassDetailsPage() {
                 </div>
             </div>
 
-            <div className="flex border-b border-slate-200">
+            <div className="flex border-b border-slate-200 overflow-x-auto">
                 <button 
                     onClick={() => { setActiveTab('attendance'); setActiveAssessment(null); }}
-                    className={`px-4 py-2 text-sm font-medium border-b-2 flex items-center gap-2 transition-colors ${activeTab === 'attendance' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+                    className={`px-4 py-2 text-sm font-medium border-b-2 flex items-center gap-2 shrink-0 transition-colors ${activeTab === 'attendance' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
                 >
                     <CheckSquare className="h-4 w-4" />
                     {lang === 'ar' ? 'الحضور والمشاركة' : 'Daily Attendance'}
                 </button>
                 <button 
                     onClick={() => setActiveTab('assessments')}
-                    className={`px-4 py-2 text-sm font-medium border-b-2 flex items-center gap-2 transition-colors ${activeTab === 'assessments' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+                    className={`px-4 py-2 text-sm font-medium border-b-2 flex items-center gap-2 shrink-0 transition-colors ${activeTab === 'assessments' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
                 >
                     <FileText className="h-4 w-4" />
                     {lang === 'ar' ? 'التقييمات والدرجات' : 'Assessments & Grades'}
+                </button>
+                <button 
+                    onClick={() => setActiveTab('lessons')}
+                    className={`px-4 py-2 text-sm font-medium border-b-2 flex items-center gap-2 shrink-0 transition-colors ${activeTab === 'lessons' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+                >
+                    <PlayCircle className="h-4 w-4" />
+                    {lang === 'ar' ? 'الدروس التفاعلية' : 'Interactive Lessons'}
                 </button>
             </div>
 
@@ -456,7 +493,6 @@ export default function ClassDetailsPage() {
                 </div>
             )}
 
-            {/* TAB CONTENT: ATTENDANCE & PARTICIPATION */}
             {activeTab === 'attendance' && (
                 <Card>
                     <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4">
@@ -485,7 +521,7 @@ export default function ClassDetailsPage() {
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead className="w-[180px]">{lang === 'ar' ? 'اسم الطالب' : 'Student Name'}</TableHead>
-                                        <TableHead className="w-[160px]">{lang === 'ar' ? 'تاريخ الحضور' : 'Date'}</TableHead>
+                                        <TableHead className="w-[160px]">{lang === 'ar' ? 'تاريخ الحضور' : 'Date Override'}</TableHead>
                                         <TableHead className="w-[150px]">{lang === 'ar' ? 'الحالة' : 'Status'}</TableHead>
                                         <TableHead className="w-[110px] text-center">{lang === 'ar' ? 'المشاركة' : 'Participation'}</TableHead>
                                         <TableHead className="text-center w-[90px]">{lang === 'ar' ? 'واتساب' : 'WhatsApp'}</TableHead>
@@ -541,7 +577,6 @@ export default function ClassDetailsPage() {
                 </Card>
             )}
 
-            {/* TAB CONTENT: ASSESSMENTS LIST */}
             {activeTab === 'assessments' && !activeAssessment && (
                 <div className="space-y-4">
                     <div className="flex justify-between items-center bg-white p-4 rounded-lg border shadow-sm">
@@ -583,7 +618,6 @@ export default function ClassDetailsPage() {
                 </div>
             )}
 
-            {/* TAB CONTENT: GRADING & EXCEL IMPORT */}
             {activeTab === 'assessments' && activeAssessment && (
                 <Card>
                     <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4 bg-slate-50 rounded-t-xl">
@@ -598,7 +632,6 @@ export default function ClassDetailsPage() {
                             </CardTitle>
                         </div>
                         <div className="flex items-center gap-2">
-                            {/* Hidden file input for Excel */}
                             <input 
                                 type="file" 
                                 ref={fileInputRef} 
@@ -623,8 +656,6 @@ export default function ClassDetailsPage() {
                         </div>
                     </CardHeader>
                     <CardContent className="pt-4">
-
-                        {/* Clean Error UI for Excel Import */}
                         {importSummary && (
                             <div className="mb-6 p-4 rounded-lg border bg-white shadow-sm">
                                 <h3 className="font-bold text-slate-800 text-sm mb-1">
@@ -693,7 +724,69 @@ export default function ClassDetailsPage() {
                 </Card>
             )}
 
-            {/* --- ADD STUDENT MODAL --- */}
+            {activeTab === 'lessons' && (
+                <div className="space-y-4">
+                    <div className="flex justify-between items-center bg-white p-4 rounded-lg border shadow-sm">
+                        <div>
+                            <h2 className="text-lg font-bold text-slate-800">{lang === 'ar' ? 'الدروس التفاعلية' : 'Interactive Lessons'}</h2>
+                            <p className="text-sm text-slate-500">{lang === 'ar' ? 'قم بإنشاء وتعديل مسارات التعلم التفاعلية' : 'Create and manage interactive learning paths'}</p>
+                        </div>
+                        <Link href={`/classes/${id}/lessons/create`}>
+                            <Button className="bg-slate-900 text-white hover:bg-slate-800">
+                                <Plus className="h-4 w-4 mr-2" />
+                                {lang === 'ar' ? 'إضافة درس' : 'Add Lesson'}
+                            </Button>
+                        </Link>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {lessons.length === 0 ? (
+                            <div className="col-span-2 text-center py-12 text-slate-500 bg-white rounded-lg border border-dashed">
+                                {lang === 'ar' ? 'لم تقم بإنشاء أي دروس تفاعلية بعد.' : 'No interactive lessons created yet.'}
+                            </div>
+                        ) : (
+                            lessons.map(lesson => (
+                                <Card key={lesson.id} className="hover:border-blue-500 transition-colors shadow-sm">
+                                    <CardHeader className="pb-3 border-b border-slate-100">
+                                        <div className="flex justify-between items-start mb-1">
+                                            <span className={`text-xs font-bold px-2 py-0.5 rounded-md flex items-center gap-1 ${lesson.is_published ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
+                                                {lesson.is_published ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
+                                                {lesson.is_published ? (lang === 'ar' ? 'منشور' : 'Published') : (lang === 'ar' ? 'مسودة' : 'Draft')}
+                                            </span>
+                                            <span className="text-xs text-slate-500 font-mono">
+                                                {new Date(lesson.created_at).toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US')}
+                                            </span>
+                                        </div>
+                                        <CardTitle className="text-lg leading-tight mt-1">{lesson.title}</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="pt-4 space-y-4">
+                                        <div className="flex justify-between text-sm font-medium text-slate-600">
+                                            <span>{lang === 'ar' ? 'طالب أكمل الدرس' : 'Students Completed:'}</span>
+                                            <span className="text-slate-900 font-bold">
+                                                {lesson.lesson_progress?.filter((p: any) => p.completed).length || 0} / {students.length}
+                                            </span>
+                                        </div>
+                                        
+                                        <div className="flex gap-2">
+                                            <Link href={`/classes/${id}/lessons/${lesson.id}`} className="flex-1">
+                                                <Button variant="outline" className="w-full h-8 text-xs">{lang === 'ar' ? 'تعديل المحتوى' : 'Edit Content'}</Button>
+                                            </Link>
+                                            <Button 
+                                                variant="outline" 
+                                                className={`w-1/3 h-8 text-xs ${lesson.is_published ? 'text-amber-600 border-amber-200 hover:bg-amber-50' : 'text-emerald-600 border-emerald-200 hover:bg-emerald-50'}`}
+                                                onClick={() => togglePublishLesson(lesson.id, lesson.is_published)}
+                                            >
+                                                {lesson.is_published ? (lang === 'ar' ? 'إلغاء النشر' : 'Unpublish') : (lang === 'ar' ? 'نشر للطلاب' : 'Publish')}
+                                            </Button>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))
+                        )}
+                    </div>
+                </div>
+            )}
+
             {isAddStudentModalOpen && (
                 <div className="fixed inset-0 z-50 bg-slate-950/50 flex items-center justify-center p-4">
                     <Card className="w-full max-w-md shadow-xl border-0">
@@ -725,7 +818,6 @@ export default function ClassDetailsPage() {
                 </div>
             )}
 
-            {/* --- ADD ASSESSMENT MODAL --- */}
             {isAddAssessmentModalOpen && (
                 <div className="fixed inset-0 z-50 bg-slate-950/50 flex items-center justify-center p-4">
                     <Card className="w-full max-w-md shadow-xl border-0">
